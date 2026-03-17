@@ -4,7 +4,7 @@ import type { SimulationInput } from "@/domain/types";
 
 const base: SimulationInput = {
   p1: {
-    name: "Thomas",
+    name: "P1",
     income: 3200,
     personalCharges: 0,
     workQuota: 1,
@@ -12,7 +12,7 @@ const base: SimulationInput = {
     partTimeReason: null,
   },
   p2: {
-    name: "Léa",
+    name: "P2",
     income: 2100,
     personalCharges: 0,
     workQuota: 0.8,
@@ -33,7 +33,7 @@ const base: SimulationInput = {
       planning: 30,
     },
   },
-  hourlyRate: 9.57,
+  hourlyRate: 9.52,
 };
 
 describe("Model 1 — 50/50", () => {

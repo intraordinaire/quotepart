@@ -49,30 +49,30 @@ describe("mergeDomesticSliders", () => {
 
 describe("computeDomesticValue", () => {
   it("returns equal values when sliders are at 50% (with children)", () => {
-    const result = computeDomesticValue(allFifty, true, 9.57);
+    const result = computeDomesticValue(allFifty, true, 9.52);
     expect(result.p1MonthlyValue).toBeCloseTo(result.p2MonthlyValue, 1);
   });
 
   it("computes correct P1 monthly value at 50% with children", () => {
-    // 28h/week * 0.50 * 9.57 EUR/h * 4.33 weeks/month
-    const expected = 28 * 0.5 * 9.57 * 4.33;
-    const result = computeDomesticValue(allFifty, true, 9.57);
+    // 28h/week * 0.50 * 9.52 EUR/h * 4.33 weeks/month
+    const expected = 28 * 0.5 * 9.52 * 4.33;
+    const result = computeDomesticValue(allFifty, true, 9.52);
     expect(result.p1MonthlyValue).toBeCloseTo(expected, 1);
   });
 
   it("excludes child categories when hasChildren is false", () => {
-    const resultWith = computeDomesticValue(allFifty, true, 9.57);
-    const resultWithout = computeDomesticValue(allFifty, false, 9.57);
+    const resultWith = computeDomesticValue(allFifty, true, 9.52);
+    const resultWithout = computeDomesticValue(allFifty, false, 9.52);
     expect(resultWithout.p1MonthlyValue).toBeLessThan(resultWith.p1MonthlyValue);
   });
 
   it("assigns more value to P1 when P1 carries heavier domestic load", () => {
-    const result = computeDomesticValue(p1Heavy, true, 9.57);
+    const result = computeDomesticValue(p1Heavy, true, 9.52);
     expect(result.p1MonthlyValue).toBeGreaterThan(result.p2MonthlyValue);
   });
 
   it("returns weekly hours breakdown", () => {
-    const result = computeDomesticValue(allFifty, true, 9.57);
+    const result = computeDomesticValue(allFifty, true, 9.52);
     expect(result.p1WeeklyHours).toBeCloseTo(14, 1); // 28 * 0.5
     expect(result.p2WeeklyHours).toBeCloseTo(14, 1);
   });

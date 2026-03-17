@@ -13,5 +13,5 @@ export const DOMESTIC_HOURS: Record<DomesticCategory, number> = {
 
 export const CHILD_CATEGORIES: DomesticCategory[] = ["childrenAppointments", "schoolSupport"];
 
-export const DEFAULT_HOURLY_RATE = 9.57;
+export const DEFAULT_HOURLY_RATE = 9.52;
 export const WEEKS_PER_MONTH = 4.33;

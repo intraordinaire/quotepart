@@ -4,7 +4,7 @@ import type { SimulationInput } from "@/domain/types";
 
 const base: SimulationInput = {
   p1: {
-    name: "Thomas",
+    name: "P1",
     income: 3200,
     personalCharges: 80,
     workQuota: 1,
@@ -12,7 +12,7 @@ const base: SimulationInput = {
     partTimeReason: null,
   },
   p2: {
-    name: "Léa",
+    name: "P2",
     income: 2100,
     personalCharges: 190,
     workQuota: 0.8,
@@ -33,7 +33,7 @@ const base: SimulationInput = {
       planning: 50,
     },
   },
-  hourlyRate: 9.57,
+  hourlyRate: 9.52,
 };
 
 describe("Model 3 — Equal disposable income", () => {
@@ -51,12 +51,12 @@ describe("Model 3 — Equal disposable income", () => {
     const broke = { ...base, p2: { ...base.p2, personalCharges: 2500 } };
     const result = computeM3(broke);
     expect(result.isViable).toBe(false);
-    expect(result.warnings[0]).toContain("Léa");
+    expect(result.warnings[0]).toContain("P2");
   });
 
   it("person with higher personal charges contributes less to common charges", () => {
     const result = computeM3(base);
-    // Léa has more personal charges, so should contribute less
+    // P2 has more personal charges, so should contribute less
     expect(result.p2Contribution).toBeLessThan(result.p1Contribution);
   });
 });

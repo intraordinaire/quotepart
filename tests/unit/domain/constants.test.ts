@@ -15,8 +15,8 @@ describe("constants", () => {
     expect(total).toBe(23);
   });
 
-  it("SMIC rate is 9.57", () => {
-    expect(DEFAULT_HOURLY_RATE).toBe(9.57);
+  it("SMIC rate is 9.52", () => {
+    expect(DEFAULT_HOURLY_RATE).toBe(9.52);
   });
 
   it("weeks per month multiplier is 4.33", () => {

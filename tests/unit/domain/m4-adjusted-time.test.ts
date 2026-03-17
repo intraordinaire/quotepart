@@ -4,7 +4,7 @@ import type { SimulationInput } from "@/domain/types";
 
 const base: SimulationInput = {
   p1: {
-    name: "Thomas",
+    name: "P1",
     income: 3200,
     personalCharges: 0,
     workQuota: 1,
@@ -12,7 +12,7 @@ const base: SimulationInput = {
     partTimeReason: null,
   },
   p2: {
-    name: "Léa",
+    name: "P2",
     income: 2100,
     personalCharges: 0,
     workQuota: 0.8,
@@ -33,7 +33,7 @@ const base: SimulationInput = {
       planning: 50,
     },
   },
-  hourlyRate: 9.57,
+  hourlyRate: 9.52,
 };
 
 describe("Model 4 — Adjusted for part-time", () => {
@@ -45,14 +45,14 @@ describe("Model 4 — Adjusted for part-time", () => {
 
   it("option B uses theoretical full-time income for ratio", () => {
     const result = computeM4(base);
-    // Thomas: 3200 (full time), Léa: 2625 (theoretical)
+    // P1: 3200 (full time), P2: 2625 (theoretical)
     const total = 3200 + 2625;
     expect(result.optionB.p1Contribution).toBeCloseTo(3000 * (3200 / total), 2);
   });
 
   it("option B gives P2 a larger contribution than option A (theoretical income is higher)", () => {
     const result = computeM4(base);
-    // Léa's theoretical full-time income (2625) > real income (2100), so her ratio is higher → larger contribution
+    // P2's theoretical full-time income (2625) > real income (2100), so P2's ratio is higher → larger contribution
     expect(result.optionB.p2Contribution).toBeGreaterThan(result.optionA.p2Contribution);
   });
 
