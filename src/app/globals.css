@@ -1,26 +1,77 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Fonts */
+  --font-body: var(--font-body);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+
+  /* Brand colors */
+  --color-bg: #fafaf8;
+  --color-bg-elevated: #ffffff;
+  --color-surface: #f2f2ef;
+  --color-text: #1a1a1a;
+  --color-text-secondary: #6b6b67;
+  --color-text-tertiary: #9a9a96;
+  --color-accent: #d4593a;
+  --color-accent-light: #fdf0ec;
+  --color-border: #e8e8e4;
+  --color-border-strong: #d1d1cc;
+  --color-green: #2d8a56;
+  --color-green-light: #edf7f0;
+  --color-amber: #c48a1a;
+  --color-amber-light: #fff8e8;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  background-color: #fafaf8;
+  color: #1a1a1a;
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tier transition */
+@keyframes tierFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.animate-tier-in {
+  animation: tierFadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Range thumb cross-browser */
+input[type="range"] {
+  appearance: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  cursor: pointer;
+  margin-top: -6px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
 }

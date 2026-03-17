@@ -56,11 +56,9 @@ export function ModeChoice(): React.JSX.Element {
   }
 
   return (
-    <div>
-      <h2 className="font-[Instrument_Serif,serif] text-[28px] mb-2">
-        Comment souhaitez-vous remplir&nbsp;?
-      </h2>
-      <p className="text-sm text-[#7A7A75] mb-9 leading-relaxed">
+    <div className="animate-tier-in">
+      <h2 className="font-display text-[28px] mb-2">Comment souhaitez-vous remplir&nbsp;?</h2>
+      <p className="text-sm text-text-secondary mb-9 leading-relaxed">
         Vous pourrez changer d&apos;avis à tout moment.
       </p>
 
@@ -75,10 +73,8 @@ export function ModeChoice(): React.JSX.Element {
             <EditIcon />
           </span>
           <div>
-            <div className="text-[15px] font-semibold mb-1 font-[Manrope,sans-serif]">
-              Je remplis pour nous deux
-            </div>
-            <div className="text-[13px] text-[#7A7A75] leading-relaxed font-[Manrope,sans-serif]">
+            <div className="text-[15px] font-semibold mb-1">Je remplis pour nous deux</div>
+            <div className="text-[13px] text-text-secondary leading-relaxed">
               Vous saisissez les données des deux personnes. Résultats immédiats. Vous pourrez
               ensuite partager un lien pour que votre partenaire ajuste ses données.
             </div>
@@ -95,14 +91,12 @@ export function ModeChoice(): React.JSX.Element {
             <UsersIcon />
           </span>
           <div>
-            <div className="text-[15px] font-semibold mb-1 font-[Manrope,sans-serif]">
-              On remplit chacun·e nos données
-            </div>
-            <div className="text-[13px] text-[#7A7A75] leading-relaxed font-[Manrope,sans-serif]">
+            <div className="text-[15px] font-semibold mb-1">On remplit chacun·e nos données</div>
+            <div className="text-[13px] text-text-secondary leading-relaxed">
               Vous saisissez vos données et les charges communes. Votre partenaire recevra un lien
               pour compléter les siennes. Plus juste, notamment pour la charge domestique.
             </div>
-            <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-[#D4593A] uppercase tracking-[0.04em] font-[Manrope,sans-serif]">
+            <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-[#D4593A] uppercase tracking-[0.04em]">
               Recommandé pour la confrontation des perceptions
             </div>
           </div>

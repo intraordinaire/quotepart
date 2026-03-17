@@ -17,7 +17,7 @@ export function PillToggle({ label, active, onClick }: PillToggleProps): React.J
         "text-xs font-medium px-[14px] py-[5px] rounded-full cursor-pointer transition-colors",
         active
           ? "bg-neutral-900 text-white border-transparent"
-          : "bg-neutral-100 text-[#7A7A75] border border-[#E8E8E4]",
+          : "bg-neutral-100 text-text-secondary border border-[#E8E8E4]",
       ].join(" ")}
     >
       {label}

@@ -19,7 +19,7 @@ export function SelectField({
 
   return (
     <div>
-      <label htmlFor={inputId} className="block text-xs font-medium text-[#7A7A75] mb-1">
+      <label htmlFor={inputId} className="block text-xs font-medium text-text-secondary mb-1">
         {label}
       </label>
       <select

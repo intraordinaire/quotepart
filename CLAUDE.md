@@ -17,6 +17,7 @@ Full product spec: `quotepart-cadrage-v03.md`
 Reference files:
 
 - `docs/reference/prototype.jsx` — original UI prototype (visual reference only)
+- `docs/reference/frontend-guide.md` — **frontend conventions, design tokens, accessibility rules** (consult before any UI work)
 - `quotepart-cadrage-v03.md` — full product specification (French)
 
 ## Implementation Plans

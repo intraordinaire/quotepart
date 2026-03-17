@@ -6,6 +6,8 @@ import { useSimulation } from "@/context/useSimulation";
 import { ModeChoice } from "@/components/form/ModeChoice";
 import { Tier1Incomes } from "@/components/form/Tier1Incomes";
 import { Tier2PersonalCharges } from "@/components/form/Tier2PersonalCharges";
+import { Tier3WorkTime } from "@/components/form/Tier3WorkTime";
+import { Tier4Domestic } from "@/components/form/Tier4Domestic";
 import { TierNav } from "@/components/form/TierNav";
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
@@ -100,11 +102,9 @@ function TierContent({ activeTier }: { activeTier: 0 | 1 | 2 | 3 | 4 }): React.J
     case 2:
       return <Tier2PersonalCharges />;
     case 3:
-      // TODO: replace with <Tier3WorkTime /> once implemented
-      return <div className="text-[#7A7A75]">Tier 3 - coming soon</div>;
+      return <Tier3WorkTime />;
     case 4:
-      // TODO: replace with <Tier4Domestic /> once implemented
-      return <div className="text-[#7A7A75]">Tier 4 - coming soon</div>;
+      return <Tier4Domestic />;
   }
 }
 
@@ -119,7 +119,7 @@ export default function SimulatePage(): React.JSX.Element {
   const tier1Complete = state.completedTiers.has(1);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFAF8] font-[Manrope,sans-serif]">
+    <div className="flex flex-col min-h-screen bg-[#FAFAF8]">
       {/* ── Top header ─────────────────────────────────────────────────────── */}
       <header className="h-14 bg-white border-b border-[#E8E8E4] flex items-center px-6 gap-4 shrink-0">
         <Link
@@ -131,7 +131,7 @@ export default function SimulatePage(): React.JSX.Element {
 
         <span className="text-[#E8E8E4] select-none">|</span>
 
-        <span className="text-sm text-[#7A7A75]">Nouvelle simulation</span>
+        <span className="text-sm text-text-secondary">Nouvelle simulation</span>
 
         {state.mode && (
           <>
@@ -142,15 +142,18 @@ export default function SimulatePage(): React.JSX.Element {
       </header>
 
       {/* ── Tab navigation ─────────────────────────────────────────────────── */}
-      <nav className="bg-white border-b border-[#E8E8E4] flex px-6 shrink-0">
+      <nav role="tablist" className="bg-white border-b border-[#E8E8E4] flex px-6 shrink-0">
         <button
+          role="tab"
           type="button"
+          aria-selected={activeTab === "saisie"}
+          aria-controls="panel-saisie"
           onClick={() => setActiveTab("saisie")}
           className={[
             "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
             activeTab === "saisie"
               ? "border-[#D4593A] text-[#1A1A1A]"
-              : "border-transparent text-[#7A7A75] hover:text-[#1A1A1A]",
+              : "border-transparent text-text-secondary hover:text-[#1A1A1A]",
           ].join(" ")}
         >
           <EditIcon />
@@ -158,7 +161,11 @@ export default function SimulatePage(): React.JSX.Element {
         </button>
 
         <button
+          role="tab"
           type="button"
+          aria-selected={activeTab === "resultats"}
+          aria-controls="panel-resultats"
+          aria-disabled={!tier1Complete}
           onClick={() => {
             if (tier1Complete) setActiveTab("resultats");
           }}
@@ -166,8 +173,8 @@ export default function SimulatePage(): React.JSX.Element {
             "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
             activeTab === "resultats"
               ? "border-[#D4593A] text-[#1A1A1A]"
-              : "border-transparent text-[#7A7A75] hover:text-[#1A1A1A]",
-            !tier1Complete ? "opacity-50 pointer-events-none" : "",
+              : "border-transparent text-text-secondary hover:text-[#1A1A1A]",
+            !tier1Complete ? "opacity-50 cursor-not-allowed pointer-events-none" : "",
           ]
             .join(" ")
             .trim()}
@@ -177,7 +184,11 @@ export default function SimulatePage(): React.JSX.Element {
         </button>
 
         <button
+          role="tab"
           type="button"
+          aria-selected={activeTab === "etsi"}
+          aria-controls="panel-etsi"
+          aria-disabled={!tier1Complete}
           onClick={() => {
             if (tier1Complete) setActiveTab("etsi");
           }}
@@ -185,8 +196,8 @@ export default function SimulatePage(): React.JSX.Element {
             "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
             activeTab === "etsi"
               ? "border-[#D4593A] text-[#1A1A1A]"
-              : "border-transparent text-[#7A7A75] hover:text-[#1A1A1A]",
-            !tier1Complete ? "opacity-50 pointer-events-none" : "",
+              : "border-transparent text-text-secondary hover:text-[#1A1A1A]",
+            !tier1Complete ? "opacity-50 cursor-not-allowed pointer-events-none" : "",
           ]
             .join(" ")
             .trim()}
@@ -204,11 +215,15 @@ export default function SimulatePage(): React.JSX.Element {
         {/* Main content */}
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-2xl mx-auto">
-            {activeTab === "saisie" && <TierContent activeTier={state.activeTier} />}
-            {activeTab === "resultats" && (
-              <div className="text-[#7A7A75]">Résultats — coming soon</div>
-            )}
-            {activeTab === "etsi" && <div className="text-[#7A7A75]">Et si... — coming soon</div>}
+            <div role="tabpanel" id="panel-saisie" hidden={activeTab !== "saisie"}>
+              <TierContent activeTier={state.activeTier} />
+            </div>
+            <div role="tabpanel" id="panel-resultats" hidden={activeTab !== "resultats"}>
+              <div className="text-text-secondary">Résultats — coming soon</div>
+            </div>
+            <div role="tabpanel" id="panel-etsi" hidden={activeTab !== "etsi"}>
+              <div className="text-text-secondary">Et si... — coming soon</div>
+            </div>
           </div>
         </main>
       </div>

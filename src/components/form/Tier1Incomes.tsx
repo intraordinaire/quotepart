@@ -44,9 +44,9 @@ export function Tier1Incomes(): React.JSX.Element {
   const p2DisplayName = p2?.name?.trim() || "Personne 2";
 
   return (
-    <div>
+    <div className="animate-tier-in">
       <h2 className="font-display text-2xl mb-1">Revenus & charges communes</h2>
-      <p className="text-sm text-[#7A7A75] mb-8">
+      <p className="text-sm text-text-secondary mb-8">
         L&apos;essentiel pour démarrer. Débloque les modèles 50/50 et Prorata.
       </p>
 
@@ -70,12 +70,13 @@ export function Tier1Incomes(): React.JSX.Element {
           label="Revenu net mensuel P1"
           placeholder="3 200"
           suffix="€"
+          numeric
           value={p1?.income != null ? String(p1.income) : ""}
           onChange={(v) => updateP1({ income: Number(v) || 0 })}
         />
         {isShared ? (
           <div>
-            <label className="block text-xs font-medium text-[#7A7A75] mb-1">
+            <label className="block text-xs font-medium text-text-secondary mb-1">
               Revenu net mensuel P2
             </label>
             <LockedField name={p2DisplayName} />
@@ -86,6 +87,7 @@ export function Tier1Incomes(): React.JSX.Element {
             label="Revenu net mensuel P2"
             placeholder="2 100"
             suffix="€"
+            numeric
             value={p2?.income != null ? String(p2.income) : ""}
             onChange={(v) => updateP2({ income: Number(v) || 0 })}
           />
@@ -109,6 +111,7 @@ export function Tier1Incomes(): React.JSX.Element {
         <FormField
           placeholder="3 000"
           suffix="€/mois"
+          numeric
           value={input.commonCharges != null ? String(input.commonCharges) : ""}
           onChange={(v) =>
             dispatch({ type: "UPDATE_INPUT", payload: { commonCharges: Number(v) || 0 } })
@@ -116,7 +119,7 @@ export function Tier1Incomes(): React.JSX.Element {
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-[#7A7A75] cursor-pointer mb-8">
+      <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer mb-8">
         <input
           type="checkbox"
           checked={input.hasChildren ?? false}
@@ -132,7 +135,7 @@ export function Tier1Incomes(): React.JSX.Element {
         <button
           type="button"
           onClick={handleRetour}
-          className="text-sm font-medium px-5 py-2.5 bg-transparent text-[#7A7A75] border border-[#E8E8E4] rounded-md cursor-pointer"
+          className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-secondary border border-[#E8E8E4] rounded-md cursor-pointer"
         >
           Retour
         </button>

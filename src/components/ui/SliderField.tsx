@@ -29,7 +29,7 @@ export function SliderField({
       </div>
 
       <div className="flex items-center gap-2.5">
-        <span className="text-[11px] font-semibold text-[#7A7A75] w-[55px] text-right">
+        <span className="text-[11px] font-semibold text-text-secondary w-[55px] text-right">
           {leftName}
         </span>
 

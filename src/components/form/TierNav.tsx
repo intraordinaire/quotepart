@@ -31,7 +31,7 @@ export function TierNav(): React.JSX.Element {
     <aside className="w-60 shrink-0 bg-white border-r border-[#E8E8E4] py-6">
       {/* Progress section */}
       <div className="px-5 mb-5">
-        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#7A7A75] mb-1">
+        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-text-secondary mb-1">
           Progression
         </div>
         <div className="h-[3px] bg-[#E8E8E4] rounded-sm overflow-hidden">
@@ -72,7 +72,7 @@ export function TierNav(): React.JSX.Element {
                 "w-[22px] h-[22px] rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 mt-[1px]",
                 isPastOrActive
                   ? "bg-[#1A1A1A] text-white border-0"
-                  : "bg-[#FAFAF8] text-[#7A7A75] border border-[#E8E8E4]",
+                  : "bg-[#FAFAF8] text-text-secondary border border-[#E8E8E4]",
               ].join(" ")}
             >
               {isCompleted && activeTier > tier.n ? "✓" : tier.n}
@@ -80,12 +80,8 @@ export function TierNav(): React.JSX.Element {
 
             {/* Label and subtitle */}
             <div>
-              <div className="text-[13px] font-semibold text-[#1A1A1A] font-[Manrope,sans-serif]">
-                {tier.label}
-              </div>
-              <div className="text-[11px] text-[#7A7A75] mt-0.5 font-[Manrope,sans-serif]">
-                Débloque {tier.unlocks}
-              </div>
+              <div className="text-[13px] font-semibold text-[#1A1A1A]">{tier.label}</div>
+              <div className="text-[11px] text-text-secondary mt-0.5">Débloque {tier.unlocks}</div>
             </div>
           </button>
         );

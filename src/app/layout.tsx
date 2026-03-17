@@ -1,14 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Manrope, Instrument_Serif, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const manrope = Manrope({
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
@@ -23,8 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): React.JSX.Element {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+    <html
+      lang="fr"
+      className={`${manrope.variable} ${instrumentSerif.variable} ${geistMono.variable}`}
+    >
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

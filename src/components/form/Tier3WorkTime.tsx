@@ -87,19 +87,19 @@ export function Tier3WorkTime(): React.JSX.Element {
   }
 
   return (
-    <div>
+    <div className="animate-tier-in">
       <h2 className="font-display text-2xl mb-1">Temps de travail</h2>
-      <p className="text-sm text-[#7A7A75] mb-1.5">
+      <p className="text-sm text-text-secondary mb-1.5">
         Le temps partiel a un coût. Ce palier le rend visible. Débloque le modèle Ajusté temps.
       </p>
-      <p className="text-xs italic text-[#7A7A75] mb-8">
+      <p className="text-xs italic text-text-secondary mb-8">
         Optionnel, vous pouvez passer cette étape.
       </p>
 
       <div className="grid grid-cols-2 gap-6 mb-8">
         {/* P1 column */}
         <div>
-          <div className="text-xs font-bold uppercase tracking-[0.06em] text-[#7A7A75] mb-3">
+          <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-3">
             {p1Name}
           </div>
           <div className="flex flex-col gap-3">
@@ -115,6 +115,7 @@ export function Tier3WorkTime(): React.JSX.Element {
                   label="Salaire théorique temps plein"
                   placeholder="2 500"
                   suffix="€"
+                  numeric
                   value={p1FullTimeIncome}
                   onChange={setP1FullTimeIncome}
                 />
@@ -131,7 +132,7 @@ export function Tier3WorkTime(): React.JSX.Element {
 
         {/* P2 column */}
         <div>
-          <div className="text-xs font-bold uppercase tracking-[0.06em] text-[#7A7A75] mb-3">
+          <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-3">
             {p2Name}
           </div>
           {isShared ? (
@@ -150,6 +151,7 @@ export function Tier3WorkTime(): React.JSX.Element {
                     label="Salaire théorique temps plein"
                     placeholder="2 500"
                     suffix="€"
+                    numeric
                     value={p2FullTimeIncome}
                     onChange={setP2FullTimeIncome}
                   />
@@ -170,7 +172,7 @@ export function Tier3WorkTime(): React.JSX.Element {
         <button
           type="button"
           onClick={handleRetour}
-          className="text-sm font-medium px-5 py-2.5 bg-transparent text-[#7A7A75] border border-[#E8E8E4] rounded-md cursor-pointer"
+          className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-secondary border border-[#E8E8E4] rounded-md cursor-pointer"
         >
           Retour
         </button>
@@ -178,7 +180,7 @@ export function Tier3WorkTime(): React.JSX.Element {
           <button
             type="button"
             onClick={handlePasser}
-            className="text-sm font-medium px-5 py-2.5 bg-transparent text-[#7A7A75] border border-[#E8E8E4] rounded-md cursor-pointer"
+            className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-secondary border border-[#E8E8E4] rounded-md cursor-pointer"
           >
             Passer
           </button>
