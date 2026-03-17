@@ -80,154 +80,182 @@ export function ComparisonTable({
   p2Name,
 }: ComparisonTableProps): React.JSX.Element {
   const bestModelId = findBestModelId(results, unlockedModels);
+  const chargesAlert = results.validationErrors.find((e) => e.type === "charges_exceed_income");
 
   return (
-    <div className="overflow-x-auto w-full">
-      <table className="w-full border-collapse text-sm">
-        <thead>
-          <tr>
-            <th className="text-left py-2 px-3 text-text-secondary font-medium w-32" />
-            {MODEL_CONFIGS.map((config) => {
-              const isLocked = !unlockedModels.has(config.id);
-              const isBest = config.id === bestModelId;
-              const isSelected = config.id === selectedModel;
+    <div className="space-y-3 w-full">
+      {chargesAlert && (
+        <div
+          role="alert"
+          className="bg-accent-light border border-accent text-accent rounded-md px-4 py-2 text-sm"
+        >
+          {chargesAlert.message}
+        </div>
+      )}
+      <div className="overflow-x-auto w-full">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr>
+              <th className="text-left py-2 px-3 text-text-secondary font-medium w-32" />
+              {MODEL_CONFIGS.map((config) => {
+                const isLocked = !unlockedModels.has(config.id);
+                const isBest = config.id === bestModelId;
+                const isSelected = config.id === selectedModel;
 
-              return (
-                <th
-                  key={config.id}
-                  data-model={config.id}
-                  className={[
-                    "py-2 px-3 text-center font-semibold border rounded-t-md transition-colors",
-                    isLocked ? "opacity-40 cursor-not-allowed" : "cursor-pointer hover:bg-surface",
-                    isBest
-                      ? "ring-2 ring-accent border-accent text-accent"
-                      : "border-border text-text-secondary",
-                    isSelected && !isLocked ? "bg-surface" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() => {
-                    if (!isLocked) onModelSelect(config.id);
-                  }}
-                >
-                  <span>{config.shortLabel}</span>
-                  {isBest && !isLocked && <ModelBadge label="Meilleur" variant="best" />}
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {/* Row: model full label */}
-          <tr className="border-b border-border">
-            <td className="py-2 px-3 text-text-secondary text-xs">Modèle</td>
-            {MODEL_CONFIGS.map((config) => {
-              const isLocked = !unlockedModels.has(config.id);
-              const result = isLocked ? null : getModelResult(results, config.id);
+                return (
+                  <th
+                    key={config.id}
+                    data-model={config.id}
+                    className={[
+                      "py-2 px-3 text-center font-semibold border rounded-t-md transition-colors",
+                      isLocked
+                        ? "opacity-40 cursor-not-allowed"
+                        : "cursor-pointer hover:bg-surface",
+                      isBest
+                        ? "ring-2 ring-accent border-accent text-accent"
+                        : "border-border text-text-secondary",
+                      isSelected && !isLocked ? "bg-surface" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => {
+                      if (!isLocked) onModelSelect(config.id);
+                    }}
+                  >
+                    <span>{config.shortLabel}</span>
+                    {isBest && !isLocked && <ModelBadge label="Meilleur" variant="best" />}
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {/* Row: model full label */}
+            <tr className="border-b border-border">
+              <td className="py-2 px-3 text-text-secondary text-xs">Modèle</td>
+              {MODEL_CONFIGS.map((config) => {
+                const isLocked = !unlockedModels.has(config.id);
+                const result = isLocked ? null : getModelResult(results, config.id);
 
-              return (
-                <td
-                  key={config.id}
-                  className={[
-                    "py-2 px-3 text-center text-xs relative",
-                    isLocked ? "opacity-40" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                >
-                  {isLocked && config.tierRequired !== null ? (
-                    <div className="relative min-h-[2rem]">
-                      <LockedModelOverlay tierRequired={config.tierRequired} />
-                    </div>
-                  ) : (
-                    <>
-                      {result && !result.isViable && (
-                        <ModelBadge label="Non viable" variant="default" />
-                      )}
-                      <span className="text-text-secondary">{config.fullLabel}</span>
-                    </>
-                  )}
-                </td>
-              );
-            })}
-          </tr>
+                return (
+                  <td
+                    key={config.id}
+                    className={[
+                      "py-2 px-3 text-center text-xs relative",
+                      isLocked ? "opacity-40" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                  >
+                    {isLocked && config.tierRequired !== null ? (
+                      <div className="relative min-h-[2rem]">
+                        <LockedModelOverlay tierRequired={config.tierRequired} />
+                      </div>
+                    ) : (
+                      <>
+                        {result && !result.isViable && (
+                          <>
+                            <ModelBadge label="Non viable" variant="default" />
+                            {result.warnings.map((w, i) => (
+                              <p key={i} className="text-accent text-[10px] mt-1">
+                                {w}
+                              </p>
+                            ))}
+                          </>
+                        )}
+                        <span className="text-text-secondary">{config.fullLabel}</span>
+                      </>
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
 
-          {/* Row: P1 contribution */}
-          <tr className="border-b border-border">
-            <td className="py-2 px-3 text-text-secondary text-xs">Part {p1Name || "Personne 1"}</td>
-            {MODEL_CONFIGS.map((config) => {
-              const isLocked = !unlockedModels.has(config.id);
-              const result = isLocked ? null : getModelResult(results, config.id);
+            {/* Row: P1 contribution */}
+            <tr className="border-b border-border">
+              <td className="py-2 px-3 text-text-secondary text-xs">
+                Part {p1Name || "Personne 1"}
+              </td>
+              {MODEL_CONFIGS.map((config) => {
+                const isLocked = !unlockedModels.has(config.id);
+                const result = isLocked ? null : getModelResult(results, config.id);
 
-              return (
-                <td key={config.id} className="py-2 px-3 text-center text-xs">
-                  {result ? formatAmount(result.p1Contribution) : "—"}
-                </td>
-              );
-            })}
-          </tr>
+                return (
+                  <td key={config.id} className="py-2 px-3 text-center text-xs">
+                    {result ? formatAmount(result.p1Contribution) : "—"}
+                  </td>
+                );
+              })}
+            </tr>
 
-          {/* Row: P2 contribution */}
-          <tr className="border-b border-border">
-            <td className="py-2 px-3 text-text-secondary text-xs">Part {p2Name || "Personne 2"}</td>
-            {MODEL_CONFIGS.map((config) => {
-              const isLocked = !unlockedModels.has(config.id);
-              const result = isLocked ? null : getModelResult(results, config.id);
+            {/* Row: P2 contribution */}
+            <tr className="border-b border-border">
+              <td className="py-2 px-3 text-text-secondary text-xs">
+                Part {p2Name || "Personne 2"}
+              </td>
+              {MODEL_CONFIGS.map((config) => {
+                const isLocked = !unlockedModels.has(config.id);
+                const result = isLocked ? null : getModelResult(results, config.id);
 
-              return (
-                <td key={config.id} className="py-2 px-3 text-center text-xs">
-                  {result ? formatAmount(result.p2Contribution) : "—"}
-                </td>
-              );
-            })}
-          </tr>
+                return (
+                  <td key={config.id} className="py-2 px-3 text-center text-xs">
+                    {result ? formatAmount(result.p2Contribution) : "—"}
+                  </td>
+                );
+              })}
+            </tr>
 
-          {/* Row: P1 disposable income */}
-          <tr className="border-b border-border">
-            <td className="py-2 px-3 text-text-secondary text-xs">RAV {p1Name || "Personne 1"}</td>
-            {MODEL_CONFIGS.map((config) => {
-              const isLocked = !unlockedModels.has(config.id);
-              const result = isLocked ? null : getModelResult(results, config.id);
+            {/* Row: P1 disposable income */}
+            <tr className="border-b border-border">
+              <td className="py-2 px-3 text-text-secondary text-xs">
+                RAV {p1Name || "Personne 1"}
+              </td>
+              {MODEL_CONFIGS.map((config) => {
+                const isLocked = !unlockedModels.has(config.id);
+                const result = isLocked ? null : getModelResult(results, config.id);
 
-              return (
-                <td key={config.id} className="py-2 px-3 text-center text-xs">
-                  {result ? formatAmount(result.p1DisposableIncome) : "—"}
-                </td>
-              );
-            })}
-          </tr>
+                return (
+                  <td key={config.id} className="py-2 px-3 text-center text-xs">
+                    {result ? formatAmount(result.p1DisposableIncome) : "—"}
+                  </td>
+                );
+              })}
+            </tr>
 
-          {/* Row: P2 disposable income */}
-          <tr className="border-b border-border">
-            <td className="py-2 px-3 text-text-secondary text-xs">RAV {p2Name || "Personne 2"}</td>
-            {MODEL_CONFIGS.map((config) => {
-              const isLocked = !unlockedModels.has(config.id);
-              const result = isLocked ? null : getModelResult(results, config.id);
+            {/* Row: P2 disposable income */}
+            <tr className="border-b border-border">
+              <td className="py-2 px-3 text-text-secondary text-xs">
+                RAV {p2Name || "Personne 2"}
+              </td>
+              {MODEL_CONFIGS.map((config) => {
+                const isLocked = !unlockedModels.has(config.id);
+                const result = isLocked ? null : getModelResult(results, config.id);
 
-              return (
-                <td key={config.id} className="py-2 px-3 text-center text-xs">
-                  {result ? formatAmount(result.p2DisposableIncome) : "—"}
-                </td>
-              );
-            })}
-          </tr>
+                return (
+                  <td key={config.id} className="py-2 px-3 text-center text-xs">
+                    {result ? formatAmount(result.p2DisposableIncome) : "—"}
+                  </td>
+                );
+              })}
+            </tr>
 
-          {/* Row: equity score */}
-          <tr>
-            <td className="py-2 px-3 text-text-secondary text-xs">Score équité</td>
-            {MODEL_CONFIGS.map((config) => {
-              const isLocked = !unlockedModels.has(config.id);
-              const result = isLocked ? null : getModelResult(results, config.id);
+            {/* Row: equity score */}
+            <tr>
+              <td className="py-2 px-3 text-text-secondary text-xs">Score équité</td>
+              {MODEL_CONFIGS.map((config) => {
+                const isLocked = !unlockedModels.has(config.id);
+                const result = isLocked ? null : getModelResult(results, config.id);
 
-              return (
-                <td key={config.id} className="py-2 px-3 text-center text-xs">
-                  {result ? `${Math.round(result.equityScore * 100)}%` : "—"}
-                </td>
-              );
-            })}
-          </tr>
-        </tbody>
-      </table>
+                return (
+                  <td key={config.id} className="py-2 px-3 text-center text-xs">
+                    {result ? `${Math.round(result.equityScore * 100)}%` : "—"}
+                  </td>
+                );
+              })}
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

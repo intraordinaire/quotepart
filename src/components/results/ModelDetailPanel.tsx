@@ -61,6 +61,12 @@ export function ModelDetailPanel({
         </ul>
       </section>
 
+      {modelId === "m4_adjusted_time" && results.m4_adjusted_time.isSameAsM2 && (
+        <p className="text-sm text-text-secondary italic">
+          Avec des revenus à temps plein identiques, ce modèle est identique au M2.
+        </p>
+      )}
+
       {modelId === "m4_adjusted_time" && (
         <section className="model-detail-panel__m4">
           <div>
@@ -78,6 +84,12 @@ export function ModelDetailPanel({
             </p>
           </div>
         </section>
+      )}
+
+      {modelId === "m5_total_contribution" && results.m5_total_contribution.isSameAsM2 && (
+        <p className="text-sm text-text-secondary italic">
+          Avec une répartition équilibrée des tâches domestiques, ce modèle est identique au M2.
+        </p>
       )}
 
       {modelId === "m5_total_contribution" && (
