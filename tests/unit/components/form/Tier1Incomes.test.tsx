@@ -25,9 +25,12 @@ function makeState(
   };
 }
 
-function mockContext(mode: "full" | "shared" | null = "full"): void {
+function mockContext(
+  mode: "full" | "shared" | null = "full",
+  input: Partial<SimulationState["input"]> = {}
+): void {
   vi.mocked(useSimulationModule.useSimulation).mockReturnValue({
-    state: makeState(mode),
+    state: makeState(mode, input),
     dispatch: mockDispatch,
   });
 }
@@ -57,11 +60,74 @@ describe("Tier1Incomes", () => {
     expect(screen.getByText(/complétera/i)).toBeInTheDocument();
   });
 
-  it("Suivant button dispatches COMPLETE_TIER(1) and SET_TIER(2)", () => {
+  it("Suivant button dispatches COMPLETE_TIER(1) and SET_TIER(2) when incomes are filled", () => {
+    mockContext("full", {
+      p1: {
+        name: "",
+        income: 3000,
+        personalCharges: 0,
+        workQuota: 1,
+        fullTimeIncome: 3000,
+        partTimeReason: null,
+      },
+      p2: {
+        name: "",
+        income: 2000,
+        personalCharges: 0,
+        workQuota: 1,
+        fullTimeIncome: 2000,
+        partTimeReason: null,
+      },
+    });
     render(<Tier1Incomes />);
     fireEvent.click(screen.getByRole("button", { name: /suivant/i }));
     expect(dispatchSpy).toHaveBeenCalledWith({ type: "COMPLETE_TIER", payload: 1 });
     expect(dispatchSpy).toHaveBeenCalledWith({ type: "SET_TIER", payload: 2 });
+  });
+
+  it("Suivant does NOT dispatch when P1 income is missing", () => {
+    render(<Tier1Incomes />);
+    fireEvent.click(screen.getByRole("button", { name: /suivant/i }));
+    expect(dispatchSpy).not.toHaveBeenCalledWith({ type: "COMPLETE_TIER", payload: 1 });
+  });
+
+  it("shows P1 income error after failed submit attempt", () => {
+    render(<Tier1Incomes />);
+    fireEvent.click(screen.getByRole("button", { name: /suivant/i }));
+    expect(screen.getByText(/revenu.*personne 1.*requis/i)).toBeInTheDocument();
+  });
+
+  it("Suivant does NOT dispatch when P2 income is missing in full mode", () => {
+    mockContext("full", {
+      p1: {
+        name: "",
+        income: 3000,
+        personalCharges: 0,
+        workQuota: 1,
+        fullTimeIncome: 3000,
+        partTimeReason: null,
+      },
+    });
+    render(<Tier1Incomes />);
+    fireEvent.click(screen.getByRole("button", { name: /suivant/i }));
+    expect(dispatchSpy).not.toHaveBeenCalledWith({ type: "COMPLETE_TIER", payload: 1 });
+    expect(screen.getByText(/revenu.*personne 2.*requis/i)).toBeInTheDocument();
+  });
+
+  it("in shared mode, Suivant dispatches with only P1 income filled", () => {
+    mockContext("shared", {
+      p1: {
+        name: "",
+        income: 2500,
+        personalCharges: 0,
+        workQuota: 1,
+        fullTimeIncome: 2500,
+        partTimeReason: null,
+      },
+    });
+    render(<Tier1Incomes />);
+    fireEvent.click(screen.getByRole("button", { name: /suivant/i }));
+    expect(dispatchSpy).toHaveBeenCalledWith({ type: "COMPLETE_TIER", payload: 1 });
   });
 
   it("Retour button dispatches SET_TIER(0)", () => {

@@ -1,7 +1,18 @@
-import type { SimulationInput, ModelResult } from "../types";
+import type { SimulationInput, ModelResult, DomesticSliders } from "../types";
 import { computeEquityScore } from "../validators";
 import { computeDomesticValue, mergeDomesticSliders } from "../domestic";
 import { computeM2 } from "./m2-income-ratio";
+
+const DEFAULT_SLIDERS: DomesticSliders = {
+  groceries: 50,
+  cooking: 50,
+  cleaning: 50,
+  admin: 50,
+  childrenAppointments: 50,
+  schoolSupport: 50,
+  maintenance: 50,
+  planning: 50,
+};
 
 export interface M5Result {
   modelResult: ModelResult;
@@ -17,7 +28,10 @@ export interface M5Result {
 const SAME_AS_M2_THRESHOLD = 0.01;
 
 export function computeM5(input: SimulationInput): M5Result {
-  const mergedSliders = mergeDomesticSliders(input.domesticSliders.p1, input.domesticSliders.p2);
+  const mergedSliders = mergeDomesticSliders(
+    input.domesticSliders?.p1 ?? DEFAULT_SLIDERS,
+    input.domesticSliders?.p2
+  );
 
   const domestic = computeDomesticValue(mergedSliders, input.hasChildren, input.hourlyRate);
 

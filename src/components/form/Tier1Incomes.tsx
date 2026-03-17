@@ -12,6 +12,7 @@ export function Tier1Incomes(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
   const [placeholders] = useState<[string, string]>(() => randomPlaceholderPair());
   const [chargesMode, setChargesMode] = useState<"global" | "detail">("global");
+  const [attempted, setAttempted] = useState(false);
 
   const isShared = state.mode === "shared";
   const input = state.input;
@@ -32,7 +33,12 @@ export function Tier1Incomes(): React.JSX.Element {
     });
   }
 
+  const p1IncomeValid = (p1?.income ?? 0) > 0;
+  const p2IncomeValid = isShared || (p2?.income ?? 0) > 0;
+
   function handleSuivant(): void {
+    setAttempted(true);
+    if (!p1IncomeValid || !p2IncomeValid) return;
     dispatch({ type: "COMPLETE_TIER", payload: 1 });
     dispatch({ type: "SET_TIER", payload: 2 });
   }
@@ -65,15 +71,20 @@ export function Tier1Incomes(): React.JSX.Element {
           value={p2?.name ?? ""}
           onChange={(v) => updateP2({ name: v })}
         />
-        <FormField
-          id="p1-income"
-          label="Revenu net mensuel P1"
-          placeholder="3 200"
-          suffix="€"
-          numeric
-          value={p1?.income != null ? String(p1.income) : ""}
-          onChange={(v) => updateP1({ income: Number(v) || 0 })}
-        />
+        <div>
+          <FormField
+            id="p1-income"
+            label="Revenu net mensuel P1"
+            placeholder="3 200"
+            suffix="€"
+            numeric
+            value={p1?.income != null ? String(p1.income) : ""}
+            onChange={(v) => updateP1({ income: Number(v) || 0 })}
+          />
+          {attempted && !p1IncomeValid && (
+            <p className="text-accent text-xs mt-1">Le revenu de la personne 1 est requis.</p>
+          )}
+        </div>
         {isShared ? (
           <div>
             <label className="block text-xs font-medium text-text-secondary mb-1">
@@ -82,15 +93,20 @@ export function Tier1Incomes(): React.JSX.Element {
             <LockedField name={p2DisplayName} />
           </div>
         ) : (
-          <FormField
-            id="p2-income"
-            label="Revenu net mensuel P2"
-            placeholder="2 100"
-            suffix="€"
-            numeric
-            value={p2?.income != null ? String(p2.income) : ""}
-            onChange={(v) => updateP2({ income: Number(v) || 0 })}
-          />
+          <div>
+            <FormField
+              id="p2-income"
+              label="Revenu net mensuel P2"
+              placeholder="2 100"
+              suffix="€"
+              numeric
+              value={p2?.income != null ? String(p2.income) : ""}
+              onChange={(v) => updateP2({ income: Number(v) || 0 })}
+            />
+            {attempted && !p2IncomeValid && (
+              <p className="text-accent text-xs mt-1">Le revenu de la personne 2 est requis.</p>
+            )}
+          </div>
         )}
       </div>
 

@@ -9,6 +9,7 @@ import { Tier2PersonalCharges } from "@/components/form/Tier2PersonalCharges";
 import { Tier3WorkTime } from "@/components/form/Tier3WorkTime";
 import { Tier4Domestic } from "@/components/form/Tier4Domestic";
 import { TierNav } from "@/components/form/TierNav";
+import { ResultsShell } from "@/components/results/ResultsShell";
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
 
@@ -219,7 +220,7 @@ export default function SimulatePage(): React.JSX.Element {
               <TierContent activeTier={state.activeTier} />
             </div>
             <div role="tabpanel" id="panel-resultats" hidden={activeTab !== "resultats"}>
-              <div className="text-text-secondary">Résultats — coming soon</div>
+              <ResultsShell />
             </div>
             <div role="tabpanel" id="panel-etsi" hidden={activeTab !== "etsi"}>
               <div className="text-text-secondary">Et si... — coming soon</div>
