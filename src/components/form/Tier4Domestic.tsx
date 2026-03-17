@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useSimulation } from "@/context/useSimulation";
 import { SliderField } from "@/components/ui/SliderField";
 import { displayName } from "@/lib/names";
+import { getP2InviteLink } from "@/lib/shareLink";
 import type { DomesticCategory, DomesticSliders } from "@/domain/types";
 
 interface DomesticCategoryConfig {
@@ -50,6 +51,7 @@ export function Tier4Domestic(): React.JSX.Element {
   const p2Name = displayName(input.p2?.name ?? "", "Personne 2");
 
   const [sliders, setSliders] = useState<DomesticSliders>(DEFAULT_SLIDERS);
+  const [copied, setCopied] = useState(false);
 
   const visibleCategories = DOMESTIC_CATEGORIES.filter((cat) => !cat.childrenOnly || hasChildren);
 
@@ -73,6 +75,23 @@ export function Tier4Domestic(): React.JSX.Element {
 
   function handleComplete(): void {
     dispatch({ type: "COMPLETE_TIER", payload: 4 });
+    dispatch({ type: "SET_TAB", payload: "resultats" });
+  }
+
+  function handleCopyLink(): void {
+    dispatch({ type: "COMPLETE_TIER", payload: 4 });
+    const p1 = input.p1;
+    if (!p1) return;
+    const link = getP2InviteLink({
+      commonCharges: input.commonCharges ?? 0,
+      hasChildren: input.hasChildren ?? false,
+      hourlyRate: input.hourlyRate ?? 9.57,
+      p1: { name: p1.name },
+    });
+    void navigator.clipboard.writeText(link).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    });
   }
 
   return (
@@ -118,10 +137,10 @@ export function Tier4Domestic(): React.JSX.Element {
         {isShared ? (
           <button
             type="button"
-            onClick={handleComplete}
+            onClick={handleCopyLink}
             className="text-sm font-semibold px-7 py-3.5 bg-[#D4593A] text-white border-none rounded-lg cursor-pointer flex flex-col items-center gap-1"
           >
-            <span>Copier le lien pour {p2Name}</span>
+            {copied ? <span>Lien copié !</span> : <span>Copier le lien pour {p2Name}</span>}
             <span className="text-[11px] font-normal text-white/70">
               Elle complétera ses données et verra les résultats
             </span>
