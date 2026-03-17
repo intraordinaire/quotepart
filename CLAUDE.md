@@ -125,3 +125,9 @@ docs/
 - No `any` in TypeScript — enforced by ESLint (`@typescript-eslint/no-explicit-any: error`)
 - Coverage threshold: 80% on domain logic
 - Pre-commit: lint-staged + `tsc --noEmit`
+
+## Naming conventions
+
+- **Tests & domain code :** `P1` / `P2` — jamais de prénoms fictifs hardcodés
+- **Champs nom UI :** placeholder aléatoire paritaire (liste courte, tirage à chaque session) — voir `src/lib/names.ts`
+- **Fallback d'affichage :** si nom vide → `"Personne 1"` / `"Personne 2"`, jamais le placeholder
