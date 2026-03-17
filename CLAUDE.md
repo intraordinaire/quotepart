@@ -12,7 +12,7 @@ Full product spec: `quotepart-cadrage-v03.md`
 
 ## Current State
 
-**Phase: Form / State (Plan 03)**
+**Phase: Results (Plan 04)**
 
 Reference files:
 
@@ -27,7 +27,7 @@ Plans are in `docs/plans/` — execute in order:
 | --------------------------- | -------------------------------------------------- | ----------- |
 | 01 — Bootstrap              | `docs/plans/2026-03-17-01-bootstrap.md`            | ✅ Complete |
 | 02 — Domain Core            | `docs/plans/2026-03-17-02-domain-core.md`          | ✅ Complete |
-| 03 — Form / State           | `docs/plans/2026-03-17-03-form-state.md`           | 📋 Draft    |
+| 03 — Form / State           | `docs/plans/2026-03-17-03-form-state.md`           | ✅ Complete |
 | 04 — Results                | `docs/plans/2026-03-17-04-results.md`              | 📋 Draft    |
 | 05 — URL encoding / P2 flow | `docs/plans/2026-03-17-05-url-encoding-p2-flow.md` | 📋 Draft    |
 | 06 — Et si...               | `docs/plans/2026-03-17-06-whatif.md`               | 📋 Draft    |
@@ -105,18 +105,38 @@ No server-side storage → no GDPR processing obligation. No third-party cookies
 
 ```
 src/
-  app/        — Next.js routes and layouts
-  components/ — React UI components (no business logic)
-  domain/     — Pure functions (equity models, URL encoding)
-    types.ts  — Shared TypeScript interfaces
-  hooks/      — Custom React hooks
-  lib/        — Shared utilities
+  app/
+    page.tsx              — Homepage → /simulate
+    simulate/
+      layout.tsx          — Wraps SimulationProvider
+      page.tsx            — Shell: header + tab nav + TierNav + tier content
+  components/
+    form/
+      ModeChoice.tsx      — Mode selector (full / shared)
+      TierNav.tsx         — Sidebar progress + tier navigation
+      Tier1Incomes.tsx    — Names, incomes, common charges
+      Tier2PersonalCharges.tsx
+      Tier3WorkTime.tsx   — Work quota, part-time handling
+      Tier4Domestic.tsx   — 8 domestic sliders
+      LockedField.tsx     — P2 placeholder in shared mode
+    ui/
+      FormField.tsx       — Labeled input with suffix
+      SelectField.tsx     — Labeled select
+      SliderField.tsx     — Range slider with P1/P2 labels
+      PillToggle.tsx      — Pill-style toggle button
+  context/
+    SimulationContext.tsx — SimulationState, reducer, getUnlockedModels, SimulationProvider
+    useSimulation.ts      — Hook with provider guard
+  domain/                 — Pure functions (equity models)
+    types.ts              — Shared TypeScript interfaces
+  lib/
+    names.ts              — randomPlaceholderPair, displayName
 tests/
-  unit/       — Vitest (mirrors src/domain/ and src/components/)
-  e2e/        — Playwright
+  unit/                   — Vitest (mirrors src/)
+  e2e/                    — Playwright (form-flow.spec.ts)
 docs/
-  plans/      — Implementation plans
-  reference/  — Original prototype and spec references
+  plans/                  — Implementation plans
+  reference/              — Original prototype and spec references
 ```
 
 ## Development conventions
@@ -125,6 +145,8 @@ docs/
 - No `any` in TypeScript — enforced by ESLint (`@typescript-eslint/no-explicit-any: error`)
 - Coverage threshold: 80% on domain logic
 - Pre-commit: lint-staged + `tsc --noEmit`
+- All client components need `"use client"` directive (Next.js App Router)
+- IDE diagnostics `Cannot find module '@/...'` are false positives from the TS language server — `tsc --noEmit` is the source of truth
 
 ## Naming conventions
 
