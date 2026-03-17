@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useReducer, type ReactNode } from "react";
+import React, { createContext, useEffect, useReducer, type ReactNode } from "react";
+import { saveState, loadState } from "@/lib/persistState";
 import type { SimulationInput, ModelId } from "@/domain/types";
 
 // ─── State ─────────────────────────────────────────────────────────────────
@@ -102,7 +103,16 @@ interface SimulationProviderProps {
 }
 
 export function SimulationProvider({ children }: SimulationProviderProps): React.JSX.Element {
-  const [state, dispatch] = useReducer(simulationReducer, initialState);
+  const [state, dispatch] = useReducer(
+    simulationReducer,
+    undefined,
+    () => loadState() ?? initialState
+  );
+
+  // Persist state to localStorage on every change
+  useEffect(() => {
+    saveState(state);
+  }, [state]);
 
   return (
     <SimulationContext.Provider value={{ state, dispatch }}>{children}</SimulationContext.Provider>
