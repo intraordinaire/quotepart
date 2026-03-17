@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
 
 # next.js
 /.next/
@@ -36,6 +38,44 @@ yarn-error.log*
 # vercel
 .vercel
 
+# netlify
+.netlify
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# editors — JetBrains (WebStorm, IntelliJ…)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# editors — VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# editors — Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# editors — Vim / Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+
+# editors — Emacs
+\#*\#
+.\#*
+
+# OS — macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# OS — Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
