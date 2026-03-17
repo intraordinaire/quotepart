@@ -12,7 +12,7 @@ Full product spec: `quotepart-cadrage-v03.md`
 
 ## Current State
 
-**Phase: Bootstrap + Domain Core (not yet scaffolded)**
+**Phase: Domain Core**
 
 Reference files:
 
@@ -25,7 +25,7 @@ Plans are in `docs/plans/` — execute in order:
 
 | Plan                        | File                                               | Status         |
 | --------------------------- | -------------------------------------------------- | -------------- |
-| 01 — Bootstrap              | `docs/plans/2026-03-17-01-bootstrap.md`            | 🔲 Not started |
+| 01 — Bootstrap              | `docs/plans/2026-03-17-01-bootstrap.md`            | ✅ Complete    |
 | 02 — Domain Core            | `docs/plans/2026-03-17-02-domain-core.md`          | 🔲 Not started |
 | 03 — Form / State           | `docs/plans/2026-03-17-03-form-state.md`           | 📋 Draft       |
 | 04 — Results                | `docs/plans/2026-03-17-04-results.md`              | 📋 Draft       |
@@ -92,3 +92,36 @@ Free-form parameter editing from the results screen. All 4 tiers pre-filled with
 ## RGPD
 
 No server-side storage → no GDPR processing obligation. No third-party cookies. Mention "Vos données restent sur votre appareil" prominently.
+
+## Stack (implemented)
+
+- **Framework**: Next.js 16 (App Router), TypeScript strict mode, Node 24 (`.nvmrc`)
+- **Styling**: Tailwind CSS v4
+- **Tests**: Vitest 4 + Testing Library (unit/integration) · Playwright (e2e)
+- **CI**: GitHub Actions — lint → typecheck → unit → e2e
+- **Pre-commit**: Husky + lint-staged (eslint --fix + prettier on staged files, tsc --noEmit)
+
+## Directory structure
+
+```
+src/
+  app/        — Next.js routes and layouts
+  components/ — React UI components (no business logic)
+  domain/     — Pure functions (equity models, URL encoding)
+    types.ts  — Shared TypeScript interfaces
+  hooks/      — Custom React hooks
+  lib/        — Shared utilities
+tests/
+  unit/       — Vitest (mirrors src/domain/ and src/components/)
+  e2e/        — Playwright
+docs/
+  plans/      — Implementation plans
+  reference/  — Original prototype and spec references
+```
+
+## Development conventions
+
+- All `src/domain/` code is TDD: test first, then implement
+- No `any` in TypeScript — enforced by ESLint (`@typescript-eslint/no-explicit-any: error`)
+- Coverage threshold: 80% on domain logic
+- Pre-commit: lint-staged + `tsc --noEmit`
