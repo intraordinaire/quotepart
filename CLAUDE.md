@@ -148,6 +148,7 @@ docs/
 - Pre-commit: lint-staged + `tsc --noEmit`
 - All client components need `"use client"` directive (Next.js App Router)
 - IDE diagnostics `Cannot find module '@/...'` are false positives from the TS language server — `tsc --noEmit` is the source of truth
+- `FormField` accepts a `numeric` prop (boolean) for monetary inputs — activates `inputMode="numeric"` + `pattern` on mobile
 
 ## Naming conventions
 
