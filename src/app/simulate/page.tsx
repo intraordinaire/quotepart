@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useSimulation } from "@/context/useSimulation";
+import type { TabId } from "@/context/SimulationContext";
 import { ModeChoice } from "@/components/form/ModeChoice";
 import { Tier1Incomes } from "@/components/form/Tier1Incomes";
 import { Tier2PersonalCharges } from "@/components/form/Tier2PersonalCharges";
@@ -111,13 +112,15 @@ function TierContent({ activeTier }: { activeTier: 0 | 1 | 2 | 3 | 4 }): React.J
 
 // ─── Page ──────────────────────────────────────────────────────────────────
 
-type TabId = "saisie" | "resultats" | "etsi";
-
 export default function SimulatePage(): React.JSX.Element {
-  const { state } = useSimulation();
-  const [activeTab, setActiveTab] = useState<TabId>("saisie");
+  const { state, dispatch } = useSimulation();
 
+  const activeTab: TabId = state.activeTab;
   const tier1Complete = state.completedTiers.has(1);
+
+  function setActiveTab(tab: TabId): void {
+    dispatch({ type: "SET_TAB", payload: tab });
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FAFAF8]">

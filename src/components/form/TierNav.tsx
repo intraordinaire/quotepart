@@ -56,6 +56,7 @@ export function TierNav(): React.JSX.Element {
             onClick={(): void => {
               if (!isLocked) {
                 dispatch({ type: "SET_TIER", payload: tier.n });
+                dispatch({ type: "SET_TAB", payload: "saisie" });
               }
             }}
             className={[

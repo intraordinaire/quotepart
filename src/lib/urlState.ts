@@ -18,6 +18,7 @@ export function encodeState(input: SimulationInput): string {
 export function decodeState(encoded: string): SimulationInput | null {
   if (!encoded) return null;
   try {
+    // Restore standard base64 padding
     const base64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
     const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
     const json = atob(padded);

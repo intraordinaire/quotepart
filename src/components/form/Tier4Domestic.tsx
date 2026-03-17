@@ -5,7 +5,7 @@ import { useSimulation } from "@/context/useSimulation";
 import { SliderField } from "@/components/ui/SliderField";
 import { displayName } from "@/lib/names";
 import { getP2InviteLink } from "@/lib/shareLink";
-import type { DomesticCategory, DomesticSliders } from "@/domain/types";
+import type { DomesticCategory, DomesticSliders, SimulationInput } from "@/domain/types";
 
 interface DomesticCategoryConfig {
   key: DomesticCategory;
@@ -80,14 +80,9 @@ export function Tier4Domestic(): React.JSX.Element {
 
   function handleCopyLink(): void {
     dispatch({ type: "COMPLETE_TIER", payload: 4 });
-    const p1 = input.p1;
-    if (!p1) return;
-    const link = getP2InviteLink({
-      commonCharges: input.commonCharges ?? 0,
-      hasChildren: input.hasChildren ?? false,
-      hourlyRate: input.hourlyRate ?? 9.57,
-      p1: { name: p1.name },
-    });
+    if (!input.p1) return;
+    // state.input is Partial<SimulationInput>; by Tier 4 all required fields are set
+    const link = getP2InviteLink(input as SimulationInput);
     void navigator.clipboard.writeText(link).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);

@@ -13,20 +13,57 @@ import { PerceptionConfrontation } from "./PerceptionConfrontation";
 import { displayName } from "@/lib/names";
 import type { DomesticSliders } from "@/domain/types";
 
+const DEFAULT_SLIDERS: DomesticSliders = {
+  groceries: 50,
+  cooking: 50,
+  cleaning: 50,
+  admin: 50,
+  childrenAppointments: 50,
+  schoolSupport: 50,
+  maintenance: 50,
+  planning: 50,
+};
+
 export function ResultsShell(): React.JSX.Element {
-  const { state } = useSimulation();
+  const { state, dispatch } = useSimulation();
   const [selectedModel, setSelectedModel] = useState<ModelId | null>(null);
 
-  const input = state.input as SimulationInput;
+  const rawInput = state.input;
   const unlockedModels = getUnlockedModels(state);
 
-  if (!state.completedTiers.has(1) || !input.p1 || !input.p2) {
+  if (!state.completedTiers.has(1) || !rawInput.p1 || !rawInput.p2) {
     return (
       <div className="text-text-secondary text-sm py-8 text-center">
         Complétez le palier 1 pour voir vos résultats.
       </div>
     );
   }
+
+  const p1 = rawInput.p1;
+  const p2 = rawInput.p2;
+
+  const input: SimulationInput = {
+    p1: {
+      name: p1.name ?? "",
+      income: p1.income ?? 0,
+      personalCharges: p1.personalCharges ?? 0,
+      workQuota: p1.workQuota ?? 1.0,
+      fullTimeIncome: p1.fullTimeIncome ?? p1.income ?? 0,
+      partTimeReason: p1.partTimeReason ?? null,
+    },
+    p2: {
+      name: p2.name ?? "",
+      income: p2.income ?? 0,
+      personalCharges: p2.personalCharges ?? 0,
+      workQuota: p2.workQuota ?? 1.0,
+      fullTimeIncome: p2.fullTimeIncome ?? p2.income ?? 0,
+      partTimeReason: p2.partTimeReason ?? null,
+    },
+    commonCharges: rawInput.commonCharges ?? 0,
+    hasChildren: rawInput.hasChildren ?? false,
+    domesticSliders: rawInput.domesticSliders ?? { p1: DEFAULT_SLIDERS },
+    hourlyRate: rawInput.hourlyRate ?? 9.57,
+  };
 
   const results = calculate(input);
   const p1Name = displayName(input.p1?.name ?? "", "Personne 1");
@@ -95,12 +132,13 @@ export function ResultsShell(): React.JSX.Element {
 
       {/* Et si... CTA */}
       <div className="pt-4 border-t border-border flex justify-end">
-        <a
-          href="/simulate/whatif"
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "SET_TAB", payload: "etsi" })}
           className="inline-flex items-center gap-2 bg-text text-bg px-5 py-2.5 rounded-md text-sm font-medium transition-colors hover:opacity-80"
         >
           Et si... explorer des scénarios
-        </a>
+        </button>
       </div>
     </div>
   );

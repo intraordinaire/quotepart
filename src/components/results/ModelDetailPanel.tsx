@@ -27,93 +27,129 @@ export function ModelDetailPanel({
   const content = MODEL_CONTENT[modelId];
 
   return (
-    <div className="model-detail-panel">
-      <div className="model-detail-panel__header">
-        <h2>{content.label}</h2>
-        <button type="button" aria-label="Fermer" onClick={onClose}>
+    <div className="bg-bg border border-border rounded-xl p-6 space-y-4">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <h2 className="font-display text-xl font-normal">{content.label}</h2>
+        <button
+          type="button"
+          aria-label="Fermer"
+          onClick={onClose}
+          className="text-text-secondary hover:text-text transition-colors text-lg leading-none shrink-0 mt-0.5"
+        >
           ✕
         </button>
       </div>
 
-      <section className="model-detail-panel__formula">
-        <p>{content.formula}</p>
-      </section>
+      {/* Formula */}
+      <div className="bg-bg-elevated border border-border rounded-lg px-4 py-3">
+        <p className="text-sm font-mono text-text-secondary">{content.formula}</p>
+      </div>
 
-      <section className="model-detail-panel__philosophy">
-        <p>{content.philosophy}</p>
-      </section>
+      {/* Philosophy */}
+      <p className="text-sm text-text-secondary leading-relaxed">{content.philosophy}</p>
 
-      <section className="model-detail-panel__advantages">
-        <h3>Avantages</h3>
-        <ul>
+      {/* Advantages */}
+      <div>
+        <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-2">
+          Avantages
+        </h3>
+        <ul className="space-y-1">
           {content.advantages.map((adv) => (
-            <li key={adv}>{adv}</li>
+            <li key={adv} className="text-sm flex gap-2">
+              <span className="text-green shrink-0">+</span>
+              {adv}
+            </li>
           ))}
         </ul>
-      </section>
+      </div>
 
-      <section className="model-detail-panel__limitations">
-        <h3>Limites</h3>
-        <ul>
+      {/* Limitations */}
+      <div>
+        <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-2">
+          Limites
+        </h3>
+        <ul className="space-y-1">
           {content.limitations.map((lim) => (
-            <li key={lim}>{lim}</li>
+            <li key={lim} className="text-sm flex gap-2">
+              <span className="text-accent shrink-0">–</span>
+              {lim}
+            </li>
           ))}
         </ul>
-      </section>
+      </div>
 
+      {/* M4 note */}
       {modelId === "m4_adjusted_time" && results.m4_adjusted_time.isSameAsM2 && (
         <p className="text-sm text-text-secondary italic">
           Avec des revenus à temps plein identiques, ce modèle est identique au M2.
         </p>
       )}
 
+      {/* M4 options */}
       {modelId === "m4_adjusted_time" && (
-        <section className="model-detail-panel__m4">
-          <div>
-            <h3>Option A (revenus réels)</h3>
-            <p>
-              P1 : {formatMoney(results.m4_adjusted_time.optionA.p1Contribution)} — P2 :{" "}
-              {formatMoney(results.m4_adjusted_time.optionA.p2Contribution)}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-bg-elevated border border-border rounded-lg px-4 py-3">
+            <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-2">
+              Option A — revenus réels
+            </h3>
+            <p className="text-sm">
+              P1&nbsp;: {formatMoney(results.m4_adjusted_time.optionA.p1Contribution)}
+              {" — "}
+              P2&nbsp;: {formatMoney(results.m4_adjusted_time.optionA.p2Contribution)}
             </p>
           </div>
-          <div>
-            <h3>Option B (temps plein théorique)</h3>
-            <p>
-              P1 : {formatMoney(results.m4_adjusted_time.optionB.p1Contribution)} — P2 :{" "}
-              {formatMoney(results.m4_adjusted_time.optionB.p2Contribution)}
+          <div className="bg-bg-elevated border border-border rounded-lg px-4 py-3">
+            <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-2">
+              Option B — temps plein théorique
+            </h3>
+            <p className="text-sm">
+              P1&nbsp;: {formatMoney(results.m4_adjusted_time.optionB.p1Contribution)}
+              {" — "}
+              P2&nbsp;: {formatMoney(results.m4_adjusted_time.optionB.p2Contribution)}
             </p>
           </div>
-        </section>
+        </div>
       )}
 
+      {/* M5 note */}
       {modelId === "m5_total_contribution" && results.m5_total_contribution.isSameAsM2 && (
         <p className="text-sm text-text-secondary italic">
           Avec une répartition équilibrée des tâches domestiques, ce modèle est identique au M2.
         </p>
       )}
 
+      {/* M5 domestic breakdown */}
       {modelId === "m5_total_contribution" && (
-        <section className="model-detail-panel__m5">
-          <h3>Valeur du travail domestique</h3>
-          <table>
+        <div>
+          <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-2">
+            Valeur du travail domestique
+          </h3>
+          <table className="w-full text-sm border-collapse">
             <thead>
-              <tr>
-                <th>Personne</th>
-                <th>Valeur mensuelle</th>
+              <tr className="border-b border-border">
+                <th className="text-left py-1.5 font-medium text-text-secondary">Personne</th>
+                <th className="text-right py-1.5 font-medium text-text-secondary">
+                  Valeur mensuelle
+                </th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>P1</td>
-                <td>{formatMoney(results.m5_total_contribution.p1DomesticMonthlyValue)}</td>
+              <tr className="border-b border-border">
+                <td className="py-1.5">P1</td>
+                <td className="py-1.5 text-right">
+                  {formatMoney(results.m5_total_contribution.p1DomesticMonthlyValue)}
+                </td>
               </tr>
               <tr>
-                <td>P2</td>
-                <td>{formatMoney(results.m5_total_contribution.p2DomesticMonthlyValue)}</td>
+                <td className="py-1.5">P2</td>
+                <td className="py-1.5 text-right">
+                  {formatMoney(results.m5_total_contribution.p2DomesticMonthlyValue)}
+                </td>
               </tr>
             </tbody>
           </table>
-        </section>
+        </div>
       )}
     </div>
   );
