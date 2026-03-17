@@ -50,12 +50,16 @@ tests/e2e/
 
   describe("urlState", () => {
     it("round-trips a full SimulationInput", () => {
-      const input = { /* full SimulationInput */ };
+      const input = {
+        /* full SimulationInput */
+      };
       expect(decodeState(encodeState(input))).toEqual(input);
     });
 
     it("produces a URL-safe string (no +, /, = not encoded)", () => {
-      const encoded = encodeState({ /* minimal input */ });
+      const encoded = encodeState({
+        /* minimal input */
+      });
       expect(encoded).toMatch(/^[A-Za-z0-9_-]+$/); // URL-safe base64
     });
 
@@ -98,7 +102,7 @@ tests/e2e/
   ```
 
   > Security note: P1 personal data IS technically in the URL if P1 shares their own full link.
-  > The P2 *invite* link only contains shared data. Document this assumption clearly.
+  > The P2 _invite_ link only contains shared data. Document this assumption clearly.
 
 - [ ] **Step 2: Implement**
 - [ ] **Step 3: Run tests**
@@ -192,8 +196,8 @@ tests/e2e/
 
 ## Plan Status
 
-| Date | Status | Notes |
-|------|--------|-------|
+| Date       | Status   | Notes                                                                          |
+| ---------- | -------- | ------------------------------------------------------------------------------ |
 | 2026-03-17 | 📋 Draft | Security assumption documented: soft privacy, not cryptographic (v1.1 concern) |
 
 ---
@@ -201,5 +205,5 @@ tests/e2e/
 ## Divergences from Spec / Plan
 
 | Decision | Plan says | Actual | Reason |
-|----------|-----------|--------|--------|
-| — | — | — | — |
+| -------- | --------- | ------ | ------ |
+| —        | —         | —      | —      |

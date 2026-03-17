@@ -1,7 +1,7 @@
 ﻿# QuotePart — Document de cadrage produit v0.3
 
-> *Simulateur d'équité financière pour couples et foyers*
-> *"Pas une calculette. Un outil de dialogue."*
+> _Simulateur d'équité financière pour couples et foyers_
+> _"Pas une calculette. Un outil de dialogue."_
 
 ---
 
@@ -19,12 +19,12 @@ QuotePart est un **simulateur comparatif** qui présente côte à côte plusieur
 
 ### Ce que c'est / Ce que ce n'est pas
 
-| QuotePart EST | QuotePart N'EST PAS |
-|---|---|
-| Un simulateur de scénarios | Une app de suivi de dépenses au quotidien |
-| Un outil de dialogue pour le couple | Un juge qui dit quel modèle est "le bon" |
-| Un comparateur de modèles d'équité | Un outil de comptabilité ou de budget |
-| Un déclencheur de conversation | Un substitut au conseil juridique/financier |
+| QuotePart EST                       | QuotePart N'EST PAS                         |
+| ----------------------------------- | ------------------------------------------- |
+| Un simulateur de scénarios          | Une app de suivi de dépenses au quotidien   |
+| Un outil de dialogue pour le couple | Un juge qui dit quel modèle est "le bon"    |
+| Un comparateur de modèles d'équité  | Un outil de comptabilité ou de budget       |
+| Un déclencheur de conversation      | Un substitut au conseil juridique/financier |
 
 ### Tone of voice
 
@@ -103,17 +103,18 @@ Bienveillant, factuel, non moralisateur. On montre les chiffres, on n'impose rie
 
 **Objectif** : faire gouter la valeur en 3 minutes, inciter au partage.
 
-| Etape | Ecran | Contenu | Notes UX |
-|-------|-------|---------|----------|
-| A1 | Landing | Accroche + CTA "Simuler maintenant" | Pas de signup requis |
-| A2 | Saisie palier 1 | Revenus P1 & P2 + charges communes | Formulaire minimal, exemples pré-remplis |
-| A3 | Saisie palier 2 | Charges perso (optionnel, déplié au clic) | Peut être sauté |
-| A4 | Saisie palier 3 | Temps de travail, quotité (optionnel) | Peut être sauté |
-| A5 | Saisie palier 4 | Charge domestique — curseurs (optionnel) | Rempli par P1 seul en mode solo |
-| A6 | Résultats | 5 modèles côte à côte | Modèles 4-5 grisés si paliers non remplis |
-| A7 | CTA partage | "Envoyez ce lien à votre partenaire" | Le lien contient les données encodées |
+| Etape | Ecran           | Contenu                                   | Notes UX                                  |
+| ----- | --------------- | ----------------------------------------- | ----------------------------------------- |
+| A1    | Landing         | Accroche + CTA "Simuler maintenant"       | Pas de signup requis                      |
+| A2    | Saisie palier 1 | Revenus P1 & P2 + charges communes        | Formulaire minimal, exemples pré-remplis  |
+| A3    | Saisie palier 2 | Charges perso (optionnel, déplié au clic) | Peut être sauté                           |
+| A4    | Saisie palier 3 | Temps de travail, quotité (optionnel)     | Peut être sauté                           |
+| A5    | Saisie palier 4 | Charge domestique — curseurs (optionnel)  | Rempli par P1 seul en mode solo           |
+| A6    | Résultats       | 5 modèles côte à côte                     | Modèles 4-5 grisés si paliers non remplis |
+| A7    | CTA partage     | "Envoyez ce lien à votre partenaire"      | Le lien contient les données encodées     |
 
 **Règles** :
+
 - Zéro création de compte
 - Données encodées dans l'URL (pas de stockage serveur)
 - Les paliers 2/3/4 sont dépliables mais pas obligatoires
@@ -124,15 +125,16 @@ Bienveillant, factuel, non moralisateur. On montre les chiffres, on n'impose rie
 
 **Objectif** : les deux partenaires saisissent leurs données, résultats enrichis.
 
-| Etape | Ecran | Contenu | Notes UX |
-|-------|-------|---------|----------|
-| B1 | Initiation | P1 remplit les paliers 1 à 4 (son côté) | Même flow que le mode solo |
-| B2 | Partage | Génération d'un lien à envoyer à P2 | Le lien contient les données communes (charges) mais PAS les données perso de P1 |
-| B3 | Saisie P2 | P2 ouvre le lien, voit les charges pré-remplies, saisit ses données perso (revenus, charges perso, temps de travail) ET ses propres curseurs domestiques (sa perception) | P2 ne voit PAS les revenus/données/curseurs de P1 avant validation |
-| B4 | Résultats | Dashboard complet avec les vraies données des deux + confrontation des perceptions domestiques | Les deux voient tout, y compris les écarts de perception |
-| B5 | Scénarios | Simulateur "Et si..." | Accessible depuis les résultats |
+| Etape | Ecran      | Contenu                                                                                                                                                                  | Notes UX                                                                         |
+| ----- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| B1    | Initiation | P1 remplit les paliers 1 à 4 (son côté)                                                                                                                                  | Même flow que le mode solo                                                       |
+| B2    | Partage    | Génération d'un lien à envoyer à P2                                                                                                                                      | Le lien contient les données communes (charges) mais PAS les données perso de P1 |
+| B3    | Saisie P2  | P2 ouvre le lien, voit les charges pré-remplies, saisit ses données perso (revenus, charges perso, temps de travail) ET ses propres curseurs domestiques (sa perception) | P2 ne voit PAS les revenus/données/curseurs de P1 avant validation               |
+| B4    | Résultats  | Dashboard complet avec les vraies données des deux + confrontation des perceptions domestiques                                                                           | Les deux voient tout, y compris les écarts de perception                         |
+| B5    | Scénarios  | Simulateur "Et si..."                                                                                                                                                    | Accessible depuis les résultats                                                  |
 
 **Mécanisme technique (sans backend)** :
+
 - P1 saisit tout -> les données sont encodées dans un lien (base64 ou similar)
 - Le lien contient : charges communes + données P1 chiffrées
 - P2 ouvre le lien, saisit ses propres données
@@ -145,11 +147,11 @@ Bienveillant, factuel, non moralisateur. On montre les chiffres, on n'impose rie
 
 Accessible depuis l'écran de résultats (modes solo et couple).
 
-| Etape | Action | Résultat |
-|-------|--------|---------|
-| C1 | Clic sur "Et si..." | Le formulaire des 4 paliers s'affiche, pré-rempli avec les valeurs actuelles |
-| C2 | Modification libre de n'importe quel paramètre | Recalcul temps réel des 5 modèles |
-| C3 | Comparaison | Vue avant/après côte à côte, deltas mis en évidence |
+| Etape | Action                                         | Résultat                                                                     |
+| ----- | ---------------------------------------------- | ---------------------------------------------------------------------------- |
+| C1    | Clic sur "Et si..."                            | Le formulaire des 4 paliers s'affiche, pré-rempli avec les valeurs actuelles |
+| C2    | Modification libre de n'importe quel paramètre | Recalcul temps réel des 5 modèles                                            |
+| C3    | Comparaison                                    | Vue avant/après côte à côte, deltas mis en évidence                          |
 
 ---
 
@@ -212,16 +214,16 @@ L'utilisateur peut soit saisir un montant global, soit détailler par catégorie
 
 8 catégories, chacune un curseur visuel.
 
-| Catégorie | Libellé affiché | Heures/semaine référence INSEE |
-|-----------|----------------|-------------------------------|
-| Courses | "Qui fait les courses ?" | 3h |
-| Cuisine | "Qui prépare les repas ?" | 7h |
-| Ménage & linge | "Qui s'occupe du ménage et du linge ?" | 6h |
-| Admin & paperasse | "Qui gère la paperasse (factures, impôts, banque) ?" | 2h |
-| RDV enfants | "Qui gère les RDV (médecin, école, activités) ?" | 2h |
-| Accompagnement scolaire | "Qui aide aux devoirs, gère le quotidien scolaire ?" | 3h |
-| Bricolage & entretien | "Qui s'occupe de l'entretien (maison, voiture, jardin) ?" | 2h |
-| Organisation & planification | "Qui anticipe, organise, planifie le quotidien ?" | 3h |
+| Catégorie                    | Libellé affiché                                           | Heures/semaine référence INSEE |
+| ---------------------------- | --------------------------------------------------------- | ------------------------------ |
+| Courses                      | "Qui fait les courses ?"                                  | 3h                             |
+| Cuisine                      | "Qui prépare les repas ?"                                 | 7h                             |
+| Ménage & linge               | "Qui s'occupe du ménage et du linge ?"                    | 6h                             |
+| Admin & paperasse            | "Qui gère la paperasse (factures, impôts, banque) ?"      | 2h                             |
+| RDV enfants                  | "Qui gère les RDV (médecin, école, activités) ?"          | 2h                             |
+| Accompagnement scolaire      | "Qui aide aux devoirs, gère le quotidien scolaire ?"      | 3h                             |
+| Bricolage & entretien        | "Qui s'occupe de l'entretien (maison, voiture, jardin) ?" | 2h                             |
+| Organisation & planification | "Qui anticipe, organise, planifie le quotidien ?"         | 3h                             |
 
 **Format du curseur** :
 
@@ -237,6 +239,7 @@ Position par défaut : 50%. Le curseur renvoie un pourcentage (0-100) représent
 **En mode solo** : P1 remplit seul les curseurs (sa perception). Disclaimer affiché : "Ces estimations reflètent la perception d'une seule personne. Pour un résultat plus juste, partagez la simulation." Le modèle 5 est calculé sur la base des curseurs de P1 uniquement.
 
 **En mode couple** : P1 remplit ses curseurs, qui sont encodés dans le lien partagé. Quand P2 ouvre le lien, P2 remplit **ses propres curseurs** (sa propre perception). À l'étape résultats, les deux jeux de curseurs sont disponibles. On affiche alors :
+
 - La perception de P1 pour chaque catégorie
 - La perception de P2 pour chaque catégorie
 - L'écart de perception (en points)
@@ -253,12 +256,14 @@ Ce mécanisme fonctionne dès le MVP grâce à l'encodage dans l'URL (les curseu
 **Palier requis** : 1
 
 **Calcul** :
+
 ```
 Contribution P1 = Total charges / 2
 Contribution P2 = Total charges / 2
 ```
 
 **Indicateurs affichés** :
+
 - Montant payé par chacun
 - % du revenu que cela représente pour chacun
 - Reste à vivre : Revenu - Contribution
@@ -273,6 +278,7 @@ Contribution P2 = Total charges / 2
 **Palier requis** : 1
 
 **Calcul** :
+
 ```
 Ratio P1 = Revenu_P1 / (Revenu_P1 + Revenu_P2)
 Contribution P1 = Total charges x Ratio P1
@@ -290,6 +296,7 @@ Contribution P2 = Total charges x (1 - Ratio P1)
 **Palier requis** : 2
 
 **Calcul** :
+
 ```
 Disponible P1 = Revenu P1 - Charges perso P1
 Disponible P2 = Revenu P2 - Charges perso P2
@@ -309,6 +316,7 @@ Reste à vivre P2 = Disponible P2 - Contribution P2
 **Quand c'est pertinent** : quand un des deux a des charges contraintes significatives (prêt étudiant, transport coûteux...).
 
 **Edge case** :
+
 - Si Disponible d'un des deux est négatif : afficher une alerte "Les charges personnelles de [Prénom] dépassent son revenu. Ce modèle ne peut pas s'appliquer tel quel — une discussion sur la mutualisation de certaines charges est recommandée."
 
 ---
@@ -332,6 +340,7 @@ Option B — "Sur revenus théoriques temps plein" :
 ```
 
 **Indicateurs affichés** :
+
 - Les deux sous-options côte à côte
 - Le "coût du temps partiel" : différence de contribution entre option A et B
 - Formulation : "Le temps partiel de [Prénom] représente un écart de [X] EUR/mois sur la contribution. Ce temps partiel est-il un choix de couple ou un choix individuel ?"
@@ -339,6 +348,7 @@ Option B — "Sur revenus théoriques temps plein" :
 **Quand c'est pertinent** : dès qu'un des deux n'est pas à temps plein. Particulièrement parlant pour le congé parental ou le 80% du mercredi.
 
 **Edge case** :
+
 - Les deux à temps plein : le modèle est identique au modèle 2. On l'affiche quand même avec une mention "Pas de différence avec le prorata classique — vous êtes tous les deux à temps plein."
 - Temps partiel "choix personnel" (ex : pour un projet perso) : le modèle reste disponible mais avec un disclaimer adapté.
 
@@ -351,6 +361,7 @@ Option B — "Sur revenus théoriques temps plein" :
 **Principe** : on valorise le travail domestique pour calculer la "contribution totale" de chacun au foyer, et on ajuste le ratio financier en conséquence.
 
 **Calcul** :
+
 ```
 Pour chaque catégorie domestique i :
 
@@ -378,6 +389,7 @@ Contribution financière P2 = Total charges x (1 - Ratio ajusté)
 ```
 
 **Indicateurs affichés** :
+
 - Valeur domestique estimée de chacun (EUR/mois)
 - Heures domestiques estimées de chacun (/semaine)
 - Ratio AVANT intégration domestique vs APRÈS
@@ -388,10 +400,12 @@ Contribution financière P2 = Total charges x (1 - Ratio ajusté)
 **Quand c'est pertinent** : quand un des deux assure une part significativement plus grande du domestique. C'est le modèle le plus "révélateur" et le plus susceptible de déclencher une vraie conversation.
 
 **Disclaimers obligatoires** :
+
 - "Ce modèle repose sur des estimations déclaratives et des moyennes statistiques (source : INSEE). Il vise à nourrir le dialogue, pas à établir une vérité comptable."
 - "La valeur horaire de référence utilisée est le SMIC net horaire ([montant]). Vous pouvez ajuster ce paramètre."
 
 **Edge case** :
+
 - Pas d'enfants : les catégories "RDV enfants" et "accompagnement scolaire" sont masquées. Le total d'heures de référence est réduit.
 - Curseurs tous à 50% : le modèle est identique au modèle 2. Mention : "Votre répartition domestique est perçue comme équilibrée — pas d'ajustement."
 
@@ -423,6 +437,7 @@ Thomas (3200 EUR)                                    Léa (2100 EUR, 80%)
 ```
 
 **UX** :
+
 - Chaque colonne est cliquable pour voir le détail du modèle
 - Les modèles non débloqués (palier non rempli) sont visibles mais grisés
 - Un indicateur visuel (jauge ou couleur) montre le niveau d'équité de chaque modèle
@@ -463,6 +478,7 @@ Formulation d'accroche : "En 50/50, au bout de 10 ans, Thomas aura pu épargner 
 ### 6.4 — Vue détail par modèle (au clic)
 
 Chaque modèle, quand on clique dessus, affiche :
+
 - Le détail du calcul (transparent, pédagogique)
 - Une explication en langage simple de la "philosophie" du modèle
 - Les avantages et limites
@@ -487,6 +503,7 @@ Valeur retenue pour le calcul : point médian des deux perceptions.
 ```
 
 **UX** :
+
 - Les catégories avec un écart > 15 points sont mises en évidence (couleur, icône)
 - Message contextuel si écarts importants : "Vos perceptions diffèrent significativement sur certaines tâches. C'est très courant — c'est justement l'intérêt d'en discuter."
 - Pas de jugement sur qui a "raison" : les deux perceptions sont affichées à égalité
@@ -497,40 +514,40 @@ Valeur retenue pour le calcul : point médian des deux perceptions.
 
 ### 7.1 — Revenus
 
-| Situation | Comportement |
-|-----------|-------------|
+| Situation                                         | Comportement                                                                                                                                            |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Un revenu = 0 (parent au foyer, chômage sans ARE) | Tous les modèles restent calculables. Modèle 5 mis en avant ("la contribution domestique est votre seule contribution chiffrée — elle a de la valeur"). |
-| Revenus très proches (écart < 5%) | Message : "Vos revenus sont quasi identiques. Tous les modèles donneront des résultats proches. Le 50/50 est probablement le plus simple." |
-| Revenus variables (freelance) | Option de saisie : "Revenu mensuel moyen sur les 6 derniers mois" avec infobulle explicative. |
-| Congé parental en cours | Champ "Revenu actuel (indemnités)" + "Dernier salaire avant congé" pour alimenter le modèle 4. |
+| Revenus très proches (écart < 5%)                 | Message : "Vos revenus sont quasi identiques. Tous les modèles donneront des résultats proches. Le 50/50 est probablement le plus simple."              |
+| Revenus variables (freelance)                     | Option de saisie : "Revenu mensuel moyen sur les 6 derniers mois" avec infobulle explicative.                                                           |
+| Congé parental en cours                           | Champ "Revenu actuel (indemnités)" + "Dernier salaire avant congé" pour alimenter le modèle 4.                                                          |
 
 ### 7.2 — Charges
 
-| Situation | Comportement |
-|-----------|-------------|
-| Total charges > revenus combinés | Alerte rouge : "Attention : vos charges communes dépassent vos revenus combinés. Vérifiez vos montants." Lien vers des ressources (associations d'aide budgétaire). |
+| Situation                                    | Comportement                                                                                                                                                                   |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Total charges > revenus combinés             | Alerte rouge : "Attention : vos charges communes dépassent vos revenus combinés. Vérifiez vos montants." Lien vers des ressources (associations d'aide budgétaire).            |
 | Contribution calculée > revenu d'un des deux | Alerte orange : "Dans ce modèle, [Prénom] devrait contribuer plus que son revenu. Ce modèle n'est pas applicable en l'état." Le modèle reste affiché mais marqué "non viable". |
-| Aucune charge saisie | Bloquer l'accès aux résultats : "Ajoutez au moins une charge commune pour lancer la simulation." |
-| Charges perso (palier 2) très élevées | Pas de blocage mais une note : "Les charges personnelles de [Prénom] représentent [X]% de son revenu." |
+| Aucune charge saisie                         | Bloquer l'accès aux résultats : "Ajoutez au moins une charge commune pour lancer la simulation."                                                                               |
+| Charges perso (palier 2) très élevées        | Pas de blocage mais une note : "Les charges personnelles de [Prénom] représentent [X]% de son revenu."                                                                         |
 
 ### 7.3 — Charge domestique
 
-| Situation | Comportement |
-|-----------|-------------|
-| Tous les curseurs à 50/50 | Modèle 5 = Modèle 2. Mention explicite. |
-| Un curseur à 100/0 | Pas de blocage. Note : "Vous indiquez que [catégorie] repose entièrement sur [Prénom]." |
-| Pas d'enfants | Masquer les 2 catégories enfants. Total heures de référence ajusté (de 28h à 23h/semaine). |
+| Situation                                                       | Comportement                                                                                                                     |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Tous les curseurs à 50/50                                       | Modèle 5 = Modèle 2. Mention explicite.                                                                                          |
+| Un curseur à 100/0                                              | Pas de blocage. Note : "Vous indiquez que [catégorie] repose entièrement sur [Prénom]."                                          |
+| Pas d'enfants                                                   | Masquer les 2 catégories enfants. Total heures de référence ajusté (de 28h à 23h/semaine).                                       |
 | Mode couple : écart de perception > 40 points sur une catégorie | Message neutre : "Vos perceptions diffèrent fortement sur [catégorie]. C'est courant — c'est justement l'intérêt d'en discuter." |
-| Mode couple : P2 n'a pas rempli le palier 4 | Modèle 5 calculé sur les curseurs de P1 seul (comme en mode solo). Mention : "Seule la perception de [Prénom P1] a été saisie." |
+| Mode couple : P2 n'a pas rempli le palier 4                     | Modèle 5 calculé sur les curseurs de P1 seul (comme en mode solo). Mention : "Seule la perception de [Prénom P1] a été saisie."  |
 
 ### 7.4 — Parcours
 
-| Situation | Comportement |
-|-----------|-------------|
-| P2 ne remplit jamais (mode couple) | Pas de problème technique — P1 peut consulter ses résultats en mode solo. Le lien reste valide indéfiniment (encodé dans l'URL). |
-| Données aberrantes (revenu de 1 EUR) | Pas de blocage mais calculs potentiellement absurdes. On assume que l'utilisateur est responsable de ses données. |
-| Retour en arrière dans la saisie | Tous les paliers sont ré-éditables depuis l'écran résultats. Modification = recalcul instantané. |
-| Partage des résultats | Bouton "Copier le lien de cette simulation". Le lien encode TOUS les paramètres. |
+| Situation                            | Comportement                                                                                                                     |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| P2 ne remplit jamais (mode couple)   | Pas de problème technique — P1 peut consulter ses résultats en mode solo. Le lien reste valide indéfiniment (encodé dans l'URL). |
+| Données aberrantes (revenu de 1 EUR) | Pas de blocage mais calculs potentiellement absurdes. On assume que l'utilisateur est responsable de ses données.                |
+| Retour en arrière dans la saisie     | Tous les paliers sont ré-éditables depuis l'écran résultats. Modification = recalcul instantané.                                 |
+| Partage des résultats                | Bouton "Copier le lien de cette simulation". Le lien encode TOUS les paramètres.                                                 |
 
 ---
 
@@ -552,6 +569,7 @@ Plutôt que des scénarios pré-définis, le "Et si..." est un **mode libre de m
 ### Exemples d'usages
 
 L'utilisateur peut librement :
+
 - Passer le revenu de P2 à 0 pour simuler un congé parental
 - Changer une quotité de 80% à 100% pour simuler un retour temps plein
 - Augmenter le revenu de P1 de 15% pour simuler une promotion
@@ -567,6 +585,7 @@ Le mode libre évite de maintenir une logique spécifique par scénario tout en 
 ### MVP (v1.0) — "Les 5 modèles, zéro friction"
 
 **Périmètre** :
+
 - Landing page
 - Mode solo avec les 4 paliers de saisie progressive
 - 5 modèles calculés et affichés côte à côte
@@ -579,6 +598,7 @@ Le mode libre évite de maintenir une logique spécifique par scénario tout en 
 - Zéro backend, tout dans l'URL/localStorage
 
 **Exclu du MVP** :
+
 - Cloisonnement cryptographique réel des données (P2 techniquement averti peut décoder l'URL)
 - Export PDF
 - Famille recomposée / pension alimentaire
@@ -586,22 +606,26 @@ Le mode libre évite de maintenir une logique spécifique par scénario tout en 
 - Benchmarks
 
 ### v1.1 — "Le vrai cloisonnement"
+
 - Backend minimal (Supabase ou Firebase)
 - Session avec cloisonnement cryptographique réel des données
 - Salle d'attente ("en attente de [Prénom]")
 - Notification par email quand P2 a terminé
 
 ### v1.2 — "La formalisation"
+
 - Export PDF "accord de couple" (récap du modèle choisi + montants)
 - Sauvegarde de simulation (compte optionnel)
 - Historique des simulations
 
 ### v1.3 — "Les cas complexes"
+
 - Famille recomposée (enfants de plusieurs unions, garde alternée)
 - Pension alimentaire (versée et reçue)
 - Revenus variables avancés (saisie de 12 mois)
 
 ### v2.0 — "L'ouverture"
+
 - Mode colocation (N personnes)
 - Benchmarks anonymisés
 - Contenu éditorial
@@ -613,24 +637,25 @@ Le mode libre évite de maintenir une logique spécifique par scénario tout en 
 
 ### Produit
 
-| Métrique | Cible MVP |
-|----------|-----------|
-| Taux de complétion palier 1 (= résultats basiques) | > 75% |
-| Taux de complétion paliers 1-4 (= 5 modèles) | > 35% |
-| Temps de complétion (4 paliers) | < 5 min |
-| Taux de clic sur "Partager en couple" | > 25% |
-| Taux d'utilisation des scénarios "Et si" | > 15% |
-| Taux de rebond landing page | < 50% |
+| Métrique                                           | Cible MVP |
+| -------------------------------------------------- | --------- |
+| Taux de complétion palier 1 (= résultats basiques) | > 75%     |
+| Taux de complétion paliers 1-4 (= 5 modèles)       | > 35%     |
+| Temps de complétion (4 paliers)                    | < 5 min   |
+| Taux de clic sur "Partager en couple"              | > 25%     |
+| Taux d'utilisation des scénarios "Et si"           | > 15%     |
+| Taux de rebond landing page                        | < 50%     |
 
 ### Traction (objectifs à 3 mois)
 
-| Métrique | Cible |
-|----------|-------|
-| Visiteurs uniques / mois | 2 000 |
-| Simulations complétées / mois | 500 |
-| Partages (lien copié ou social) | 100 |
+| Métrique                        | Cible |
+| ------------------------------- | ----- |
+| Visiteurs uniques / mois        | 2 000 |
+| Simulations complétées / mois   | 500   |
+| Partages (lien copié ou social) | 100   |
 
 ### Qualitatif
+
 - Micro-survey post-simulation : "Cette simulation a-t-elle déclenché une conversation avec votre partenaire ?" (oui/non)
 - "Quel modèle vous semble le plus juste pour votre situation ?" (choix)
 
@@ -638,21 +663,22 @@ Le mode libre évite de maintenir une logique spécifique par scénario tout en 
 
 ## 11. Risques & Mitigations
 
-| Risque | Mitigation |
-|--------|------------|
-| Perçu comme militant / moralisateur | Tone neutre. Tous les modèles présentés sans hiérarchie. Disclaimers. |
-| Saisie trop longue, abandon | Paliers progressifs. Valeur dès le palier 1 (2 modèles). Modèles grisés = incentive à compléter. |
-| Données sensibles = méfiance | Zéro backend. Mention explicite "Vos données restent sur votre appareil". |
-| Mauvaise interprétation = conflit de couple | Explications pédagogiques. Ton non prescriptif. Disclaimer juridique. |
-| Modèle 5 méthodologiquement fragile | Disclaimer clair. Sources citées. Valeur horaire paramétrable. Présenté comme "outil de dialogue", pas comme vérité. |
-| Sujet genré = polémique | L'outil parle de P1/P2, pas de H/F. Comm' factuelle. |
-| Usage ponctuel = faible rétention | Assumé. Compenser par la viralité. Les scénarios "Et si" sont un levier de retour. |
+| Risque                                      | Mitigation                                                                                                           |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Perçu comme militant / moralisateur         | Tone neutre. Tous les modèles présentés sans hiérarchie. Disclaimers.                                                |
+| Saisie trop longue, abandon                 | Paliers progressifs. Valeur dès le palier 1 (2 modèles). Modèles grisés = incentive à compléter.                     |
+| Données sensibles = méfiance                | Zéro backend. Mention explicite "Vos données restent sur votre appareil".                                            |
+| Mauvaise interprétation = conflit de couple | Explications pédagogiques. Ton non prescriptif. Disclaimer juridique.                                                |
+| Modèle 5 méthodologiquement fragile         | Disclaimer clair. Sources citées. Valeur horaire paramétrable. Présenté comme "outil de dialogue", pas comme vérité. |
+| Sujet genré = polémique                     | L'outil parle de P1/P2, pas de H/F. Comm' factuelle.                                                                 |
+| Usage ponctuel = faible rétention           | Assumé. Compenser par la viralité. Les scénarios "Et si" sont un levier de retour.                                   |
 
 ---
 
 ## 12. Orientations techniques
 
 ### Stack envisagé (MVP)
+
 - **Frontend** : React (ou Preact pour la légèreté) + TypeScript
 - **Styling** : Tailwind CSS
 - **State** : tout dans l'URL (query params encodés base64) + localStorage comme fallback
@@ -661,11 +687,13 @@ Le mode libre évite de maintenir une logique spécifique par scénario tout en 
 - **PWA** : manifest + service worker pour usage offline
 
 ### RGPD
+
 - Aucune donnée stockée côté serveur = pas de traitement au sens du RGPD
 - Mentions légales obligatoires (identité éditeur, hébergeur)
 - Pas de cookies tiers, pas d'analytics invasif (Plausible ou Umami)
 
 ### SEO & Distribution
+
 - Pages statiques indexables : landing, explication de chaque modèle, FAQ
 - Open Graph soigné pour le partage social (image de preview dynamique si possible)
 - Content marketing : articles sur l'équité financière, la charge mentale, le congé parental
@@ -676,21 +704,24 @@ Le mode libre évite de maintenir une logique spécifique par scénario tout en 
 ## Annexe — Données de référence
 
 ### Heures domestiques (source INSEE, Enquête Emploi du Temps)
+
 - Temps domestique moyen femmes : ~4h/jour (28h/semaine)
 - Temps domestique moyen hommes : ~2h30/jour (17h30/semaine)
 - Écart : les femmes font en moyenne 1,6x plus de travail domestique
 
 ### Valorisation horaire
+
 - SMIC net horaire 2025 : 9,57 EUR (à actualiser régulièrement)
 - Alternative : salaire médian net horaire (~14 EUR)
 - L'outil propose le SMIC par défaut avec option de personnaliser
 
 ### Congé parental — montants de référence (CAF 2025)
+
 - PreParE taux plein (cessation totale) : ~428 EUR/mois
 - PreParE taux partiel (< 50%) : ~277 EUR/mois
 - PreParE taux partiel (50-80%) : ~160 EUR/mois
 
 ---
 
-*Document vivant — Version 0.3*
-*Changements v0.2 -> v0.3 : Confrontation des perceptions domestiques intégrée au MVP via l'encodage URL. "Et si..." passé en mode libre (plus de scénarios pré-définis). Modèle 5 mis à jour pour gérer les deux jeux de curseurs (point médian en mode couple).*
+_Document vivant — Version 0.3_
+_Changements v0.2 -> v0.3 : Confrontation des perceptions domestiques intégrée au MVP via l'encodage URL. "Et si..." passé en mode libre (plus de scénarios pré-définis). Modèle 5 mis à jour pour gérer les deux jeux de curseurs (point médian en mode couple)._
