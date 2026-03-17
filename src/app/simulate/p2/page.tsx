@@ -34,16 +34,16 @@ function TierContent({ activeTier }: { activeTier: 0 | 1 | 2 | 3 | 4 }): React.J
 
 function InvalidLink(): React.JSX.Element {
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFAF8] items-center justify-center p-8">
+    <div className="flex flex-col min-h-screen bg-bg items-center justify-center p-8">
       <div className="max-w-md text-center space-y-4">
-        <h1 className="font-[Instrument_Serif,serif] text-2xl text-[#1A1A1A]">Lien invalide</h1>
+        <h1 className="font-display text-2xl">Lien invalide</h1>
         <p className="text-text-secondary">
           Ce lien de partage est invalide ou a expiré. Demandez à votre partenaire de vous envoyer
           un nouveau lien.
         </p>
         <Link
           href="/simulate"
-          className="inline-block rounded bg-[#D4593A] px-4 py-2 text-sm font-medium text-white hover:bg-[#c44f33]"
+          className="inline-block rounded bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90"
         >
           Démarrer une nouvelle simulation
         </Link>
@@ -81,15 +81,12 @@ function P2PageContent(): React.JSX.Element {
   const tier1Complete = state.completedTiers.has(1);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFAF8]">
-      <header className="h-14 bg-white border-b border-[#E8E8E4] flex items-center px-6 gap-4 shrink-0">
-        <Link
-          href="/"
-          className="font-[Instrument_Serif,serif] text-xl text-[#1A1A1A] hover:opacity-80 transition-opacity"
-        >
-          Quote<span className="text-[#D4593A]">Part</span>
+    <div className="flex flex-col min-h-screen bg-bg">
+      <header className="h-14 bg-bg-elevated border-b border-border flex items-center px-6 gap-4 shrink-0">
+        <Link href="/" className="font-display text-xl hover:opacity-80 transition-opacity">
+          Quote<span className="text-accent">Part</span>
         </Link>
-        <span className="text-[#E8E8E4] select-none">|</span>
+        <span className="text-border select-none">|</span>
         <span className="text-sm text-text-secondary">Mode partagé — P2</span>
       </header>
 
