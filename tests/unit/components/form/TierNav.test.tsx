@@ -51,8 +51,8 @@ describe("TierNav", () => {
     // tier 1 is completed when activeTier >= 2
     renderTierNav(makeState({ activeTier: 2, completedTiers: new Set([1]) }));
     // The first button should contain a checkmark character
-    const buttons = screen.getAllByRole("button");
-    expect(buttons[0].textContent).toContain("✓");
+    const [firstButton] = screen.getAllByRole("button");
+    expect(firstButton?.textContent).toContain("✓");
   });
 
   it("locked tiers (mode === null) — buttons have opacity class", () => {
@@ -74,9 +74,9 @@ describe("TierNav", () => {
     const dispatch = vi.fn();
     renderTierNav(makeState({ mode: "full", activeTier: 1 }), dispatch);
     const user = userEvent.setup();
-    const buttons = screen.getAllByRole("button");
+    const [, , thirdButton] = screen.getAllByRole("button");
     // Click the 3rd button (tier 3)
-    await user.click(buttons[2]);
+    await user.click(thirdButton!);
     expect(dispatch).toHaveBeenCalledWith({ type: "SET_TIER", payload: 3 });
   });
 
@@ -84,8 +84,8 @@ describe("TierNav", () => {
     const dispatch = vi.fn();
     renderTierNav(makeState({ mode: null }), dispatch);
     const user = userEvent.setup();
-    const buttons = screen.getAllByRole("button");
-    await user.click(buttons[1]);
+    const [, secondButton] = screen.getAllByRole("button");
+    await user.click(secondButton!);
     expect(dispatch).not.toHaveBeenCalled();
   });
 
