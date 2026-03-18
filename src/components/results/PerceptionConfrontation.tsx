@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import type { DomesticCategory, DomesticSliders } from "@/domain/types";
+import type { DomesticSliders } from "@/domain/types";
+import { DOMESTIC_CATEGORIES } from "@/domain/domestic";
 
 interface PerceptionConfrontationProps {
   mode: "full" | "shared";
@@ -11,23 +12,6 @@ interface PerceptionConfrontationProps {
   p1Name: string;
   p2Name: string;
 }
-
-interface CategoryConfig {
-  key: DomesticCategory;
-  label: string;
-  childOnly: boolean;
-}
-
-const CATEGORY_CONFIGS: CategoryConfig[] = [
-  { key: "groceries", label: "Courses", childOnly: false },
-  { key: "cooking", label: "Cuisine", childOnly: false },
-  { key: "cleaning", label: "Ménage", childOnly: false },
-  { key: "admin", label: "Administratif", childOnly: false },
-  { key: "childrenAppointments", label: "RDV enfants", childOnly: true },
-  { key: "schoolSupport", label: "Aide scolaire", childOnly: true },
-  { key: "maintenance", label: "Bricolage", childOnly: false },
-  { key: "planning", label: "Organisation", childOnly: false },
-];
 
 export function PerceptionConfrontation({
   mode,
@@ -41,7 +25,9 @@ export function PerceptionConfrontation({
     return null;
   }
 
-  const visibleCategories = CATEGORY_CONFIGS.filter(({ childOnly }) => !childOnly || hasChildren);
+  const visibleCategories = DOMESTIC_CATEGORIES.filter(
+    ({ childrenOnly }) => !childrenOnly || hasChildren
+  );
 
   const hasSignificantGap = visibleCategories.some(({ key }) => {
     const gap = Math.abs(p1Sliders[key] - p2Sliders[key]);
@@ -71,7 +57,7 @@ export function PerceptionConfrontation({
           </tr>
         </thead>
         <tbody>
-          {visibleCategories.map(({ key, label }) => {
+          {visibleCategories.map(({ key, shortLabel }) => {
             const p1Value = p1Sliders[key];
             const p2Value = p2Sliders[key];
             const gap = Math.abs(p1Value - p2Value);
@@ -83,7 +69,7 @@ export function PerceptionConfrontation({
                 data-testid={`row-${key}`}
                 className={`border-t border-border ${isHighlighted ? "bg-accent-dim" : ""}`}
               >
-                <td className="py-2 text-text-dim">{label}</td>
+                <td className="py-2 text-text-dim">{shortLabel}</td>
                 <td className="py-2 text-right font-medium text-text-primary">{p1Value} %</td>
                 <td className="py-2 text-right font-medium text-text-primary">{p2Value} %</td>
                 <td

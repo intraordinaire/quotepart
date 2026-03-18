@@ -7,29 +7,7 @@ import { displayName } from "@/lib/names";
 import { getP2InviteLink } from "@/lib/shareLink";
 import type { DomesticCategory, DomesticSliders, SimulationInput } from "@/domain/types";
 import { DEFAULT_SLIDERS } from "@/domain/constants";
-
-interface DomesticCategoryConfig {
-  key: DomesticCategory;
-  label: string;
-  hours: string;
-  childrenOnly?: boolean;
-}
-
-const DOMESTIC_CATEGORIES: DomesticCategoryConfig[] = [
-  { key: "groceries", label: "Courses alimentaires", hours: "3h/sem" },
-  { key: "cooking", label: "Préparation des repas", hours: "7h/sem" },
-  { key: "cleaning", label: "Ménage & linge", hours: "6h/sem" },
-  { key: "admin", label: "Admin & paperasse", hours: "2h/sem" },
-  { key: "childrenAppointments", label: "RDV enfants", hours: "2h/sem", childrenOnly: true },
-  {
-    key: "schoolSupport",
-    label: "Accompagnement scolaire",
-    hours: "3h/sem",
-    childrenOnly: true,
-  },
-  { key: "maintenance", label: "Bricolage & entretien", hours: "2h/sem" },
-  { key: "planning", label: "Organisation & planification", hours: "3h/sem" },
-];
+import { DOMESTIC_CATEGORIES } from "@/domain/domestic";
 
 export function Tier4Domestic(): React.JSX.Element {
   const { state, dispatch } = useSimulation();

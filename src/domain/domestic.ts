@@ -1,6 +1,73 @@
 import { DOMESTIC_HOURS, CHILD_CATEGORIES, WEEKS_PER_MONTH } from "./constants";
 import type { DomesticCategory, DomesticSliders } from "./types";
 
+export interface DomesticCategoryConfig {
+  key: DomesticCategory;
+  label: string;
+  shortLabel: string;
+  hours: string;
+  childrenOnly: boolean;
+}
+
+export const DOMESTIC_CATEGORIES: DomesticCategoryConfig[] = [
+  {
+    key: "groceries",
+    label: "Courses alimentaires",
+    shortLabel: "Courses",
+    hours: "3h/sem",
+    childrenOnly: false,
+  },
+  {
+    key: "cooking",
+    label: "Préparation des repas",
+    shortLabel: "Cuisine",
+    hours: "7h/sem",
+    childrenOnly: false,
+  },
+  {
+    key: "cleaning",
+    label: "Ménage & linge",
+    shortLabel: "Ménage",
+    hours: "6h/sem",
+    childrenOnly: false,
+  },
+  {
+    key: "admin",
+    label: "Admin & paperasse",
+    shortLabel: "Administratif",
+    hours: "2h/sem",
+    childrenOnly: false,
+  },
+  {
+    key: "childrenAppointments",
+    label: "RDV enfants",
+    shortLabel: "RDV enfants",
+    hours: "2h/sem",
+    childrenOnly: true,
+  },
+  {
+    key: "schoolSupport",
+    label: "Accompagnement scolaire",
+    shortLabel: "Aide scolaire",
+    hours: "3h/sem",
+    childrenOnly: true,
+  },
+  {
+    key: "maintenance",
+    label: "Bricolage & entretien",
+    shortLabel: "Bricolage",
+    hours: "2h/sem",
+    childrenOnly: false,
+  },
+  {
+    key: "planning",
+    label: "Organisation & planification",
+    shortLabel: "Organisation",
+    hours: "3h/sem",
+    childrenOnly: false,
+  },
+];
+
 export function mergeDomesticSliders(
   p1: DomesticSliders,
   p2: DomesticSliders | undefined

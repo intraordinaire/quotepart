@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeDomesticValue, mergeDomesticSliders } from "@/domain/domestic";
+import { computeDomesticValue, mergeDomesticSliders, DOMESTIC_CATEGORIES } from "@/domain/domestic";
 import type { DomesticSliders } from "@/domain/types";
 
 const allFifty: DomesticSliders = {
@@ -23,6 +23,26 @@ const p1Heavy: DomesticSliders = {
   maintenance: 20,
   planning: 80,
 };
+
+describe("DOMESTIC_CATEGORIES", () => {
+  it("has 8 categories", () => {
+    expect(DOMESTIC_CATEGORIES).toHaveLength(8);
+  });
+
+  it("marks childrenAppointments and schoolSupport as children-only", () => {
+    const childOnly = DOMESTIC_CATEGORIES.filter((c) => c.childrenOnly);
+    expect(childOnly.map((c) => c.key)).toEqual(["childrenAppointments", "schoolSupport"]);
+  });
+
+  it("each category has label, shortLabel, hours, and key", () => {
+    DOMESTIC_CATEGORIES.forEach((c) => {
+      expect(c.key).toBeTruthy();
+      expect(c.label).toBeTruthy();
+      expect(c.shortLabel).toBeTruthy();
+      expect(c.hours).toMatch(/\dh\/sem/);
+    });
+  });
+});
 
 describe("mergeDomesticSliders", () => {
   it("returns p1 sliders when p2 is absent (solo mode)", () => {
