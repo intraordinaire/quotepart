@@ -48,12 +48,14 @@ describe("TierNav", () => {
     expect(buttons[0]).not.toHaveAttribute("data-active", "true");
   });
 
-  it("completed tier (tier < activeTier) shows checkmark", () => {
+  it("completed tier (tier < activeTier) shows checkmark SVG and sr-only text", () => {
     // tier 1 is completed when activeTier >= 2
     renderTierNav(makeState({ activeTier: 2, completedTiers: new Set([1]) }));
-    // The first button should contain a checkmark character
     const [firstButton] = screen.getAllByRole("button");
-    expect(firstButton?.textContent).toContain("✓");
+    // SVG checkmark replaces the number
+    expect(firstButton?.querySelector("svg")).toBeTruthy();
+    // Screen reader text announces completion
+    expect(firstButton?.textContent).toContain("(complétée)");
   });
 
   it("locked tiers (mode === null) — buttons have opacity class", () => {

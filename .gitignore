@@ -81,3 +81,6 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 .worktrees/
+
+# Qodana
+qodana.yaml

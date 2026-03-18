@@ -40,9 +40,9 @@ describe("ModeChoice", () => {
     expect(buttons).toHaveLength(2);
   });
 
-  it("renders 'Je remplis pour nous deux' text", () => {
+  it("renders 'On remplit ensemble' text", () => {
     renderModeChoice();
-    expect(screen.getByText("Je remplis pour nous deux")).toBeTruthy();
+    expect(screen.getByText("On remplit ensemble")).toBeTruthy();
   });
 
   it("renders 'On remplit chacun·e nos données' text", () => {
@@ -70,8 +70,8 @@ describe("ModeChoice", () => {
     expect(dispatch).toHaveBeenCalledWith({ type: "SET_TIER", payload: 1 });
   });
 
-  it("'shared' option has 'Recommandé' badge", () => {
+  it("'shared' option describes the partner link flow", () => {
     renderModeChoice();
-    expect(screen.getByText(/Recommandé/)).toBeTruthy();
+    expect(screen.getByText(/partenaire recevra un lien/)).toBeTruthy();
   });
 });
