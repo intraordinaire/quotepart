@@ -1,25 +1,28 @@
 import React from "react";
 
-const MODELS = ["50/50", "Prorata revenus", "Reste à vivre ="] as const;
-const THOMAS = ["1 500 €", "1 811 €", "1 920 €"] as const;
-const LEA = ["1 500 €", "1 189 €", "1 080 €"] as const;
+const MODELS = ["50/50", "Prorata revenus", "Reste à vivre égal"] as const;
+const P1 = ["1 500 €", "1 811 €", "2 050 €"] as const;
+const P2 = ["1 500 €", "1 189 €", "950 €"] as const;
 const ECART = [
   { v: "1 100 €", style: "text-accent" },
   { v: "478 €", style: "text-amber" },
-  { v: "260 €", style: "text-green" },
+  { v: "0 €", style: "text-green" },
 ] as const;
 
 export default function PreviewTable(): React.JSX.Element {
   return (
     <section className="mx-auto max-w-[860px] px-6 py-16 md:px-10">
       <div className="overflow-hidden rounded-xl border border-border bg-surface p-6 md:p-8">
-        <div className="mb-5 font-mono text-[11px] font-medium uppercase tracking-widest text-text-muted">
+        <div className="mb-1 font-mono text-[11px] font-medium uppercase tracking-widest text-text-muted">
           Aperçu des résultats comparatifs
         </div>
+        <p className="mb-5 text-xs text-text-dim">
+          Contribution mensuelle de chacun selon le modèle choisi
+        </p>
 
         {/* Desktop grid */}
         <div className="hidden md:block">
-          <div className="grid grid-cols-[120px_repeat(3,1fr)] text-[13px]">
+          <div className="grid grid-cols-[140px_repeat(3,1fr)] text-[13px]">
             {/* Header */}
             <div className="border-b border-border pb-2.5 font-mono text-[11px] uppercase tracking-wider text-text-muted" />
             {MODELS.map((h) => (
@@ -31,23 +34,23 @@ export default function PreviewTable(): React.JSX.Element {
               </div>
             ))}
 
-            {/* Thomas */}
+            {/* Personne 1 */}
             <div className="flex items-center gap-1.5 py-3.5 font-semibold text-text">
               <span className="inline-block h-2 w-2 rounded-full bg-text" />
-              Thomas
+              Personne 1
             </div>
-            {THOMAS.map((v, i) => (
+            {P1.map((v, i) => (
               <div key={i} className="py-3.5 text-right font-medium tabular-nums text-text">
                 {v}
               </div>
             ))}
 
-            {/* Léa */}
+            {/* Personne 2 */}
             <div className="flex items-center gap-1.5 py-3.5 font-semibold text-text">
               <span className="inline-block h-2 w-2 rounded-full bg-accent" />
-              Léa
+              Personne 2
             </div>
-            {LEA.map((v, i) => (
+            {P2.map((v, i) => (
               <div key={i} className="py-3.5 text-right font-medium tabular-nums text-text">
                 {v}
               </div>
@@ -55,7 +58,7 @@ export default function PreviewTable(): React.JSX.Element {
 
             {/* Écart */}
             <div className="flex items-center border-t border-border pt-3.5 font-mono text-[11px] uppercase tracking-wider text-text-muted">
-              Écart RAV
+              Écart reste à vivre
             </div>
             {ECART.map((item, i) => (
               <div
@@ -80,18 +83,20 @@ export default function PreviewTable(): React.JSX.Element {
                 <div className="flex justify-between text-sm">
                   <div>
                     <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-text" />
-                    <span className="font-medium text-text">Thomas</span>
-                    <span className="ml-2 tabular-nums text-text-dim">{THOMAS[i]}</span>
+                    <span className="font-medium text-text">Personne 1</span>
+                    <span className="ml-2 tabular-nums text-text-dim">{P1[i]}</span>
                   </div>
                   <div>
                     <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-accent" />
-                    <span className="font-medium text-text">Léa</span>
-                    <span className="ml-2 tabular-nums text-text-dim">{LEA[i]}</span>
+                    <span className="font-medium text-text">Personne 2</span>
+                    <span className="ml-2 tabular-nums text-text-dim">{P2[i]}</span>
                   </div>
                 </div>
                 {ecart && (
                   <div className="mt-2 border-t border-border pt-2 text-center">
-                    <span className="font-mono text-xs text-text-muted">Écart : </span>
+                    <span className="font-mono text-xs text-text-muted">
+                      Écart reste à vivre :{" "}
+                    </span>
                     <span className={`font-semibold tabular-nums ${ecart.style}`}>{ecart.v}</span>
                   </div>
                 )}
@@ -101,7 +106,7 @@ export default function PreviewTable(): React.JSX.Element {
         </div>
 
         <p className="mt-4 text-center text-xs text-text-muted">
-          Thomas 3 200 €/mois · Léa 2 100 €/mois · Charges communes 3 000 €
+          Personne 1 : 3 200 €/mois · Personne 2 : 2 100 €/mois · Charges communes : 3 000 €
         </p>
       </div>
     </section>

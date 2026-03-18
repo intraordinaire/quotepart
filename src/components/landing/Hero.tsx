@@ -10,7 +10,7 @@ export default function Hero(): React.JSX.Element {
       </div>
 
       <h1 className="mx-auto mb-6 max-w-[560px] font-display text-[clamp(36px,6vw,64px)] leading-[1.08] tracking-tight text-white">
-        Vos dépenses de couple,
+        Vos dépenses communes,
         <br />
         <span className="italic text-accent">justement</span> réparties
       </h1>

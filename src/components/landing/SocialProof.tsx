@@ -59,7 +59,8 @@ function AnimNum({
       className="font-display text-[32px] font-black tracking-tight text-white tabular-nums md:text-[40px]"
     >
       {display.toLocaleString("fr-FR")}
-      {suffix}
+      {"\u00A0"}
+      {suffix.trim()}
     </span>
   );
 }

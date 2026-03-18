@@ -22,7 +22,7 @@ const MODELS = [
   {
     num: "04",
     name: "Ajusté temps de travail",
-    desc: "Le temps partiel choisi par le couple est compensé dans le calcul.",
+    desc: "Le temps partiel choisi est compensé dans le calcul.",
     tag: "Contextuel",
   },
   {
@@ -41,7 +41,7 @@ export default function ModelsOverview(): React.JSX.Element {
       </h2>
       <p className="mx-auto mb-12 max-w-[500px] text-center text-[15px] text-text-dim">
         Aucun modèle n&apos;est &quot;le bon&quot;. L&apos;outil vous les montre tous pour que vous
-        choisissiez celui qui correspond à votre couple.
+        choisissiez celui qui correspond à votre situation.
       </p>
 
       <div className="flex flex-col gap-px">
