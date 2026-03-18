@@ -29,7 +29,7 @@ function UsersIcon(): React.JSX.Element {
 
 export function LockedField({ name }: LockedFieldProps): React.JSX.Element {
   return (
-    <div className="flex items-center gap-1.5 px-3 py-[9px] border border-dashed border-[#E8E8E4] rounded-md bg-neutral-50 text-xs italic text-text-secondary">
+    <div className="flex items-center gap-1.5 px-3 py-[9px] border border-dashed border-border rounded-md bg-surface text-xs italic text-text-dim">
       <UsersIcon />
       <span>{name} complétera</span>
     </div>

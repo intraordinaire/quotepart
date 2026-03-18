@@ -15,6 +15,7 @@ function makeState(overrides: Partial<SimulationState> = {}): SimulationState {
     completedTiers: new Set(),
     skippedTiers: new Set(),
     input: {},
+    activeTab: "saisie" as const,
     ...overrides,
   };
 }

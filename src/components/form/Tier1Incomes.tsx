@@ -12,6 +12,7 @@ export function Tier1Incomes(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
   const [placeholders] = useState<[string, string]>(() => randomPlaceholderPair());
   const [chargesMode, setChargesMode] = useState<"global" | "detail">("global");
+  const [attempted, setAttempted] = useState(false);
 
   const isShared = state.mode === "shared";
   const input = state.input;
@@ -32,7 +33,12 @@ export function Tier1Incomes(): React.JSX.Element {
     });
   }
 
+  const p1IncomeValid = (p1?.income ?? 0) > 0;
+  const p2IncomeValid = isShared || (p2?.income ?? 0) > 0;
+
   function handleSuivant(): void {
+    setAttempted(true);
+    if (!p1IncomeValid || !p2IncomeValid) return;
     dispatch({ type: "COMPLETE_TIER", payload: 1 });
     dispatch({ type: "SET_TIER", payload: 2 });
   }
@@ -46,11 +52,11 @@ export function Tier1Incomes(): React.JSX.Element {
   return (
     <div className="animate-tier-in">
       <h2 className="font-display text-2xl mb-1">Revenus & charges communes</h2>
-      <p className="text-sm text-text-secondary mb-8">
+      <p className="text-sm text-text-dim mb-8">
         L&apos;essentiel pour démarrer. Débloque les modèles 50/50 et Prorata.
       </p>
 
-      <div className="grid grid-cols-2 gap-4 mb-7">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-7">
         <FormField
           id="p1-name"
           label="Prénom personne 1"
@@ -65,32 +71,42 @@ export function Tier1Incomes(): React.JSX.Element {
           value={p2?.name ?? ""}
           onChange={(v) => updateP2({ name: v })}
         />
-        <FormField
-          id="p1-income"
-          label="Revenu net mensuel P1"
-          placeholder="3 200"
-          suffix="€"
-          numeric
-          value={p1?.income != null ? String(p1.income) : ""}
-          onChange={(v) => updateP1({ income: Number(v) || 0 })}
-        />
+        <div>
+          <FormField
+            id="p1-income"
+            label="Revenu net mensuel P1"
+            placeholder="3 200"
+            suffix="€"
+            numeric
+            value={p1?.income != null ? String(p1.income) : ""}
+            onChange={(v) => updateP1({ income: Number(v) || 0 })}
+          />
+          {attempted && !p1IncomeValid && (
+            <p className="text-accent text-xs mt-1">Le revenu de la personne 1 est requis.</p>
+          )}
+        </div>
         {isShared ? (
           <div>
-            <label className="block text-xs font-medium text-text-secondary mb-1">
+            <label className="block text-xs font-medium text-text-dim mb-1">
               Revenu net mensuel P2
             </label>
             <LockedField name={p2DisplayName} />
           </div>
         ) : (
-          <FormField
-            id="p2-income"
-            label="Revenu net mensuel P2"
-            placeholder="2 100"
-            suffix="€"
-            numeric
-            value={p2?.income != null ? String(p2.income) : ""}
-            onChange={(v) => updateP2({ income: Number(v) || 0 })}
-          />
+          <div>
+            <FormField
+              id="p2-income"
+              label="Revenu net mensuel P2"
+              placeholder="2 100"
+              suffix="€"
+              numeric
+              value={p2?.income != null ? String(p2.income) : ""}
+              onChange={(v) => updateP2({ income: Number(v) || 0 })}
+            />
+            {attempted && !p2IncomeValid && (
+              <p className="text-accent text-xs mt-1">Le revenu de la personne 2 est requis.</p>
+            )}
+          </div>
         )}
       </div>
 
@@ -119,14 +135,14 @@ export function Tier1Incomes(): React.JSX.Element {
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer mb-8">
+      <label className="flex items-center gap-2 text-sm text-text-dim cursor-pointer mb-8">
         <input
           type="checkbox"
           checked={input.hasChildren ?? false}
           onChange={(e) =>
             dispatch({ type: "UPDATE_INPUT", payload: { hasChildren: e.target.checked } })
           }
-          className="accent-[#D4593A]"
+          className="accent-accent"
         />
         Nous avons des enfants
       </label>
@@ -135,14 +151,14 @@ export function Tier1Incomes(): React.JSX.Element {
         <button
           type="button"
           onClick={handleRetour}
-          className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-secondary border border-[#E8E8E4] rounded-md cursor-pointer"
+          className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-dim border border-border rounded-md cursor-pointer"
         >
           Retour
         </button>
         <button
           type="button"
           onClick={handleSuivant}
-          className="text-sm font-semibold px-6 py-2.5 bg-neutral-900 text-white border-none rounded-md cursor-pointer flex items-center gap-1.5"
+          className="text-sm font-semibold px-6 py-2.5 bg-accent text-white border-none rounded-md cursor-pointer flex items-center gap-1.5"
         >
           Suivant →
         </button>

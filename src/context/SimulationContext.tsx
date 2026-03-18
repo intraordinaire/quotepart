@@ -1,9 +1,12 @@
 "use client";
 
-import React, { createContext, useReducer, type ReactNode } from "react";
+import React, { createContext, useEffect, useReducer, type ReactNode } from "react";
+import { saveState, loadState } from "@/lib/persistState";
 import type { SimulationInput, ModelId } from "@/domain/types";
 
 // ─── State ─────────────────────────────────────────────────────────────────
+
+export type TabId = "saisie" | "resultats" | "etsi";
 
 export interface SimulationState {
   mode: "full" | "shared" | null;
@@ -11,6 +14,7 @@ export interface SimulationState {
   completedTiers: Set<1 | 2 | 3 | 4>;
   skippedTiers: Set<2 | 3 | 4>;
   input: Partial<SimulationInput>;
+  activeTab: TabId;
 }
 
 // ─── Actions ───────────────────────────────────────────────────────────────
@@ -18,9 +22,11 @@ export interface SimulationState {
 export type SimulationAction =
   | { type: "SET_MODE"; payload: "full" | "shared" }
   | { type: "SET_TIER"; payload: 0 | 1 | 2 | 3 | 4 }
+  | { type: "SET_TAB"; payload: TabId }
   | { type: "COMPLETE_TIER"; payload: 1 | 2 | 3 | 4 }
   | { type: "SKIP_TIER"; payload: 2 | 3 | 4 }
-  | { type: "UPDATE_INPUT"; payload: Partial<SimulationInput> };
+  | { type: "UPDATE_INPUT"; payload: Partial<SimulationInput> }
+  | { type: "HYDRATE"; payload: SimulationState };
 
 // ─── Initial state ─────────────────────────────────────────────────────────
 
@@ -29,7 +35,8 @@ export const initialState: SimulationState = {
   activeTier: 0,
   completedTiers: new Set(),
   skippedTiers: new Set(),
-  input: {},
+  input: { commonCharges: 0, hasChildren: false, hourlyRate: 9.57 },
+  activeTab: "saisie",
 };
 
 // ─── Reducer ───────────────────────────────────────────────────────────────
@@ -44,6 +51,9 @@ export function simulationReducer(
 
     case "SET_TIER":
       return { ...state, activeTier: action.payload };
+
+    case "SET_TAB":
+      return { ...state, activeTab: action.payload };
 
     case "COMPLETE_TIER":
       return {
@@ -62,6 +72,12 @@ export function simulationReducer(
         ...state,
         input: { ...state.input, ...action.payload },
       };
+
+    case "HYDRATE":
+      return action.payload;
+
+    default:
+      return state;
   }
 }
 
@@ -99,10 +115,29 @@ export const SimulationContext = createContext<SimulationContextValue | null>(nu
 
 interface SimulationProviderProps {
   children: ReactNode;
+  /** Pass `fresh` to ignore localStorage and start from initialState (e.g. P2 flow) */
+  fresh?: boolean;
 }
 
-export function SimulationProvider({ children }: SimulationProviderProps): React.JSX.Element {
+export function SimulationProvider({
+  children,
+  fresh,
+}: SimulationProviderProps): React.JSX.Element {
+  // Always start from initialState to match SSR; hydrate from localStorage after mount.
   const [state, dispatch] = useReducer(simulationReducer, initialState);
+
+  useEffect(() => {
+    if (!fresh) {
+      const saved = loadState();
+      if (saved) dispatch({ type: "HYDRATE", payload: saved });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist state to localStorage on every change
+  useEffect(() => {
+    saveState(state);
+  }, [state]);
 
   return (
     <SimulationContext.Provider value={{ state, dispatch }}>{children}</SimulationContext.Provider>

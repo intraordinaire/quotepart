@@ -1,23 +1,30 @@
 import React from "react";
-import Link from "next/link";
+import Hero from "@/components/landing/Hero";
+import SocialProof from "@/components/landing/SocialProof";
+import PreviewTable from "@/components/landing/PreviewTable";
+import HowItWorks from "@/components/landing/HowItWorks";
+import ModelsOverview from "@/components/landing/ModelsOverview";
+import CTABlock from "@/components/landing/CTABlock";
+import Footer from "@/components/landing/Footer";
 
 export default function Home(): React.JSX.Element {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8]">
-      <div className="text-center">
-        <h1 className="font-[Instrument_Serif,serif] text-5xl mb-4">
-          Quote<span className="text-[#D4593A]">Part</span>
-        </h1>
-        <p className="text-zinc-500 mb-8 text-lg">
-          Simulateur d&apos;équité financière pour couples
-        </p>
-        <Link
-          href="/simulate"
-          className="inline-flex items-center gap-2 bg-zinc-900 text-white px-8 py-3 rounded-lg font-medium hover:bg-zinc-700 transition-colors"
-        >
-          Commencer la simulation →
-        </Link>
-      </div>
+    <div className="min-h-screen bg-bg">
+      {/* Nav */}
+      <nav className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-5 md:px-10">
+        <div className="flex items-baseline gap-0.5">
+          <span className="font-display text-[22px]">Quote</span>
+          <span className="font-display text-[22px] text-accent">Part</span>
+        </div>
+      </nav>
+
+      <Hero />
+      <SocialProof />
+      <PreviewTable />
+      <HowItWorks />
+      <ModelsOverview />
+      <CTABlock />
+      <Footer />
     </div>
   );
 }

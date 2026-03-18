@@ -8,10 +8,10 @@ export interface ValidationError {
 export function validateInput(input: SimulationInput): ValidationError[] {
   const errors: ValidationError[] = [];
 
-  if (!input.p1.name.trim()) {
+  if (!(input.p1.name ?? "").trim()) {
     errors.push({ type: "missing_name", message: "Le prénom de la personne 1 est requis." });
   }
-  if (!input.p2.name.trim()) {
+  if (!(input.p2.name ?? "").trim()) {
     errors.push({ type: "missing_name", message: "Le prénom de la personne 2 est requis." });
   }
   if (input.commonCharges > input.p1.income + input.p2.income) {

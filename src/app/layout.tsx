@@ -1,23 +1,24 @@
 import type { Metadata } from "next";
-import { Manrope, Instrument_Serif, Geist_Mono } from "next/font/google";
+import { DM_Sans, Fraunces, DM_Mono } from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
+const dmSans = DM_Sans({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
 });
 
-const instrumentSerif = Instrument_Serif({
+const fraunces = Fraunces({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["300", "700", "900"],
   style: ["normal", "italic"],
 });
 
-const geistMono = Geist_Mono({
+const dmMono = DM_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -31,10 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): React.JSX.Element {
   return (
-    <html
-      lang="fr"
-      className={`${manrope.variable} ${instrumentSerif.variable} ${geistMono.variable}`}
-    >
+    <html lang="fr" className={`${dmSans.variable} ${fraunces.variable} ${dmMono.variable}`}>
       <body className="antialiased">{children}</body>
     </html>
   );

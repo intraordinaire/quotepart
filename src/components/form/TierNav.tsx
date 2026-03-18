@@ -28,16 +28,16 @@ export function TierNav(): React.JSX.Element {
   const progressPercent = Math.max(activeTier, 0) * 25;
 
   return (
-    <aside className="w-60 shrink-0 bg-white border-r border-[#E8E8E4] py-6">
+    <aside className="w-60 shrink-0 bg-surface border-r border-border py-6">
       {/* Progress section */}
       <div className="px-5 mb-5">
-        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-text-secondary mb-1">
+        <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-text-dim mb-1">
           Progression
         </div>
-        <div className="h-[3px] bg-[#E8E8E4] rounded-sm overflow-hidden">
+        <div className="h-[3px] bg-border rounded-sm overflow-hidden">
           <div
             data-testid="tier-progress-bar"
-            className="h-full bg-[#D4593A] rounded-sm transition-[width] duration-300 ease-in-out"
+            className="h-full bg-accent rounded-sm transition-[width] duration-300 ease-in-out"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -56,12 +56,13 @@ export function TierNav(): React.JSX.Element {
             onClick={(): void => {
               if (!isLocked) {
                 dispatch({ type: "SET_TIER", payload: tier.n });
+                dispatch({ type: "SET_TAB", payload: "saisie" });
               }
             }}
             className={[
               "flex items-start gap-3 w-full px-5 py-3 text-left transition-all duration-150",
               isActive
-                ? "bg-[#FAFAF8] border-l-2 border-l-[#D4593A]"
+                ? "bg-bg border-l-2 border-l-accent"
                 : "bg-transparent border-l-2 border-l-transparent",
               isLocked ? "opacity-50 cursor-default" : "cursor-pointer",
             ].join(" ")}
@@ -71,8 +72,8 @@ export function TierNav(): React.JSX.Element {
               className={[
                 "w-[22px] h-[22px] rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 mt-[1px]",
                 isPastOrActive
-                  ? "bg-[#1A1A1A] text-white border-0"
-                  : "bg-[#FAFAF8] text-text-secondary border border-[#E8E8E4]",
+                  ? "bg-text text-white border-0"
+                  : "bg-bg text-text-dim border border-border",
               ].join(" ")}
             >
               {isCompleted && activeTier > tier.n ? "✓" : tier.n}
@@ -80,8 +81,8 @@ export function TierNav(): React.JSX.Element {
 
             {/* Label and subtitle */}
             <div>
-              <div className="text-[13px] font-semibold text-[#1A1A1A]">{tier.label}</div>
-              <div className="text-[11px] text-text-secondary mt-0.5">Débloque {tier.unlocks}</div>
+              <div className="text-[13px] font-semibold text-text">{tier.label}</div>
+              <div className="text-[11px] text-text-dim mt-0.5">Débloque {tier.unlocks}</div>
             </div>
           </button>
         );

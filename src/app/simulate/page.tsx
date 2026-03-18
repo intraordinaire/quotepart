@@ -1,14 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useSimulation } from "@/context/useSimulation";
+import type { TabId } from "@/context/SimulationContext";
 import { ModeChoice } from "@/components/form/ModeChoice";
 import { Tier1Incomes } from "@/components/form/Tier1Incomes";
 import { Tier2PersonalCharges } from "@/components/form/Tier2PersonalCharges";
 import { Tier3WorkTime } from "@/components/form/Tier3WorkTime";
 import { Tier4Domestic } from "@/components/form/Tier4Domestic";
 import { TierNav } from "@/components/form/TierNav";
+import { ResultsShell } from "@/components/results/ResultsShell";
+import { WhatIfShell } from "@/components/whatif/WhatIfShell";
+import type { SimulationInput, DomesticSliders } from "@/domain/types";
+
+const DEFAULT_SLIDERS: DomesticSliders = {
+  groceries: 50,
+  cooking: 50,
+  cleaning: 50,
+  admin: 50,
+  childrenAppointments: 50,
+  schoolSupport: 50,
+  maintenance: 50,
+  planning: 50,
+};
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
 
@@ -78,14 +93,14 @@ function ModeBadge({ mode }: { mode: "full" | "shared" | null }): React.JSX.Elem
 
   if (mode === "full") {
     return (
-      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#FAFAF8] text-[#1A1A1A] border border-[#E8E8E4]">
+      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-bg text-text border border-border">
         Je remplis pour nous deux
       </span>
     );
   }
 
   return (
-    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#FDF2EF] text-[#D4593A]">
+    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-accent-dim text-accent">
       Chacun·e ses données
     </span>
   );
@@ -108,41 +123,89 @@ function TierContent({ activeTier }: { activeTier: 0 | 1 | 2 | 3 | 4 }): React.J
   }
 }
 
+// ─── Et si... tab content ─────────────────────────────────────────────────
+
+function EtSiContent(): React.JSX.Element {
+  const { state } = useSimulation();
+  const rawInput = state.input;
+
+  if (!state.completedTiers.has(1) || !rawInput.p1 || !rawInput.p2) {
+    return (
+      <div className="text-text-dim text-sm py-8 text-center">
+        Complétez le palier 1 pour explorer des scénarios.
+      </div>
+    );
+  }
+
+  const p1 = rawInput.p1;
+  const p2 = rawInput.p2;
+
+  const input: SimulationInput = {
+    p1: {
+      name: p1.name ?? "",
+      income: p1.income ?? 0,
+      personalCharges: p1.personalCharges ?? 0,
+      workQuota: p1.workQuota ?? 1.0,
+      fullTimeIncome: p1.fullTimeIncome ?? p1.income ?? 0,
+      partTimeReason: p1.partTimeReason ?? null,
+    },
+    p2: {
+      name: p2.name ?? "",
+      income: p2.income ?? 0,
+      personalCharges: p2.personalCharges ?? 0,
+      workQuota: p2.workQuota ?? 1.0,
+      fullTimeIncome: p2.fullTimeIncome ?? p2.income ?? 0,
+      partTimeReason: p2.partTimeReason ?? null,
+    },
+    commonCharges: rawInput.commonCharges ?? 0,
+    hasChildren: rawInput.hasChildren ?? false,
+    domesticSliders: rawInput.domesticSliders ?? { p1: DEFAULT_SLIDERS },
+    hourlyRate: rawInput.hourlyRate ?? 9.57,
+  };
+
+  return <WhatIfShell input={input} />;
+}
+
 // ─── Page ──────────────────────────────────────────────────────────────────
 
-type TabId = "saisie" | "resultats" | "etsi";
-
 export default function SimulatePage(): React.JSX.Element {
-  const { state } = useSimulation();
-  const [activeTab, setActiveTab] = useState<TabId>("saisie");
+  const { state, dispatch } = useSimulation();
 
+  const activeTab: TabId = state.activeTab;
   const tier1Complete = state.completedTiers.has(1);
 
+  function setActiveTab(tab: TabId): void {
+    dispatch({ type: "SET_TAB", payload: tab });
+  }
+
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFAF8]">
+    <div className="flex flex-col min-h-screen bg-bg">
       {/* ── Top header ─────────────────────────────────────────────────────── */}
-      <header className="h-14 bg-white border-b border-[#E8E8E4] flex items-center px-6 gap-4 shrink-0">
+      <header className="min-h-14 bg-surface border-b border-border flex flex-wrap items-center px-4 md:px-6 gap-2 md:gap-4 py-2 shrink-0">
         <Link
           href="/"
-          className="font-[Instrument_Serif,serif] text-xl text-[#1A1A1A] hover:opacity-80 transition-opacity"
+          className="font-display text-xl text-text hover:opacity-80 transition-opacity"
         >
-          Quote<span className="text-[#D4593A]">Part</span>
+          Quote<span className="text-accent">Part</span>
         </Link>
 
-        <span className="text-[#E8E8E4] select-none">|</span>
+        <span className="text-border select-none hidden md:inline">|</span>
 
-        <span className="text-sm text-text-secondary">Nouvelle simulation</span>
+        <span className="text-sm text-text-dim hidden md:inline">Nouvelle simulation</span>
 
         {state.mode && (
           <>
-            <span className="text-[#E8E8E4] select-none">|</span>
+            <span className="text-border select-none hidden md:inline">|</span>
             <ModeBadge mode={state.mode} />
           </>
         )}
       </header>
 
       {/* ── Tab navigation ─────────────────────────────────────────────────── */}
-      <nav role="tablist" className="bg-white border-b border-[#E8E8E4] flex px-6 shrink-0">
+      <nav
+        role="tablist"
+        className="bg-surface border-b border-border flex px-2 md:px-6 shrink-0 overflow-x-auto"
+      >
         <button
           role="tab"
           type="button"
@@ -150,10 +213,10 @@ export default function SimulatePage(): React.JSX.Element {
           aria-controls="panel-saisie"
           onClick={() => setActiveTab("saisie")}
           className={[
-            "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+            "flex items-center gap-1.5 px-3 md:px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
             activeTab === "saisie"
-              ? "border-[#D4593A] text-[#1A1A1A]"
-              : "border-transparent text-text-secondary hover:text-[#1A1A1A]",
+              ? "border-accent text-text"
+              : "border-transparent text-text-dim hover:text-text",
           ].join(" ")}
         >
           <EditIcon />
@@ -170,10 +233,10 @@ export default function SimulatePage(): React.JSX.Element {
             if (tier1Complete) setActiveTab("resultats");
           }}
           className={[
-            "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+            "flex items-center gap-1.5 px-3 md:px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
             activeTab === "resultats"
-              ? "border-[#D4593A] text-[#1A1A1A]"
-              : "border-transparent text-text-secondary hover:text-[#1A1A1A]",
+              ? "border-accent text-text"
+              : "border-transparent text-text-dim hover:text-text",
             !tier1Complete ? "opacity-50 cursor-not-allowed pointer-events-none" : "",
           ]
             .join(" ")
@@ -193,10 +256,10 @@ export default function SimulatePage(): React.JSX.Element {
             if (tier1Complete) setActiveTab("etsi");
           }}
           className={[
-            "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+            "flex items-center gap-1.5 px-3 md:px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
             activeTab === "etsi"
-              ? "border-[#D4593A] text-[#1A1A1A]"
-              : "border-transparent text-text-secondary hover:text-[#1A1A1A]",
+              ? "border-accent text-text"
+              : "border-transparent text-text-dim hover:text-text",
             !tier1Complete ? "opacity-50 cursor-not-allowed pointer-events-none" : "",
           ]
             .join(" ")
@@ -209,20 +272,28 @@ export default function SimulatePage(): React.JSX.Element {
 
       {/* ── Content area ───────────────────────────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar: only visible when a mode has been selected (tier > 0) */}
-        {state.activeTier > 0 && <TierNav />}
+        {/* Sidebar: hidden on mobile, visible on md+ */}
+        {state.activeTier > 0 && (
+          <div className="hidden md:block">
+            <TierNav />
+          </div>
+        )}
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-2xl mx-auto">
-            <div role="tabpanel" id="panel-saisie" hidden={activeTab !== "saisie"}>
+        <main className="flex-1 overflow-y-auto px-4 py-6 md:p-8">
+          <div role="tabpanel" id="panel-saisie" hidden={activeTab !== "saisie"}>
+            <div className="max-w-2xl mx-auto">
               <TierContent activeTier={state.activeTier} />
             </div>
-            <div role="tabpanel" id="panel-resultats" hidden={activeTab !== "resultats"}>
-              <div className="text-text-secondary">Résultats — coming soon</div>
+          </div>
+          <div role="tabpanel" id="panel-resultats" hidden={activeTab !== "resultats"}>
+            <div className="max-w-2xl mx-auto">
+              <ResultsShell />
             </div>
-            <div role="tabpanel" id="panel-etsi" hidden={activeTab !== "etsi"}>
-              <div className="text-text-secondary">Et si... — coming soon</div>
+          </div>
+          <div role="tabpanel" id="panel-etsi" hidden={activeTab !== "etsi"}>
+            <div className="max-w-5xl mx-auto">
+              <EtSiContent />
             </div>
           </div>
         </main>

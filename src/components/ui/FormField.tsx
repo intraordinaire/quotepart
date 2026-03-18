@@ -26,7 +26,7 @@ export function FormField({
   return (
     <div>
       {label && (
-        <label htmlFor={inputId} className="block text-xs font-medium text-text-secondary mb-1">
+        <label htmlFor={inputId} className="block text-xs font-medium text-text-dim mb-1">
           {label}
         </label>
       )}
@@ -40,15 +40,15 @@ export function FormField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={[
-            "w-full text-sm py-[9px] px-3 border border-[#E8E8E4] rounded-md bg-white",
-            "outline-none focus:border-[#D4593A] transition-colors",
+            "w-full text-sm py-3 px-3 border border-border rounded-md bg-surface",
+            "outline-none focus:border-accent transition-colors",
             suffix ? "pr-10" : "",
           ]
             .filter(Boolean)
             .join(" ")}
         />
         {suffix && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-text-secondary pointer-events-none">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-text-dim pointer-events-none">
             {suffix}
           </span>
         )}

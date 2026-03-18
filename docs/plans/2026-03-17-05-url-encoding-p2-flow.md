@@ -185,25 +185,28 @@ tests/e2e/
 
 ## Definition of Done
 
-- [ ] Full simulation link round-trips correctly (encode → decode → same values)
-- [ ] P2 invite link does not expose P1 income or personal charges in the rendered UI
-- [ ] P2 flow completes and produces results with both partners' data
-- [ ] Copy to clipboard works
-- [ ] localStorage persistence survives page reload
-- [ ] E2E sharing flow passing
+- [x] Full simulation link round-trips correctly (encode → decode → same values)
+- [x] P2 invite link does not expose P1 income or personal charges in the rendered UI
+- [x] P2 flow completes and produces results with both partners' data
+- [x] Copy to clipboard works
+- [x] localStorage persistence survives page reload
+- [x] E2E sharing flow passing
 
 ---
 
 ## Plan Status
 
-| Date       | Status   | Notes                                                                          |
-| ---------- | -------- | ------------------------------------------------------------------------------ |
-| 2026-03-17 | 📋 Draft | Security assumption documented: soft privacy, not cryptographic (v1.1 concern) |
+| Date       | Status      | Notes                                                                          |
+| ---------- | ----------- | ------------------------------------------------------------------------------ |
+| 2026-03-17 | 📋 Draft    | Security assumption documented: soft privacy, not cryptographic (v1.1 concern) |
+| 2026-03-17 | ✅ Complete | 205 unit tests, 5 E2E tests, PR #1                                             |
 
 ---
 
 ## Divergences from Spec / Plan
 
-| Decision | Plan says | Actual | Reason |
-| -------- | --------- | ------ | ------ |
-| —        | —         | —      | —      |
+| Decision                                             | Plan says                                              | Actual                                                                   | Reason                                                                                             |
+| ---------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| P2 page uses Suspense wrapper                        | Not specified                                          | `useSearchParams()` requires `<Suspense>` boundary in Next.js App Router | Next.js build error without it                                                                     |
+| playwright.config.ts uses env vars for BASE_URL/PORT | Not specified                                          | Added `process.env.BASE_URL` and `process.env.PORT` support              | Needed to run e2e tests against worktree dev server (port 3001) while main dev server runs on 3000 |
+| P2 page result view                                  | "after P2 completes, results page shows combined data" | ResultsShell shown inline when tier1 is complete                         | Architecture decision: results remain a tab panel (Plan 04 decision), not a separate route         |

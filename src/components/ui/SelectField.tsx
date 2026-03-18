@@ -19,14 +19,14 @@ export function SelectField({
 
   return (
     <div>
-      <label htmlFor={inputId} className="block text-xs font-medium text-text-secondary mb-1">
+      <label htmlFor={inputId} className="block text-xs font-medium text-text-dim mb-1">
         {label}
       </label>
       <select
         id={inputId}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full text-sm py-[9px] px-3 border border-[#E8E8E4] rounded-md bg-white outline-none focus:border-[#D4593A] transition-colors cursor-pointer"
+        className="w-full text-sm py-[9px] px-3 border border-border rounded-md bg-surface outline-none focus:border-accent transition-colors cursor-pointer"
       >
         {options.map((o) => (
           <option key={o} value={o}>

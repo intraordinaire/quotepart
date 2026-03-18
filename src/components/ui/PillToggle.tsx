@@ -16,8 +16,8 @@ export function PillToggle({ label, active, onClick }: PillToggleProps): React.J
       className={[
         "text-xs font-medium px-[14px] py-[5px] rounded-full cursor-pointer transition-colors",
         active
-          ? "bg-neutral-900 text-white border-transparent"
-          : "bg-neutral-100 text-text-secondary border border-[#E8E8E4]",
+          ? "bg-accent text-white border-transparent"
+          : "bg-surface text-text-dim border border-border",
       ].join(" ")}
     >
       {label}
