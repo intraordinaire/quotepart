@@ -32,7 +32,7 @@ Plans are in `docs/plans/` — execute in order:
 | 03 — Form / State           | `docs/plans/2026-03-17-03-form-state.md`               | ✅ Complete |
 | 04 — Results                | `docs/plans/2026-03-17-04-results.md`                  | ✅ Complete |
 | 05 — URL encoding / P2 flow | `docs/plans/2026-03-17-05-url-encoding-p2-flow.md`     | ✅ Complete |
-| 06 — Et si...               | `docs/plans/2026-03-17-06-whatif.md`                   | 📋 Draft    |
+| 06 — Et si...               | `docs/plans/2026-03-17-06-whatif.md`                   | ✅ Complete |
 | 07 — E2E, CI & Landing      | `docs/plans/2026-03-17-07-e2e-ci-polish.md`            | 📋 Draft    |
 | 08 — Correctifs formules    | `docs/plans/2026-03-18-08-formula-fixes-edge-cases.md` | ✅ Complete |
 
