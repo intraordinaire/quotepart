@@ -11,6 +11,19 @@ import { Tier3WorkTime } from "@/components/form/Tier3WorkTime";
 import { Tier4Domestic } from "@/components/form/Tier4Domestic";
 import { TierNav } from "@/components/form/TierNav";
 import { ResultsShell } from "@/components/results/ResultsShell";
+import { WhatIfShell } from "@/components/whatif/WhatIfShell";
+import type { SimulationInput, DomesticSliders } from "@/domain/types";
+
+const DEFAULT_SLIDERS: DomesticSliders = {
+  groceries: 50,
+  cooking: 50,
+  cleaning: 50,
+  admin: 50,
+  childrenAppointments: 50,
+  schoolSupport: 50,
+  maintenance: 50,
+  planning: 50,
+};
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
 
@@ -108,6 +121,49 @@ function TierContent({ activeTier }: { activeTier: 0 | 1 | 2 | 3 | 4 }): React.J
     case 4:
       return <Tier4Domestic />;
   }
+}
+
+// ─── Et si... tab content ─────────────────────────────────────────────────
+
+function EtSiContent(): React.JSX.Element {
+  const { state } = useSimulation();
+  const rawInput = state.input;
+
+  if (!state.completedTiers.has(1) || !rawInput.p1 || !rawInput.p2) {
+    return (
+      <div className="text-text-dim text-sm py-8 text-center">
+        Complétez le palier 1 pour explorer des scénarios.
+      </div>
+    );
+  }
+
+  const p1 = rawInput.p1;
+  const p2 = rawInput.p2;
+
+  const input: SimulationInput = {
+    p1: {
+      name: p1.name ?? "",
+      income: p1.income ?? 0,
+      personalCharges: p1.personalCharges ?? 0,
+      workQuota: p1.workQuota ?? 1.0,
+      fullTimeIncome: p1.fullTimeIncome ?? p1.income ?? 0,
+      partTimeReason: p1.partTimeReason ?? null,
+    },
+    p2: {
+      name: p2.name ?? "",
+      income: p2.income ?? 0,
+      personalCharges: p2.personalCharges ?? 0,
+      workQuota: p2.workQuota ?? 1.0,
+      fullTimeIncome: p2.fullTimeIncome ?? p2.income ?? 0,
+      partTimeReason: p2.partTimeReason ?? null,
+    },
+    commonCharges: rawInput.commonCharges ?? 0,
+    hasChildren: rawInput.hasChildren ?? false,
+    domesticSliders: rawInput.domesticSliders ?? { p1: DEFAULT_SLIDERS },
+    hourlyRate: rawInput.hourlyRate ?? 9.57,
+  };
+
+  return <WhatIfShell input={input} />;
 }
 
 // ─── Page ──────────────────────────────────────────────────────────────────
@@ -218,15 +274,19 @@ export default function SimulatePage(): React.JSX.Element {
 
         {/* Main content */}
         <main className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-2xl mx-auto">
-            <div role="tabpanel" id="panel-saisie" hidden={activeTab !== "saisie"}>
+          <div role="tabpanel" id="panel-saisie" hidden={activeTab !== "saisie"}>
+            <div className="max-w-2xl mx-auto">
               <TierContent activeTier={state.activeTier} />
             </div>
-            <div role="tabpanel" id="panel-resultats" hidden={activeTab !== "resultats"}>
+          </div>
+          <div role="tabpanel" id="panel-resultats" hidden={activeTab !== "resultats"}>
+            <div className="max-w-2xl mx-auto">
               <ResultsShell />
             </div>
-            <div role="tabpanel" id="panel-etsi" hidden={activeTab !== "etsi"}>
-              <div className="text-text-dim">Et si... — coming soon</div>
+          </div>
+          <div role="tabpanel" id="panel-etsi" hidden={activeTab !== "etsi"}>
+            <div className="max-w-5xl mx-auto">
+              <EtSiContent />
             </div>
           </div>
         </main>
