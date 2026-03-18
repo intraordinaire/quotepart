@@ -12,18 +12,7 @@ import { ModelDetailPanel } from "./ModelDetailPanel";
 import { PerceptionConfrontation } from "./PerceptionConfrontation";
 import { displayName } from "@/lib/names";
 import type { DomesticSliders } from "@/domain/types";
-import { DEFAULT_HOURLY_RATE } from "@/domain/constants";
-
-const DEFAULT_SLIDERS: DomesticSliders = {
-  groceries: 50,
-  cooking: 50,
-  cleaning: 50,
-  admin: 50,
-  childrenAppointments: 50,
-  schoolSupport: 50,
-  maintenance: 50,
-  planning: 50,
-};
+import { DEFAULT_HOURLY_RATE, DEFAULT_SLIDERS } from "@/domain/constants";
 
 export function ResultsShell(): React.JSX.Element {
   const { state, dispatch } = useSimulation();

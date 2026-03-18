@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { DOMESTIC_HOURS, DEFAULT_HOURLY_RATE, WEEKS_PER_MONTH } from "@/domain/constants";
+import {
+  DOMESTIC_HOURS,
+  DEFAULT_HOURLY_RATE,
+  WEEKS_PER_MONTH,
+  DEFAULT_SLIDERS,
+} from "@/domain/constants";
 
 describe("constants", () => {
   it("domestic hours sum to 28h with children", () => {
@@ -21,5 +26,10 @@ describe("constants", () => {
 
   it("weeks per month multiplier is 4.33", () => {
     expect(WEEKS_PER_MONTH).toBe(4.33);
+  });
+
+  it("DEFAULT_SLIDERS has all 8 categories at 50", () => {
+    expect(Object.keys(DEFAULT_SLIDERS)).toHaveLength(8);
+    Object.values(DEFAULT_SLIDERS).forEach((v) => expect(v).toBe(50));
   });
 });

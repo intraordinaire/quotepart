@@ -12,19 +12,8 @@ import { Tier4Domestic } from "@/components/form/Tier4Domestic";
 import { TierNav } from "@/components/form/TierNav";
 import { ResultsShell } from "@/components/results/ResultsShell";
 import { WhatIfShell } from "@/components/whatif/WhatIfShell";
-import type { SimulationInput, DomesticSliders } from "@/domain/types";
-import { DEFAULT_HOURLY_RATE } from "@/domain/constants";
-
-const DEFAULT_SLIDERS: DomesticSliders = {
-  groceries: 50,
-  cooking: 50,
-  cleaning: 50,
-  admin: 50,
-  childrenAppointments: 50,
-  schoolSupport: 50,
-  maintenance: 50,
-  planning: 50,
-};
+import type { SimulationInput } from "@/domain/types";
+import { DEFAULT_HOURLY_RATE, DEFAULT_SLIDERS } from "@/domain/constants";
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
 

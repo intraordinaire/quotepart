@@ -6,6 +6,7 @@ import { FormField } from "@/components/ui/FormField";
 import { SliderField } from "@/components/ui/SliderField";
 import { displayName } from "@/lib/names";
 import type { DomesticCategory, DomesticSliders } from "@/domain/types";
+import { DEFAULT_SLIDERS } from "@/domain/constants";
 
 interface DomesticCategoryConfig {
   key: DomesticCategory;
@@ -34,16 +35,7 @@ export function WhatIfPanel(): React.JSX.Element {
 
   const visibleCategories = DOMESTIC_CATEGORIES.filter((cat) => !cat.childrenOnly || hasChildren);
 
-  const sliders: DomesticSliders = input.domesticSliders?.p1 ?? {
-    groceries: 50,
-    cooking: 50,
-    cleaning: 50,
-    admin: 50,
-    childrenAppointments: 50,
-    schoolSupport: 50,
-    maintenance: 50,
-    planning: 50,
-  };
+  const sliders: DomesticSliders = input.domesticSliders?.p1 ?? DEFAULT_SLIDERS;
 
   function updateField(path: string[], value: unknown): void {
     dispatch({ type: "UPDATE_FIELD", path, value });

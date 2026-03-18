@@ -6,6 +6,7 @@ import { SliderField } from "@/components/ui/SliderField";
 import { displayName } from "@/lib/names";
 import { getP2InviteLink } from "@/lib/shareLink";
 import type { DomesticCategory, DomesticSliders, SimulationInput } from "@/domain/types";
+import { DEFAULT_SLIDERS } from "@/domain/constants";
 
 interface DomesticCategoryConfig {
   key: DomesticCategory;
@@ -29,17 +30,6 @@ const DOMESTIC_CATEGORIES: DomesticCategoryConfig[] = [
   { key: "maintenance", label: "Bricolage & entretien", hours: "2h/sem" },
   { key: "planning", label: "Organisation & planification", hours: "3h/sem" },
 ];
-
-const DEFAULT_SLIDERS: DomesticSliders = {
-  groceries: 50,
-  cooking: 50,
-  cleaning: 50,
-  admin: 50,
-  childrenAppointments: 50,
-  schoolSupport: 50,
-  maintenance: 50,
-  planning: 50,
-};
 
 export function Tier4Domestic(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
