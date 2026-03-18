@@ -111,7 +111,7 @@ const defaultInput: SimulationInput = {
 };
 
 describe("Edge cases — ComparisonTable", () => {
-  it("shows 'Non viable' badge when isViable = false on a model", () => {
+  it("shows 'Non viable' footer note when isViable = false on a model", () => {
     const results = makeResults({
       m1_5050: makeModelResult({ isViable: false }),
     });
@@ -127,10 +127,12 @@ describe("Edge cases — ComparisonTable", () => {
       />
     );
 
-    expect(screen.getByText(/non viable/i)).toBeInTheDocument();
+    const tfoot = document.querySelector("tfoot");
+    expect(tfoot).not.toBeNull();
+    expect(tfoot!.textContent).toMatch(/M1.*Non viable/i);
   });
 
-  it("shows a warning message under a non-viable model", () => {
+  it("shows warning message in footer for a non-viable model", () => {
     const results = makeResults({
       m1_5050: makeModelResult({
         isViable: false,
@@ -205,7 +207,7 @@ describe("Edge cases — Transfer display", () => {
     expect(screen.getByText(/Alice → Bob/)).toBeInTheDocument();
   });
 
-  it("shows 'Non viable' badge with warning variant for contribution > income", () => {
+  it("shows 'Non viable' footer note for contribution > income", () => {
     const results = makeResults({
       m5_total_contribution: makeM5Result({
         modelResult: makeModelResult({
@@ -226,7 +228,9 @@ describe("Edge cases — Transfer display", () => {
       />
     );
 
-    expect(screen.getByText(/non viable/i)).toBeInTheDocument();
+    const tfoot = document.querySelector("tfoot");
+    expect(tfoot).not.toBeNull();
+    expect(tfoot!.textContent).toMatch(/M5.*Non viable/i);
   });
 });
 
@@ -241,6 +245,8 @@ describe("Edge cases — ModelDetailPanel", () => {
         modelId="m4_adjusted_time"
         results={results}
         input={defaultInput}
+        p1Name="Alice"
+        p2Name="Bob"
         onClose={vi.fn()}
       />
     );
@@ -258,6 +264,8 @@ describe("Edge cases — ModelDetailPanel", () => {
         modelId="m5_total_contribution"
         results={results}
         input={defaultInput}
+        p1Name="Alice"
+        p2Name="Bob"
         onClose={vi.fn()}
       />
     );

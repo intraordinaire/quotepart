@@ -16,11 +16,11 @@ interface ModelConfig {
 }
 
 const MODEL_CONFIGS: ModelConfig[] = [
-  { id: "m1_5050", shortLabel: "M1", fullLabel: "M1 — 50/50" },
-  { id: "m2_income_ratio", shortLabel: "M2", fullLabel: "M2 — Ratio revenus" },
-  { id: "m3_equal_rav", shortLabel: "M3", fullLabel: "M3 — RAV égal" },
-  { id: "m4_adjusted_time", shortLabel: "M4", fullLabel: "M4 — Temps ajusté" },
-  { id: "m5_total_contribution", shortLabel: "M5", fullLabel: "M5 — Contribution totale" },
+  { id: "m1_5050", shortLabel: "M1", fullLabel: "50/50" },
+  { id: "m2_income_ratio", shortLabel: "M2", fullLabel: "Ratio revenus" },
+  { id: "m3_equal_rav", shortLabel: "M3", fullLabel: "Reste à vivre égal" },
+  { id: "m4_adjusted_time", shortLabel: "M4", fullLabel: "Temps ajusté" },
+  { id: "m5_total_contribution", shortLabel: "M5", fullLabel: "Contribution totale" },
 ];
 
 function getEquityScore(results: CalculationResults, modelId: ModelId): number {
@@ -33,8 +33,25 @@ function getEquityScore(results: CalculationResults, modelId: ModelId): number {
   return results[modelId].equityScore;
 }
 
-function getBarColorClass(equityScore: number, isLocked: boolean): string {
-  if (isLocked) {
+function isRedundantModel(results: CalculationResults, id: ModelId): boolean {
+  if (id === "m4_adjusted_time") return results.m4_adjusted_time.isSameAsM2;
+  if (id === "m5_total_contribution") return results.m5_total_contribution.isSameAsM2;
+  return false;
+}
+
+function isNonViable(results: CalculationResults, id: ModelId): boolean {
+  if (id === "m4_adjusted_time") return !results.m4_adjusted_time.optionB.isViable;
+  if (id === "m5_total_contribution") return !results.m5_total_contribution.modelResult.isViable;
+  return !results[id].isViable;
+}
+
+function getBarColorClass(
+  equityScore: number,
+  isLocked: boolean,
+  isRedundant: boolean,
+  nonViable: boolean
+): string {
+  if (isLocked || isRedundant || nonViable) {
     return "bg-surface";
   }
   if (equityScore > 0.6) {
@@ -51,9 +68,18 @@ export function EquityGauges({ results, unlockedModels }: EquityGaugesProps): Re
     <div className="flex flex-col gap-3">
       {MODEL_CONFIGS.map(({ id, shortLabel, fullLabel }) => {
         const isLocked = !unlockedModels.has(id);
+        const isRedundant = !isLocked && isRedundantModel(results, id);
+        const nonViable = !isLocked && !isRedundant && isNonViable(results, id);
         const score = getEquityScore(results, id);
-        const colorClass = getBarColorClass(score, isLocked);
+        const colorClass = getBarColorClass(score, isLocked, isRedundant, nonViable);
         const percentage = Math.round(score * 100);
+        const barWidth = nonViable ? 0 : percentage;
+
+        let scoreLabel: string;
+        if (isLocked) scoreLabel = "—";
+        else if (isRedundant) scoreLabel = "= M2";
+        else if (nonViable) scoreLabel = "Non viable";
+        else scoreLabel = `${percentage}%`;
 
         return (
           <div key={id} className="flex items-center gap-2 md:gap-3">
@@ -67,11 +93,13 @@ export function EquityGauges({ results, unlockedModels }: EquityGaugesProps): Re
               <div
                 data-testid={`gauge-${id}`}
                 className={`h-full rounded-full transition-all duration-300 ${colorClass}`}
-                style={{ width: `${percentage}%` }}
+                style={{ width: `${barWidth}%` }}
               />
             </div>
-            <span className="w-10 shrink-0 text-right text-sm font-medium text-text-primary">
-              {isLocked ? "—" : `${percentage}%`}
+            <span
+              className={`shrink-0 text-right text-sm font-medium${nonViable ? " w-20 text-accent" : " w-10 text-text-primary"}`}
+            >
+              {scoreLabel}
             </span>
           </div>
         );

@@ -3,7 +3,6 @@
 import React from "react";
 import type { ModelId, ModelResult } from "@/domain/types";
 import type { CalculationResults } from "@/domain/calculate";
-import { ModelBadge } from "./ModelBadge";
 import { LockedModelOverlay } from "./LockedModelOverlay";
 
 export interface ComparisonTableProps {
@@ -23,19 +22,19 @@ interface ModelConfig {
 }
 
 const MODEL_CONFIGS: ModelConfig[] = [
-  { id: "m1_5050", shortLabel: "M1", fullLabel: "M1 — 50/50", tierRequired: null },
+  { id: "m1_5050", shortLabel: "M1", fullLabel: "50/50", tierRequired: null },
   {
     id: "m2_income_ratio",
     shortLabel: "M2",
-    fullLabel: "M2 — Revenu proportionnel",
+    fullLabel: "Revenu proportionnel",
     tierRequired: null,
   },
-  { id: "m3_equal_rav", shortLabel: "M3", fullLabel: "M3 — RAV égal", tierRequired: 2 },
-  { id: "m4_adjusted_time", shortLabel: "M4", fullLabel: "M4 — Temps ajusté", tierRequired: 3 },
+  { id: "m3_equal_rav", shortLabel: "M3", fullLabel: "Reste à vivre égal", tierRequired: 2 },
+  { id: "m4_adjusted_time", shortLabel: "M4", fullLabel: "Temps ajusté", tierRequired: 3 },
   {
     id: "m5_total_contribution",
     shortLabel: "M5",
-    fullLabel: "M5 — Contribution totale",
+    fullLabel: "Contribution totale",
     tierRequired: 4,
   },
 ];
@@ -56,7 +55,7 @@ function formatContribution(
     );
     return (
       <span className="text-accent text-[10px]">
-        {otherName} → {personName}&nbsp;: {absFormatted}\u00A0€
+        {otherName} → {personName}&nbsp;: {absFormatted}&nbsp;€
       </span>
     );
   }
@@ -69,24 +68,30 @@ function getModelResult(results: CalculationResults, id: ModelId): ModelResult {
   return results[id];
 }
 
-function findBestModelId(
-  results: CalculationResults,
-  unlockedModels: Set<ModelId>
-): ModelId | null {
-  let bestId: ModelId | null = null;
-  let bestScore = -Infinity;
-
-  for (const config of MODEL_CONFIGS) {
-    if (!unlockedModels.has(config.id)) continue;
-    const result = getModelResult(results, config.id);
-    if (result.equityScore > bestScore) {
-      bestScore = result.equityScore;
-      bestId = config.id;
-    }
-  }
-
-  return bestId;
+function isRedundantModel(results: CalculationResults, id: ModelId): boolean {
+  if (id === "m4_adjusted_time") return results.m4_adjusted_time.isSameAsM2;
+  if (id === "m5_total_contribution") return results.m5_total_contribution.isSameAsM2;
+  return false;
 }
+
+function isNonViableModel(results: CalculationResults, id: ModelId): boolean {
+  return !getModelResult(results, id).isViable;
+}
+
+function isDimmedColumn(results: CalculationResults, id: ModelId): boolean {
+  return isRedundantModel(results, id) || isNonViableModel(results, id);
+}
+
+interface FootnoteEntry {
+  shortLabel: string;
+  message: string;
+  variant: "redundant" | "nonViable";
+}
+
+const REDUNDANT_MESSAGES: Partial<Record<ModelId, string>> = {
+  m4_adjusted_time: "Les deux personnes travaillent à temps plein : identique au M2.",
+  m5_total_contribution: "Répartition domestique équilibrée : identique au M2.",
+};
 
 export function ComparisonTable({
   results,
@@ -96,7 +101,6 @@ export function ComparisonTable({
   p1Name,
   p2Name,
 }: ComparisonTableProps): React.JSX.Element {
-  const bestModelId = findBestModelId(results, unlockedModels);
   const chargesAlert = results.validationErrors.find((e) => e.type === "charges_exceed_income");
 
   return (
@@ -116,7 +120,6 @@ export function ComparisonTable({
               <th className="text-left py-2 px-3 text-text-dim font-medium w-32" />
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
-                const isBest = config.id === bestModelId;
                 const isSelected = config.id === selectedModel;
 
                 return (
@@ -124,14 +127,11 @@ export function ComparisonTable({
                     key={config.id}
                     data-model={config.id}
                     className={[
-                      "py-2 px-3 text-center font-semibold border rounded-t-md transition-colors",
+                      "py-2 px-3 text-center font-semibold border rounded-t-md border-border",
                       isLocked
-                        ? "opacity-40 cursor-not-allowed"
-                        : "cursor-pointer hover:bg-surface",
-                      isBest
-                        ? "ring-2 ring-accent border-accent text-accent"
-                        : "border-border text-text-dim",
-                      isSelected && !isLocked ? "bg-surface" : "",
+                        ? "opacity-40 cursor-not-allowed text-text-dim"
+                        : "cursor-pointer text-text-dim group/th transition-all duration-200 hover:bg-surface hover:text-text",
+                      isSelected && !isLocked ? "bg-surface text-text" : "",
                     ]
                       .filter(Boolean)
                       .join(" ")}
@@ -139,8 +139,21 @@ export function ComparisonTable({
                       if (!isLocked) onModelSelect(config.id);
                     }}
                   >
-                    <span>{config.shortLabel}</span>
-                    {isBest && !isLocked && <ModelBadge label="Meilleur" variant="best" />}
+                    {isLocked ? (
+                      <span>{config.shortLabel}</span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1">
+                        <span className="underline decoration-dotted underline-offset-4 decoration-text-muted group-hover/th:decoration-solid group-hover/th:decoration-accent">
+                          {config.shortLabel}
+                        </span>
+                        <span
+                          className="text-[10px] text-text-muted opacity-0 -translate-x-1 transition-all duration-200 group-hover/th:opacity-100 group-hover/th:translate-x-0"
+                          aria-hidden="true"
+                        >
+                          ›
+                        </span>
+                      </span>
+                    )}
                   </th>
                 );
               })}
@@ -152,36 +165,24 @@ export function ComparisonTable({
               <td className="py-2 px-3 text-text-dim text-xs">Modèle</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
-                const result = isLocked ? null : getModelResult(results, config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id);
 
                 return (
                   <td
                     key={config.id}
                     className={[
                       "py-2 px-3 text-center text-xs relative",
-                      isLocked ? "opacity-40" : "",
+                      isLocked || dimmed ? "opacity-40" : "",
                     ]
                       .filter(Boolean)
                       .join(" ")}
                   >
                     {isLocked && config.tierRequired !== null ? (
-                      <div className="relative min-h-[2rem]">
+                      <div className="relative min-h-8">
                         <LockedModelOverlay tierRequired={config.tierRequired} />
                       </div>
                     ) : (
-                      <>
-                        {result && !result.isViable && (
-                          <>
-                            <ModelBadge label="Non viable" variant="warning" />
-                            {result.warnings.map((w, i) => (
-                              <p key={i} className="text-accent text-[10px] mt-1">
-                                {w}
-                              </p>
-                            ))}
-                          </>
-                        )}
-                        <span className="text-text-dim">{config.fullLabel}</span>
-                      </>
+                      <span className="text-text-dim">{config.fullLabel}</span>
                     )}
                   </td>
                 );
@@ -193,10 +194,14 @@ export function ComparisonTable({
               <td className="py-2 px-3 text-text-dim text-xs">Part {p1Name || "Personne 1"}</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);
 
                 return (
-                  <td key={config.id} className="py-2 px-3 text-center text-xs">
+                  <td
+                    key={config.id}
+                    className={`py-2 px-3 text-center text-xs${dimmed ? " opacity-40" : ""}`}
+                  >
                     {result ? formatContribution(result.p1Contribution, p1Name, p2Name) : "—"}
                   </td>
                 );
@@ -208,10 +213,14 @@ export function ComparisonTable({
               <td className="py-2 px-3 text-text-dim text-xs">Part {p2Name || "Personne 2"}</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);
 
                 return (
-                  <td key={config.id} className="py-2 px-3 text-center text-xs">
+                  <td
+                    key={config.id}
+                    className={`py-2 px-3 text-center text-xs${dimmed ? " opacity-40" : ""}`}
+                  >
                     {result ? formatContribution(result.p2Contribution, p2Name, p1Name) : "—"}
                   </td>
                 );
@@ -220,13 +229,19 @@ export function ComparisonTable({
 
             {/* Row: P1 disposable income */}
             <tr className="border-b border-border">
-              <td className="py-2 px-3 text-text-dim text-xs">RAV {p1Name || "Personne 1"}</td>
+              <td className="py-2 px-3 text-text-dim text-xs">
+                Reste à vivre {p1Name || "Personne 1"}
+              </td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);
 
                 return (
-                  <td key={config.id} className="py-2 px-3 text-center text-xs">
+                  <td
+                    key={config.id}
+                    className={`py-2 px-3 text-center text-xs${dimmed ? " opacity-40" : ""}`}
+                  >
                     {result ? formatAmount(result.p1DisposableIncome) : "—"}
                   </td>
                 );
@@ -235,13 +250,19 @@ export function ComparisonTable({
 
             {/* Row: P2 disposable income */}
             <tr className="border-b border-border">
-              <td className="py-2 px-3 text-text-dim text-xs">RAV {p2Name || "Personne 2"}</td>
+              <td className="py-2 px-3 text-text-dim text-xs">
+                Reste à vivre {p2Name || "Personne 2"}
+              </td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);
 
                 return (
-                  <td key={config.id} className="py-2 px-3 text-center text-xs">
+                  <td
+                    key={config.id}
+                    className={`py-2 px-3 text-center text-xs${dimmed ? " opacity-40" : ""}`}
+                  >
                     {result ? formatAmount(result.p2DisposableIncome) : "—"}
                   </td>
                 );
@@ -253,16 +274,59 @@ export function ComparisonTable({
               <td className="py-2 px-3 text-text-dim text-xs">Score équité</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);
 
                 return (
-                  <td key={config.id} className="py-2 px-3 text-center text-xs">
+                  <td
+                    key={config.id}
+                    className={`py-2 px-3 text-center text-xs${dimmed ? " opacity-40" : ""}`}
+                  >
                     {result ? `${Math.round(result.equityScore * 100)}%` : "—"}
                   </td>
                 );
               })}
             </tr>
           </tbody>
+          {/* Footer: notes for redundant and non-viable models */}
+          {(() => {
+            const footnotes: FootnoteEntry[] = [];
+            MODEL_CONFIGS.forEach((c) => {
+              if (!unlockedModels.has(c.id)) return;
+              if (isRedundantModel(results, c.id)) {
+                footnotes.push({
+                  shortLabel: c.shortLabel,
+                  message: REDUNDANT_MESSAGES[c.id] ?? "",
+                  variant: "redundant",
+                });
+              } else if (isNonViableModel(results, c.id)) {
+                const result = getModelResult(results, c.id);
+                const warning = result.warnings[0] ?? "La contribution dépasse le revenu.";
+                footnotes.push({
+                  shortLabel: c.shortLabel,
+                  message: `Non viable — ${warning}`,
+                  variant: "nonViable",
+                });
+              }
+            });
+            if (footnotes.length === 0) return null;
+            return (
+              <tfoot>
+                <tr>
+                  <td colSpan={6} className="pt-3 px-3">
+                    {footnotes.map((fn) => (
+                      <p
+                        key={fn.shortLabel}
+                        className={`text-xs ${fn.variant === "nonViable" ? "text-accent" : "text-text-dim"}`}
+                      >
+                        <span className="font-semibold">{fn.shortLabel}</span> — {fn.message}
+                      </p>
+                    ))}
+                  </td>
+                </tr>
+              </tfoot>
+            );
+          })()}
         </table>
       </div>
     </div>

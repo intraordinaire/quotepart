@@ -20,15 +20,21 @@ const MODEL_ORDER: ModelId[] = [
 ];
 
 const MODEL_LABELS: Record<ModelId, string> = {
-  m1_5050: "M1 — 50/50",
-  m2_income_ratio: "M2 — Revenu proportionnel",
-  m3_equal_rav: "M3 — RAV égal",
-  m4_adjusted_time: "M4 — Temps ajusté",
-  m5_total_contribution: "M5 — Contribution totale",
+  m1_5050: "50/50",
+  m2_income_ratio: "Revenu proportionnel",
+  m3_equal_rav: "Reste à vivre égal",
+  m4_adjusted_time: "Temps ajusté",
+  m5_total_contribution: "Contribution totale",
 };
 
 function formatAmount(amount: number): string {
   return new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(amount) + " €";
+}
+
+function isRedundantModel(results: CalculationResults, id: ModelId): boolean {
+  if (id === "m4_adjusted_time") return results.m4_adjusted_time.isSameAsM2;
+  if (id === "m5_total_contribution") return results.m5_total_contribution.isSameAsM2;
+  return false;
 }
 
 export function TemporalProjection({
@@ -60,13 +66,15 @@ export function TemporalProjection({
           <tbody>
             {MODEL_ORDER.map((modelId) => {
               const isLocked = !unlockedModels.has(modelId);
+              const isRedundant = !isLocked && isRedundantModel(results, modelId);
+              const isDimmed = isLocked || isRedundant;
               const row = results.projections[modelId];
 
               return (
                 <tr
                   key={modelId}
-                  aria-disabled={isLocked ? "true" : undefined}
-                  className={["border-b border-border last:border-0", isLocked ? "opacity-40" : ""]
+                  aria-disabled={isDimmed ? "true" : undefined}
+                  className={["border-b border-border last:border-0", isDimmed ? "opacity-40" : ""]
                     .filter(Boolean)
                     .join(" ")}
                 >

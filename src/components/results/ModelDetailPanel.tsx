@@ -10,6 +10,8 @@ interface ModelDetailPanelProps {
   modelId: ModelId | null;
   results: CalculationResults;
   input: SimulationInput;
+  p1Name: string;
+  p2Name: string;
   onClose: () => void;
 }
 
@@ -20,6 +22,8 @@ function formatMoney(value: number): string {
 export function ModelDetailPanel({
   modelId,
   results,
+  p1Name,
+  p2Name,
   onClose,
 }: ModelDetailPanelProps): React.ReactElement | null {
   if (modelId === null) return null;
@@ -35,7 +39,7 @@ export function ModelDetailPanel({
           type="button"
           aria-label="Fermer"
           onClick={onClose}
-          className="text-text-dim hover:text-text transition-colors text-lg leading-none shrink-0 mt-0.5"
+          className="text-text-dim hover:text-text transition-colors text-lg leading-none shrink-0 mt-0.5 cursor-pointer"
         >
           ✕
         </button>
@@ -94,9 +98,9 @@ export function ModelDetailPanel({
               Option A — revenus réels
             </h3>
             <p className="text-sm">
-              P1&nbsp;: {formatMoney(results.m4_adjusted_time.optionA.p1Contribution)}
+              {p1Name}&nbsp;: {formatMoney(results.m4_adjusted_time.optionA.p1Contribution)}
               {" — "}
-              P2&nbsp;: {formatMoney(results.m4_adjusted_time.optionA.p2Contribution)}
+              {p2Name}&nbsp;: {formatMoney(results.m4_adjusted_time.optionA.p2Contribution)}
             </p>
           </div>
           <div className="bg-surface border border-border rounded-lg px-4 py-3">
@@ -104,9 +108,9 @@ export function ModelDetailPanel({
               Option B — temps plein théorique
             </h3>
             <p className="text-sm">
-              P1&nbsp;: {formatMoney(results.m4_adjusted_time.optionB.p1Contribution)}
+              {p1Name}&nbsp;: {formatMoney(results.m4_adjusted_time.optionB.p1Contribution)}
               {" — "}
-              P2&nbsp;: {formatMoney(results.m4_adjusted_time.optionB.p2Contribution)}
+              {p2Name}&nbsp;: {formatMoney(results.m4_adjusted_time.optionB.p2Contribution)}
             </p>
           </div>
         </div>
@@ -134,13 +138,13 @@ export function ModelDetailPanel({
             </thead>
             <tbody>
               <tr className="border-b border-border">
-                <td className="py-1.5">P1</td>
+                <td className="py-1.5">{p1Name}</td>
                 <td className="py-1.5 text-right">
                   {formatMoney(results.m5_total_contribution.p1DomesticMonthlyValue)}
                 </td>
               </tr>
               <tr>
-                <td className="py-1.5">P2</td>
+                <td className="py-1.5">{p2Name}</td>
                 <td className="py-1.5 text-right">
                   {formatMoney(results.m5_total_contribution.p2DomesticMonthlyValue)}
                 </td>

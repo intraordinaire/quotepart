@@ -133,4 +133,39 @@ describe("EquityGauges", () => {
     expect(screen.getByText("M4")).toBeInTheDocument();
     expect(screen.getByText("M5")).toBeInTheDocument();
   });
+
+  it("M4 gauge shows '= M2' label when isSameAsM2", () => {
+    const results = makeResults();
+    results.m4_adjusted_time.isSameAsM2 = true;
+
+    render(<EquityGauges results={results} unlockedModels={ALL_MODELS} />);
+
+    const bar = screen.getByTestId("gauge-m4_adjusted_time");
+    expect(bar.className).toContain("bg-surface");
+    expect(screen.getByText("= M2")).toBeInTheDocument();
+  });
+
+  it("M5 gauge shows '= M2' label when isSameAsM2", () => {
+    const results = makeResults();
+    results.m5_total_contribution.isSameAsM2 = true;
+
+    render(<EquityGauges results={results} unlockedModels={ALL_MODELS} />);
+
+    const bar = screen.getByTestId("gauge-m5_total_contribution");
+    expect(bar.className).toContain("bg-surface");
+    expect(screen.getAllByText("= M2").length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("non-viable model shows 'Non viable' label and empty gauge", () => {
+    const results = makeResults();
+    results.m1_5050 = makeModelResult(0.8);
+    results.m1_5050.isViable = false;
+
+    render(<EquityGauges results={results} unlockedModels={ALL_MODELS} />);
+
+    const bar = screen.getByTestId("gauge-m1_5050");
+    expect(bar).toHaveStyle({ width: "0%" });
+    expect(bar.className).toContain("bg-surface");
+    expect(screen.getByText("Non viable")).toBeInTheDocument();
+  });
 });

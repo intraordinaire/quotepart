@@ -73,10 +73,10 @@ export function ModeChoice(): React.JSX.Element {
             <EditIcon />
           </span>
           <div>
-            <div className="text-[15px] font-semibold mb-1">Je remplis pour nous deux</div>
+            <div className="text-[15px] font-semibold mb-1">On remplit ensemble</div>
             <div className="text-[13px] text-text-dim leading-relaxed">
-              Vous saisissez les données des deux personnes. Résultats immédiats. Vous pourrez
-              ensuite partager un lien pour que votre partenaire ajuste ses données.
+              Vous saisissez les données des deux personnes et découvrez les résultats
+              immédiatement.
             </div>
           </div>
         </button>
@@ -94,10 +94,7 @@ export function ModeChoice(): React.JSX.Element {
             <div className="text-[15px] font-semibold mb-1">On remplit chacun·e nos données</div>
             <div className="text-[13px] text-text-dim leading-relaxed">
               Vous saisissez vos données et les charges communes. Votre partenaire recevra un lien
-              pour compléter les siennes. Plus juste, notamment pour la charge domestique.
-            </div>
-            <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-accent uppercase tracking-[0.04em]">
-              Recommandé pour la confrontation des perceptions
+              pour compléter les siennes, y compris sa perception de la charge domestique.
             </div>
           </div>
         </button>

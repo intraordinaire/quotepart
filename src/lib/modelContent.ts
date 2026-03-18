@@ -24,7 +24,7 @@ export const MODEL_CONTENT: Record<ModelId, ModelContent> = {
     limitations: ["Ne tient pas compte des charges personnelles", "Ignore le travail domestique"],
   },
   m3_equal_rav: {
-    label: "M3 — RAV égal",
+    label: "M3 — Reste à vivre égal",
     formula: "Chaque partenaire garde le même revenu disponible après charges communes.",
     philosophy: "Égaliser ce qu'il reste après avoir payé sa part.",
     advantages: ["Même niveau de vie pour les deux", "Prend en compte les charges perso"],

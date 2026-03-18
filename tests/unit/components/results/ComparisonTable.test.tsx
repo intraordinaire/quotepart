@@ -137,7 +137,7 @@ describe("ComparisonTable", () => {
     expect(screen.getAllByText(/1[\s\u00A0\u202F]811[\s\u00A0\u202F]€/).length).toBeGreaterThan(0);
   });
 
-  it("non-viable model shows 'Non viable' badge", () => {
+  it("non-viable model shows footer note and dimmed column", () => {
     const results = makeResults({
       m1_5050: makeModelResult({ isViable: false }),
     });
@@ -153,7 +153,9 @@ describe("ComparisonTable", () => {
       />
     );
 
-    expect(screen.getByText(/non viable/i)).toBeInTheDocument();
+    const tfoot = document.querySelector("tfoot");
+    expect(tfoot).not.toBeNull();
+    expect(tfoot!.textContent).toMatch(/M1.*Non viable/i);
   });
 
   it("clicking a column header calls onModelSelect with the modelId", () => {
@@ -177,57 +179,6 @@ describe("ComparisonTable", () => {
     expect(onSelect).toHaveBeenCalledWith("m1_5050");
   });
 
-  it("best model (highest equityScore among unlocked) has ring-accent class", () => {
-    // m3 has equityScore=0.9, highest among all
-    const results = makeResults({
-      m1_5050: makeModelResult({ equityScore: 0.7 }),
-      m2_income_ratio: makeModelResult({ equityScore: 0.8 }),
-      m3_equal_rav: makeModelResult({ equityScore: 0.9 }),
-      m4_adjusted_time: makeM4Result({ optionB: makeModelResult({ equityScore: 0.6 }) }),
-      m5_total_contribution: makeM5Result({ modelResult: makeModelResult({ equityScore: 0.5 }) }),
-    });
-
-    const { container } = render(
-      <ComparisonTable
-        results={results}
-        unlockedModels={ALL_MODELS}
-        selectedModel={null}
-        onModelSelect={vi.fn()}
-        p1Name="Alice"
-        p2Name="Bob"
-      />
-    );
-
-    const bestColumn = container.querySelector("[data-model='m3_equal_rav']");
-    expect(bestColumn).not.toBeNull();
-    expect(bestColumn?.className).toMatch(/ring-accent/);
-  });
-
-  it("best model among unlocked only — locked models excluded from best calculation", () => {
-    // m3 (score 0.99) is locked; m2 (score 0.85) should be best among unlocked
-    const results = makeResults({
-      m1_5050: makeModelResult({ equityScore: 0.7 }),
-      m2_income_ratio: makeModelResult({ equityScore: 0.85 }),
-      m3_equal_rav: makeModelResult({ equityScore: 0.99 }),
-    });
-
-    const { container } = render(
-      <ComparisonTable
-        results={results}
-        unlockedModels={TIER1_ONLY}
-        selectedModel={null}
-        onModelSelect={vi.fn()}
-        p1Name="Alice"
-        p2Name="Bob"
-      />
-    );
-
-    const m2Column = container.querySelector("[data-model='m2_income_ratio']");
-    const m3Column = container.querySelector("[data-model='m3_equal_rav']");
-    expect(m2Column?.className).toMatch(/ring-accent/);
-    expect(m3Column?.className).not.toMatch(/ring-accent/);
-  });
-
   it("does not call onModelSelect when clicking a locked model header", () => {
     const onSelect = vi.fn();
 
@@ -247,5 +198,47 @@ describe("ComparisonTable", () => {
     expect(m3Header).not.toBeNull();
     fireEvent.click(m3Header!);
     expect(onSelect).not.toHaveBeenCalledWith("m3_equal_rav");
+  });
+
+  it("shows footer note when M4 isSameAsM2", () => {
+    const results = makeResults({
+      m4_adjusted_time: makeM4Result({ isSameAsM2: true }),
+    });
+
+    render(
+      <ComparisonTable
+        results={results}
+        unlockedModels={ALL_MODELS}
+        selectedModel={null}
+        onModelSelect={vi.fn()}
+        p1Name="Alice"
+        p2Name="Bob"
+      />
+    );
+
+    expect(screen.getByText(/identique au M2/i)).toBeInTheDocument();
+    // Footer note contains the message in a tfoot
+    const tfoot = document.querySelector("tfoot");
+    expect(tfoot).not.toBeNull();
+    expect(tfoot!.textContent).toMatch(/M4.*identique au M2/i);
+  });
+
+  it("shows footer note for M5 when isSameAsM2", () => {
+    const results = makeResults({
+      m5_total_contribution: makeM5Result({ isSameAsM2: true }),
+    });
+
+    render(
+      <ComparisonTable
+        results={results}
+        unlockedModels={ALL_MODELS}
+        selectedModel={null}
+        onModelSelect={vi.fn()}
+        p1Name="Alice"
+        p2Name="Bob"
+      />
+    );
+
+    expect(screen.getByText(/identique au M2/i)).toBeInTheDocument();
   });
 });

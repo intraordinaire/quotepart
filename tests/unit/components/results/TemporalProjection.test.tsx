@@ -171,10 +171,28 @@ describe("TemporalProjection", () => {
       />
     );
 
-    expect(screen.getByText(/M1.*50\/50/i)).toBeInTheDocument();
-    expect(screen.getByText(/M2.*Revenu proportionnel/i)).toBeInTheDocument();
-    expect(screen.getByText(/M3.*RAV égal/i)).toBeInTheDocument();
-    expect(screen.getByText(/M4.*Temps ajusté/i)).toBeInTheDocument();
-    expect(screen.getByText(/M5.*Contribution totale/i)).toBeInTheDocument();
+    expect(screen.getByText(/50\/50/i)).toBeInTheDocument();
+    expect(screen.getByText(/Revenu proportionnel/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reste à vivre égal/i)).toBeInTheDocument();
+    expect(screen.getByText(/Temps ajusté/i)).toBeInTheDocument();
+    expect(screen.getByText(/Contribution totale/i)).toBeInTheDocument();
+  });
+
+  it("M4 row is dimmed when isSameAsM2", () => {
+    const results = makeResults();
+    results.m4_adjusted_time.isSameAsM2 = true;
+
+    render(
+      <TemporalProjection
+        results={results}
+        unlockedModels={ALL_MODELS}
+        p1Name="Alice"
+        p2Name="Bob"
+      />
+    );
+
+    const m4Row = screen.getByText(/Temps ajusté/i).closest("tr");
+    expect(m4Row?.className).toContain("opacity-40");
+    expect(m4Row?.getAttribute("aria-disabled")).toBe("true");
   });
 });

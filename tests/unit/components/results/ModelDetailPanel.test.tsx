@@ -84,6 +84,8 @@ describe("ModelDetailPanel", () => {
         modelId={null}
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -96,6 +98,8 @@ describe("ModelDetailPanel", () => {
         modelId="m1_5050"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -108,6 +112,8 @@ describe("ModelDetailPanel", () => {
         modelId="m1_5050"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -122,6 +128,8 @@ describe("ModelDetailPanel", () => {
         modelId="m2_income_ratio"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -134,6 +142,8 @@ describe("ModelDetailPanel", () => {
         modelId="m3_equal_rav"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -148,6 +158,8 @@ describe("ModelDetailPanel", () => {
         modelId="m4_adjusted_time"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -162,6 +174,8 @@ describe("ModelDetailPanel", () => {
         modelId="m5_total_contribution"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -176,6 +190,8 @@ describe("ModelDetailPanel", () => {
         modelId="m1_5050"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -189,6 +205,8 @@ describe("ModelDetailPanel", () => {
         modelId="m1_5050"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -202,6 +220,8 @@ describe("ModelDetailPanel", () => {
         modelId="m4_adjusted_time"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -215,6 +235,8 @@ describe("ModelDetailPanel", () => {
         modelId="m5_total_contribution"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={vi.fn()}
       />
     );
@@ -231,6 +253,8 @@ describe("ModelDetailPanel", () => {
         modelId="m1_5050"
         results={defaultResults}
         input={defaultInput}
+        p1Name="P1"
+        p2Name="P2"
         onClose={onClose}
       />
     );
