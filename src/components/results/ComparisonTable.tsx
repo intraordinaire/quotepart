@@ -42,8 +42,25 @@ const MODEL_CONFIGS: ModelConfig[] = [
 
 function formatAmount(amount: number): string {
   const formatted = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(amount);
-  // Append non-breaking space + € for consistent display
   return `${formatted}\u00A0€`;
+}
+
+function formatContribution(
+  amount: number,
+  personName: string,
+  otherName: string
+): React.ReactNode {
+  if (amount < 0) {
+    const absFormatted = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(
+      Math.abs(amount)
+    );
+    return (
+      <span className="text-accent text-[10px]">
+        {otherName} → {personName}&nbsp;: {absFormatted}\u00A0€
+      </span>
+    );
+  }
+  return formatAmount(amount);
 }
 
 function getModelResult(results: CalculationResults, id: ModelId): ModelResult {
@@ -87,7 +104,7 @@ export function ComparisonTable({
       {chargesAlert && (
         <div
           role="alert"
-          className="bg-accent-light border border-accent text-accent rounded-md px-4 py-2 text-sm"
+          className="bg-accent-dim border border-accent text-accent rounded-md px-4 py-2 text-sm"
         >
           {chargesAlert.message}
         </div>
@@ -96,7 +113,7 @@ export function ComparisonTable({
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr>
-              <th className="text-left py-2 px-3 text-text-secondary font-medium w-32" />
+              <th className="text-left py-2 px-3 text-text-dim font-medium w-32" />
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
                 const isBest = config.id === bestModelId;
@@ -113,7 +130,7 @@ export function ComparisonTable({
                         : "cursor-pointer hover:bg-surface",
                       isBest
                         ? "ring-2 ring-accent border-accent text-accent"
-                        : "border-border text-text-secondary",
+                        : "border-border text-text-dim",
                       isSelected && !isLocked ? "bg-surface" : "",
                     ]
                       .filter(Boolean)
@@ -132,7 +149,7 @@ export function ComparisonTable({
           <tbody>
             {/* Row: model full label */}
             <tr className="border-b border-border">
-              <td className="py-2 px-3 text-text-secondary text-xs">Modèle</td>
+              <td className="py-2 px-3 text-text-dim text-xs">Modèle</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);
@@ -155,7 +172,7 @@ export function ComparisonTable({
                       <>
                         {result && !result.isViable && (
                           <>
-                            <ModelBadge label="Non viable" variant="default" />
+                            <ModelBadge label="Non viable" variant="warning" />
                             {result.warnings.map((w, i) => (
                               <p key={i} className="text-accent text-[10px] mt-1">
                                 {w}
@@ -163,7 +180,7 @@ export function ComparisonTable({
                             ))}
                           </>
                         )}
-                        <span className="text-text-secondary">{config.fullLabel}</span>
+                        <span className="text-text-dim">{config.fullLabel}</span>
                       </>
                     )}
                   </td>
@@ -173,16 +190,14 @@ export function ComparisonTable({
 
             {/* Row: P1 contribution */}
             <tr className="border-b border-border">
-              <td className="py-2 px-3 text-text-secondary text-xs">
-                Part {p1Name || "Personne 1"}
-              </td>
+              <td className="py-2 px-3 text-text-dim text-xs">Part {p1Name || "Personne 1"}</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);
 
                 return (
                   <td key={config.id} className="py-2 px-3 text-center text-xs">
-                    {result ? formatAmount(result.p1Contribution) : "—"}
+                    {result ? formatContribution(result.p1Contribution, p1Name, p2Name) : "—"}
                   </td>
                 );
               })}
@@ -190,16 +205,14 @@ export function ComparisonTable({
 
             {/* Row: P2 contribution */}
             <tr className="border-b border-border">
-              <td className="py-2 px-3 text-text-secondary text-xs">
-                Part {p2Name || "Personne 2"}
-              </td>
+              <td className="py-2 px-3 text-text-dim text-xs">Part {p2Name || "Personne 2"}</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);
 
                 return (
                   <td key={config.id} className="py-2 px-3 text-center text-xs">
-                    {result ? formatAmount(result.p2Contribution) : "—"}
+                    {result ? formatContribution(result.p2Contribution, p2Name, p1Name) : "—"}
                   </td>
                 );
               })}
@@ -207,9 +220,7 @@ export function ComparisonTable({
 
             {/* Row: P1 disposable income */}
             <tr className="border-b border-border">
-              <td className="py-2 px-3 text-text-secondary text-xs">
-                RAV {p1Name || "Personne 1"}
-              </td>
+              <td className="py-2 px-3 text-text-dim text-xs">RAV {p1Name || "Personne 1"}</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);
@@ -224,9 +235,7 @@ export function ComparisonTable({
 
             {/* Row: P2 disposable income */}
             <tr className="border-b border-border">
-              <td className="py-2 px-3 text-text-secondary text-xs">
-                RAV {p2Name || "Personne 2"}
-              </td>
+              <td className="py-2 px-3 text-text-dim text-xs">RAV {p2Name || "Personne 2"}</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);
@@ -241,7 +250,7 @@ export function ComparisonTable({
 
             {/* Row: equity score */}
             <tr>
-              <td className="py-2 px-3 text-text-secondary text-xs">Score équité</td>
+              <td className="py-2 px-3 text-text-dim text-xs">Score équité</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
                 const result = isLocked ? null : getModelResult(results, config.id);

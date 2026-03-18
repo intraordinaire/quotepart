@@ -178,6 +178,58 @@ describe("Edge cases — ComparisonTable", () => {
   });
 });
 
+describe("Edge cases — Transfer display", () => {
+  it("displays negative contribution as a transfer with arrow notation", () => {
+    const results = makeResults({
+      m3_equal_rav: makeModelResult({
+        p2Contribution: -300,
+        p1Contribution: 3300,
+        warnings: ["Pour égaliser le reste à vivre, P1 devrait verser 300\u00A0€/mois à P2."],
+      }),
+    });
+
+    render(
+      <ComparisonTable
+        results={results}
+        unlockedModels={ALL_MODELS}
+        selectedModel={null}
+        onModelSelect={vi.fn()}
+        p1Name="Alice"
+        p2Name="Bob"
+      />
+    );
+
+    // Negative contribution should show as transfer, not raw "-300"
+    expect(screen.queryByText(/-300/)).toBeNull();
+    // Should show positive amount with arrow direction
+    expect(screen.getByText(/Alice → Bob/)).toBeInTheDocument();
+  });
+
+  it("shows 'Non viable' badge with warning variant for contribution > income", () => {
+    const results = makeResults({
+      m5_total_contribution: makeM5Result({
+        modelResult: makeModelResult({
+          isViable: false,
+          warnings: ["La contribution dépasse son revenu."],
+        }),
+      }),
+    });
+
+    render(
+      <ComparisonTable
+        results={results}
+        unlockedModels={ALL_MODELS}
+        selectedModel={null}
+        onModelSelect={vi.fn()}
+        p1Name="Alice"
+        p2Name="Bob"
+      />
+    );
+
+    expect(screen.getByText(/non viable/i)).toBeInTheDocument();
+  });
+});
+
 describe("Edge cases — ModelDetailPanel", () => {
   it("M4 shows 'identique au M2' mention when isSameAsM2 = true", () => {
     const results = makeResults({

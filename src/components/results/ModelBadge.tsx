@@ -4,14 +4,15 @@ import React from "react";
 
 export interface ModelBadgeProps {
   label: string;
-  variant?: "default" | "best" | "locked";
+  variant?: "default" | "best" | "locked" | "warning";
 }
 
 export function ModelBadge({ label, variant = "default" }: ModelBadgeProps): React.JSX.Element {
   const variantClasses: Record<NonNullable<ModelBadgeProps["variant"]>, string> = {
-    default: "bg-surface text-text-secondary",
-    best: "bg-accent-light text-accent",
-    locked: "bg-surface text-text-tertiary opacity-50",
+    default: "bg-surface text-text-dim",
+    best: "bg-accent-dim text-accent",
+    locked: "bg-surface text-text-muted opacity-50",
+    warning: "bg-amber-dim text-amber",
   };
 
   return (
