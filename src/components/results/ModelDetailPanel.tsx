@@ -88,7 +88,7 @@ export function ModelDetailPanel({
 
       {/* M4 options */}
       {modelId === "m4_adjusted_time" && (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div className="bg-surface border border-border rounded-lg px-4 py-3">
             <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-2">
               Option A — revenus réels

@@ -75,7 +75,9 @@ export function ResultsShell(): React.JSX.Element {
     <div className="space-y-10">
       {/* Comparison table */}
       <section>
-        <h2 className="font-display text-[28px] font-normal mb-6">Comparaison des modèles</h2>
+        <h2 className="font-display text-xl md:text-[28px] font-normal mb-4 md:mb-6">
+          Comparaison des modèles
+        </h2>
         <ComparisonTable
           results={results}
           unlockedModels={unlockedModels}
@@ -98,13 +100,17 @@ export function ResultsShell(): React.JSX.Element {
 
       {/* Equity gauges */}
       <section>
-        <h2 className="font-display text-[28px] font-normal mb-6">Score d&apos;équité</h2>
+        <h2 className="font-display text-xl md:text-[28px] font-normal mb-4 md:mb-6">
+          Score d&apos;équité
+        </h2>
         <EquityGauges results={results} unlockedModels={unlockedModels} />
       </section>
 
       {/* Temporal projection */}
       <section>
-        <h2 className="font-display text-[28px] font-normal mb-6">Projection dans le temps</h2>
+        <h2 className="font-display text-xl md:text-[28px] font-normal mb-4 md:mb-6">
+          Projection dans le temps
+        </h2>
         <TemporalProjection
           results={results}
           unlockedModels={unlockedModels}
@@ -116,7 +122,7 @@ export function ResultsShell(): React.JSX.Element {
       {/* Perception confrontation (couple mode only) */}
       {state.mode === "shared" && tier4Done && (
         <section>
-          <h2 className="font-display text-[28px] font-normal mb-6">
+          <h2 className="font-display text-xl md:text-[28px] font-normal mb-4 md:mb-6">
             Perception du travail domestique
           </h2>
           <PerceptionConfrontation

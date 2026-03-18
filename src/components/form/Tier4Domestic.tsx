@@ -120,7 +120,7 @@ export function Tier4Domestic(): React.JSX.Element {
         net horaire (9,57 €/h).
       </div>
 
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col-reverse gap-3 md:flex-row md:justify-between md:items-start">
         <button
           type="button"
           onClick={handleRetour}

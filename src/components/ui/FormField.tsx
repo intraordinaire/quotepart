@@ -40,7 +40,7 @@ export function FormField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={[
-            "w-full text-sm py-[9px] px-3 border border-border rounded-md bg-surface",
+            "w-full text-sm py-3 px-3 border border-border rounded-md bg-surface",
             "outline-none focus:border-accent transition-colors",
             suffix ? "pr-10" : "",
           ]

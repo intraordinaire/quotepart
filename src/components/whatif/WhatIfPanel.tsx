@@ -74,7 +74,7 @@ export function WhatIfPanel(): React.JSX.Element {
         <h4 className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
           Revenus & charges
         </h4>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             label={`Revenu ${p1Name}`}
             value={String(input.p1.income)}
@@ -103,7 +103,7 @@ export function WhatIfPanel(): React.JSX.Element {
             suffix="€"
             numeric
           />
-          <div className="col-span-2">
+          <div className="md:col-span-2">
             <FormField
               label="Charges communes"
               value={String(input.commonCharges)}
@@ -120,7 +120,7 @@ export function WhatIfPanel(): React.JSX.Element {
         <h4 className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
           Temps de travail
         </h4>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             label={`Quotité ${p1Name}`}
             value={String(Math.round(input.p1.workQuota * 100))}

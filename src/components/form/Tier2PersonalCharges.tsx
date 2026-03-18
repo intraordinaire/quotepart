@@ -86,7 +86,7 @@ export function Tier2PersonalCharges(): React.JSX.Element {
         Optionnel, vous pouvez passer cette étape.
       </p>
 
-      <div className="grid grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {/* P1 column */}
         <div>
           <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">

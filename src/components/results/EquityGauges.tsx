@@ -56,10 +56,14 @@ export function EquityGauges({ results, unlockedModels }: EquityGaugesProps): Re
         const percentage = Math.round(score * 100);
 
         return (
-          <div key={id} className="flex items-center gap-3">
-            <span className="w-6 shrink-0 text-sm font-semibold text-text-dim">{shortLabel}</span>
-            <span className="w-40 shrink-0 text-sm text-text-dim">{fullLabel}</span>
-            <div className="relative flex-1 h-4 rounded-full bg-border overflow-hidden">
+          <div key={id} className="flex items-center gap-2 md:gap-3">
+            <span className="w-6 shrink-0 text-xs md:text-sm font-semibold text-text-dim">
+              {shortLabel}
+            </span>
+            <span className="hidden md:inline w-40 shrink-0 text-sm text-text-dim">
+              {fullLabel}
+            </span>
+            <div className="relative flex-1 h-3 md:h-4 rounded-full bg-border overflow-hidden">
               <div
                 data-testid={`gauge-${id}`}
                 className={`h-full rounded-full transition-all duration-300 ${colorClass}`}

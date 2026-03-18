@@ -181,7 +181,7 @@ export default function SimulatePage(): React.JSX.Element {
   return (
     <div className="flex flex-col min-h-screen bg-bg">
       {/* ── Top header ─────────────────────────────────────────────────────── */}
-      <header className="h-14 bg-surface border-b border-border flex items-center px-6 gap-4 shrink-0">
+      <header className="min-h-14 bg-surface border-b border-border flex flex-wrap items-center px-4 md:px-6 gap-2 md:gap-4 py-2 shrink-0">
         <Link
           href="/"
           className="font-display text-xl text-text hover:opacity-80 transition-opacity"
@@ -189,20 +189,23 @@ export default function SimulatePage(): React.JSX.Element {
           Quote<span className="text-accent">Part</span>
         </Link>
 
-        <span className="text-border select-none">|</span>
+        <span className="text-border select-none hidden md:inline">|</span>
 
-        <span className="text-sm text-text-dim">Nouvelle simulation</span>
+        <span className="text-sm text-text-dim hidden md:inline">Nouvelle simulation</span>
 
         {state.mode && (
           <>
-            <span className="text-border select-none">|</span>
+            <span className="text-border select-none hidden md:inline">|</span>
             <ModeBadge mode={state.mode} />
           </>
         )}
       </header>
 
       {/* ── Tab navigation ─────────────────────────────────────────────────── */}
-      <nav role="tablist" className="bg-surface border-b border-border flex px-6 shrink-0">
+      <nav
+        role="tablist"
+        className="bg-surface border-b border-border flex px-2 md:px-6 shrink-0 overflow-x-auto"
+      >
         <button
           role="tab"
           type="button"
@@ -210,7 +213,7 @@ export default function SimulatePage(): React.JSX.Element {
           aria-controls="panel-saisie"
           onClick={() => setActiveTab("saisie")}
           className={[
-            "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+            "flex items-center gap-1.5 px-3 md:px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
             activeTab === "saisie"
               ? "border-accent text-text"
               : "border-transparent text-text-dim hover:text-text",
@@ -230,7 +233,7 @@ export default function SimulatePage(): React.JSX.Element {
             if (tier1Complete) setActiveTab("resultats");
           }}
           className={[
-            "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+            "flex items-center gap-1.5 px-3 md:px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
             activeTab === "resultats"
               ? "border-accent text-text"
               : "border-transparent text-text-dim hover:text-text",
@@ -253,7 +256,7 @@ export default function SimulatePage(): React.JSX.Element {
             if (tier1Complete) setActiveTab("etsi");
           }}
           className={[
-            "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+            "flex items-center gap-1.5 px-3 md:px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
             activeTab === "etsi"
               ? "border-accent text-text"
               : "border-transparent text-text-dim hover:text-text",
@@ -269,11 +272,15 @@ export default function SimulatePage(): React.JSX.Element {
 
       {/* ── Content area ───────────────────────────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar: only visible when a mode has been selected (tier > 0) */}
-        {state.activeTier > 0 && <TierNav />}
+        {/* Sidebar: hidden on mobile, visible on md+ */}
+        {state.activeTier > 0 && (
+          <div className="hidden md:block">
+            <TierNav />
+          </div>
+        )}
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="flex-1 overflow-y-auto px-4 py-6 md:p-8">
           <div role="tabpanel" id="panel-saisie" hidden={activeTab !== "saisie"}>
             <div className="max-w-2xl mx-auto">
               <TierContent activeTier={state.activeTier} />

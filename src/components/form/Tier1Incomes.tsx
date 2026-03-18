@@ -56,7 +56,7 @@ export function Tier1Incomes(): React.JSX.Element {
         L&apos;essentiel pour démarrer. Débloque les modèles 50/50 et Prorata.
       </p>
 
-      <div className="grid grid-cols-2 gap-4 mb-7">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-7">
         <FormField
           id="p1-name"
           label="Prénom personne 1"

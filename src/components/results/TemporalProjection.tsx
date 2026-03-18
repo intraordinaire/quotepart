@@ -47,8 +47,8 @@ export function TemporalProjection({
         pour mesurer l&apos;impact dans le temps.
       </p>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm border-collapse">
+      <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+        <table className="w-full min-w-[400px] text-xs md:text-sm border-collapse">
           <thead>
             <tr className="border-b border-border">
               <th className="text-left py-2 pr-4 font-medium text-text-dim">Modèle</th>

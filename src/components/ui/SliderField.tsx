@@ -41,7 +41,7 @@ export function SliderField({
             value={value}
             onChange={(e) => onChange(Number(e.target.value))}
             aria-label={label}
-            className="w-full h-1 appearance-none rounded-sm outline-none cursor-pointer"
+            className="w-full h-1 appearance-none rounded-sm outline-none cursor-pointer touch-manipulation py-3"
             style={{
               background: `linear-gradient(to right, var(--color-text) 0%, var(--color-text) ${value}%, var(--color-accent) ${value}%, var(--color-accent) 100%)`,
             }}

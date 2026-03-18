@@ -109,8 +109,8 @@ export function ComparisonTable({
           {chargesAlert.message}
         </div>
       )}
-      <div className="overflow-x-auto w-full">
-        <table className="w-full border-collapse text-sm">
+      <div className="overflow-x-auto w-full -mx-4 px-4 md:mx-0 md:px-0">
+        <table className="w-full min-w-[520px] border-collapse text-xs md:text-sm">
           <thead>
             <tr>
               <th className="text-left py-2 px-3 text-text-dim font-medium w-32" />
