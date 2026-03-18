@@ -15,7 +15,7 @@ test.describe("Sharing flow", () => {
     const payload = {
       commonCharges: 1500,
       hasChildren: false,
-      hourlyRate: 9.57,
+      hourlyRate: 9.52,
       p1Name: "Alice",
     };
     const encoded = btoa(JSON.stringify(payload))
@@ -32,7 +32,7 @@ test.describe("Sharing flow", () => {
     const payload = {
       commonCharges: 1200,
       hasChildren: true,
-      hourlyRate: 9.57,
+      hourlyRate: 9.52,
       p1Name: "Bob",
     };
     const encoded = btoa(JSON.stringify(payload))
@@ -49,7 +49,7 @@ test.describe("Sharing flow", () => {
     const payload = {
       commonCharges: 1500,
       hasChildren: false,
-      hourlyRate: 9.57,
+      hourlyRate: 9.52,
       p1Name: "Alice",
     };
     const encoded = btoa(JSON.stringify(payload))

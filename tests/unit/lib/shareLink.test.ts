@@ -43,7 +43,7 @@ const fullInput: SimulationInput = {
       planning: 45,
     },
   },
-  hourlyRate: 9.57,
+  hourlyRate: 9.52,
 };
 
 const BASE_URL = "https://example.com";

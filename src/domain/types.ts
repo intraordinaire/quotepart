@@ -28,7 +28,7 @@ export interface SimulationInput {
     p1: DomesticSliders;
     p2?: DomesticSliders; // only in couple mode
   };
-  hourlyRate: number; // default 9.52 EUR (SMIC 2026)
+  hourlyRate: number; // default DEFAULT_HOURLY_RATE (SMIC net horaire 2026)
 }
 
 export interface ModelResult {

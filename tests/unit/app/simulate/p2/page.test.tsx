@@ -82,7 +82,7 @@ const sampleInput: SimulationInput = {
       planning: 50,
     },
   },
-  hourlyRate: 9.57,
+  hourlyRate: 9.52,
 };
 
 function buildP2DataParam(): string {

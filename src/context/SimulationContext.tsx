@@ -3,6 +3,7 @@
 import React, { createContext, useEffect, useReducer, type ReactNode } from "react";
 import { saveState, loadState } from "@/lib/persistState";
 import type { SimulationInput, ModelId } from "@/domain/types";
+import { DEFAULT_HOURLY_RATE } from "@/domain/constants";
 
 // ─── State ─────────────────────────────────────────────────────────────────
 
@@ -35,7 +36,7 @@ export const initialState: SimulationState = {
   activeTier: 0,
   completedTiers: new Set(),
   skippedTiers: new Set(),
-  input: { commonCharges: 0, hasChildren: false, hourlyRate: 9.57 },
+  input: { commonCharges: 0, hasChildren: false, hourlyRate: DEFAULT_HOURLY_RATE },
   activeTab: "saisie",
 };
 

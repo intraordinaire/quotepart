@@ -13,6 +13,7 @@ import { TierNav } from "@/components/form/TierNav";
 import { ResultsShell } from "@/components/results/ResultsShell";
 import { WhatIfShell } from "@/components/whatif/WhatIfShell";
 import type { SimulationInput, DomesticSliders } from "@/domain/types";
+import { DEFAULT_HOURLY_RATE } from "@/domain/constants";
 
 const DEFAULT_SLIDERS: DomesticSliders = {
   groceries: 50,
@@ -160,7 +161,7 @@ function EtSiContent(): React.JSX.Element {
     commonCharges: rawInput.commonCharges ?? 0,
     hasChildren: rawInput.hasChildren ?? false,
     domesticSliders: rawInput.domesticSliders ?? { p1: DEFAULT_SLIDERS },
-    hourlyRate: rawInput.hourlyRate ?? 9.57,
+    hourlyRate: rawInput.hourlyRate ?? DEFAULT_HOURLY_RATE,
   };
 
   return <WhatIfShell input={input} />;

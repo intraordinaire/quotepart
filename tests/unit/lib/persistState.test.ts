@@ -11,7 +11,7 @@ function makeState(overrides: Partial<SimulationState> = {}): SimulationState {
     input: {
       commonCharges: 1500,
       hasChildren: false,
-      hourlyRate: 9.57,
+      hourlyRate: 9.52,
     },
     activeTab: "saisie",
     ...overrides,

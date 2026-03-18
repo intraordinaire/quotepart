@@ -12,6 +12,7 @@ import { ModelDetailPanel } from "./ModelDetailPanel";
 import { PerceptionConfrontation } from "./PerceptionConfrontation";
 import { displayName } from "@/lib/names";
 import type { DomesticSliders } from "@/domain/types";
+import { DEFAULT_HOURLY_RATE } from "@/domain/constants";
 
 const DEFAULT_SLIDERS: DomesticSliders = {
   groceries: 50,
@@ -62,7 +63,7 @@ export function ResultsShell(): React.JSX.Element {
     commonCharges: rawInput.commonCharges ?? 0,
     hasChildren: rawInput.hasChildren ?? false,
     domesticSliders: rawInput.domesticSliders ?? { p1: DEFAULT_SLIDERS },
-    hourlyRate: rawInput.hourlyRate ?? 9.57,
+    hourlyRate: rawInput.hourlyRate ?? DEFAULT_HOURLY_RATE,
   };
 
   const results = calculate(input);

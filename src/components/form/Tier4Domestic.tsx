@@ -117,7 +117,7 @@ export function Tier4Domestic(): React.JSX.Element {
 
       <div className="p-3 px-4 bg-surface rounded-lg text-xs text-text-dim mb-6 leading-relaxed border-l-[3px] border-border">
         Heures de référence basées sur l&apos;Enquête Emploi du Temps (INSEE). Valorisation : SMIC
-        net horaire (9,57 €/h).
+        net horaire (9,52 €/h).
       </div>
 
       <div className="flex flex-col-reverse gap-3 md:flex-row md:justify-between md:items-start">
