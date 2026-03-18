@@ -16,23 +16,25 @@ Full product spec: `quotepart-cadrage-v03.md`
 
 Reference files:
 
+- `docs/reference/quotepart-design-system.md` — **design system "Data Journalism"** (palette, typo, composants, accessibilite)
+- `docs/reference/frontend-guide.md` — **conventions d'implementation Next.js/Tailwind** (tokens, classes, regles)
 - `docs/reference/prototype.jsx` — original UI prototype (visual reference only)
-- `docs/reference/frontend-guide.md` — **frontend conventions, design tokens, accessibility rules** (consult before any UI work)
 - `quotepart-cadrage-v03.md` — full product specification (French)
 
 ## Implementation Plans
 
 Plans are in `docs/plans/` — execute in order:
 
-| Plan                        | File                                               | Status      |
-| --------------------------- | -------------------------------------------------- | ----------- |
-| 01 — Bootstrap              | `docs/plans/2026-03-17-01-bootstrap.md`            | ✅ Complete |
-| 02 — Domain Core            | `docs/plans/2026-03-17-02-domain-core.md`          | ✅ Complete |
-| 03 — Form / State           | `docs/plans/2026-03-17-03-form-state.md`           | ✅ Complete |
-| 04 — Results                | `docs/plans/2026-03-17-04-results.md`              | ✅ Complete |
-| 05 — URL encoding / P2 flow | `docs/plans/2026-03-17-05-url-encoding-p2-flow.md` | ✅ Complete |
-| 06 — Et si...               | `docs/plans/2026-03-17-06-whatif.md`               | 📋 Draft    |
-| 07 — E2E, CI & Landing      | `docs/plans/2026-03-17-07-e2e-ci-polish.md`        | 📋 Draft    |
+| Plan                        | File                                                   | Status      |
+| --------------------------- | ------------------------------------------------------ | ----------- |
+| 01 — Bootstrap              | `docs/plans/2026-03-17-01-bootstrap.md`                | ✅ Complete |
+| 02 — Domain Core            | `docs/plans/2026-03-17-02-domain-core.md`              | ✅ Complete |
+| 03 — Form / State           | `docs/plans/2026-03-17-03-form-state.md`               | ✅ Complete |
+| 04 — Results                | `docs/plans/2026-03-17-04-results.md`                  | ✅ Complete |
+| 05 — URL encoding / P2 flow | `docs/plans/2026-03-17-05-url-encoding-p2-flow.md`     | ✅ Complete |
+| 06 — Et si...               | `docs/plans/2026-03-17-06-whatif.md`                   | 📋 Draft    |
+| 07 — E2E, CI & Landing      | `docs/plans/2026-03-17-07-e2e-ci-polish.md`            | 📋 Draft    |
+| 08 — Correctifs formules    | `docs/plans/2026-03-18-08-formula-fixes-edge-cases.md` | ✅ Complete |
 
 ## Stack
 
@@ -149,6 +151,7 @@ docs/
 - All client components need `"use client"` directive (Next.js App Router)
 - IDE diagnostics `Cannot find module '@/...'` are false positives from the TS language server — `tsc --noEmit` is the source of truth
 - `FormField` accepts a `numeric` prop (boolean) for monetary inputs — activates `inputMode="numeric"` + `pattern` on mobile
+- **Zero hardcoded colors**: all colors must use Tailwind tokens defined in `globals.css` (`text-text-dim`, `bg-accent`, `border-border`, etc.) — never `text-[#888]`, `bg-neutral-900`, `bg-zinc-500`, or any hex/generic Tailwind color class. The only place hex values appear is in `globals.css` token definitions.
 
 ## Runtime gotchas
 
