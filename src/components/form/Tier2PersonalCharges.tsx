@@ -79,17 +79,17 @@ export function Tier2PersonalCharges(): React.JSX.Element {
   return (
     <div className="animate-tier-in">
       <h2 className="font-display text-2xl mb-1">Charges personnelles</h2>
-      <p className="text-sm text-text-secondary mb-1.5">
+      <p className="text-sm text-text-dim mb-1.5">
         Les dépenses qui grèvent le reste à vivre de chacun. Débloque le modèle Reste à vivre égal.
       </p>
-      <p className="text-xs italic text-text-secondary mb-8">
+      <p className="text-xs italic text-text-dim mb-8">
         Optionnel, vous pouvez passer cette étape.
       </p>
 
       <div className="grid grid-cols-2 gap-6 mb-8">
         {/* P1 column */}
         <div>
-          <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-3">
+          <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
             {displayName(input.p1?.name ?? "", "Personne 1")}
           </div>
           <div className="flex flex-col gap-3">
@@ -134,7 +134,7 @@ export function Tier2PersonalCharges(): React.JSX.Element {
 
         {/* P2 column */}
         <div>
-          <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-3">
+          <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
             {p2Name}
           </div>
           {isShared ? (
@@ -186,7 +186,7 @@ export function Tier2PersonalCharges(): React.JSX.Element {
         <button
           type="button"
           onClick={handleRetour}
-          className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-secondary border border-[#E8E8E4] rounded-md cursor-pointer"
+          className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-dim border border-border rounded-md cursor-pointer"
         >
           Retour
         </button>
@@ -194,14 +194,14 @@ export function Tier2PersonalCharges(): React.JSX.Element {
           <button
             type="button"
             onClick={handlePasser}
-            className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-secondary border border-[#E8E8E4] rounded-md cursor-pointer"
+            className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-dim border border-border rounded-md cursor-pointer"
           >
             Passer
           </button>
           <button
             type="button"
             onClick={handleSuivant}
-            className="text-sm font-semibold px-6 py-2.5 bg-neutral-900 text-white border-none rounded-md cursor-pointer flex items-center gap-1.5"
+            className="text-sm font-semibold px-6 py-2.5 bg-accent text-white border-none rounded-md cursor-pointer flex items-center gap-1.5"
           >
             Suivant →
           </button>

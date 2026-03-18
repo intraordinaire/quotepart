@@ -58,7 +58,7 @@ export function ModeChoice(): React.JSX.Element {
   return (
     <div className="animate-tier-in">
       <h2 className="font-display text-[28px] mb-2">Comment souhaitez-vous remplir&nbsp;?</h2>
-      <p className="text-sm text-text-secondary mb-9 leading-relaxed">
+      <p className="text-sm text-text-dim mb-9 leading-relaxed">
         Vous pourrez changer d&apos;avis à tout moment.
       </p>
 
@@ -67,14 +67,14 @@ export function ModeChoice(): React.JSX.Element {
         <button
           type="button"
           onClick={(): void => handleSelect("full")}
-          className="flex items-start gap-4 w-full p-6 bg-white border-[1.5px] border-[#E8E8E4] rounded-[10px] cursor-pointer text-left transition-colors duration-150 hover:border-[#1A1A1A]"
+          className="flex items-start gap-4 w-full p-6 bg-surface border-[1.5px] border-border rounded-[10px] cursor-pointer text-left transition-colors duration-150 hover:border-text"
         >
-          <span className="w-10 h-10 rounded-[10px] bg-[#FAFAF8] flex items-center justify-center shrink-0 text-[#1A1A1A]">
+          <span className="w-10 h-10 rounded-[10px] bg-bg flex items-center justify-center shrink-0 text-text">
             <EditIcon />
           </span>
           <div>
             <div className="text-[15px] font-semibold mb-1">Je remplis pour nous deux</div>
-            <div className="text-[13px] text-text-secondary leading-relaxed">
+            <div className="text-[13px] text-text-dim leading-relaxed">
               Vous saisissez les données des deux personnes. Résultats immédiats. Vous pourrez
               ensuite partager un lien pour que votre partenaire ajuste ses données.
             </div>
@@ -85,18 +85,18 @@ export function ModeChoice(): React.JSX.Element {
         <button
           type="button"
           onClick={(): void => handleSelect("shared")}
-          className="flex items-start gap-4 w-full p-6 bg-white border-[1.5px] border-[#E8E8E4] rounded-[10px] cursor-pointer text-left transition-colors duration-150 hover:border-[#D4593A]"
+          className="flex items-start gap-4 w-full p-6 bg-surface border-[1.5px] border-border rounded-[10px] cursor-pointer text-left transition-colors duration-150 hover:border-accent"
         >
-          <span className="w-10 h-10 rounded-[10px] bg-[#FDF2EF] flex items-center justify-center shrink-0 text-[#D4593A]">
+          <span className="w-10 h-10 rounded-[10px] bg-accent-dim flex items-center justify-center shrink-0 text-accent">
             <UsersIcon />
           </span>
           <div>
             <div className="text-[15px] font-semibold mb-1">On remplit chacun·e nos données</div>
-            <div className="text-[13px] text-text-secondary leading-relaxed">
+            <div className="text-[13px] text-text-dim leading-relaxed">
               Vous saisissez vos données et les charges communes. Votre partenaire recevra un lien
               pour compléter les siennes. Plus juste, notamment pour la charge domestique.
             </div>
-            <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-[#D4593A] uppercase tracking-[0.04em]">
+            <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-accent uppercase tracking-[0.04em]">
               Recommandé pour la confrontation des perceptions
             </div>
           </div>

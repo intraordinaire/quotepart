@@ -128,7 +128,7 @@ describe("PerceptionConfrontation", () => {
     expect(row).toHaveTextContent("30");
   });
 
-  it("rows with gap > 15 have bg-accent-light class", () => {
+  it("rows with gap > 15 have bg-accent-dim class", () => {
     render(
       <PerceptionConfrontation
         mode="shared"
@@ -142,10 +142,10 @@ describe("PerceptionConfrontation", () => {
 
     const row = screen.getByTestId("row-cleaning");
     // gap = |80 - 60| = 20 > 15 → highlighted
-    expect(row.className).toContain("bg-accent-light");
+    expect(row.className).toContain("bg-accent-dim");
   });
 
-  it("rows with gap <= 15 do not have bg-accent-light class", () => {
+  it("rows with gap <= 15 do not have bg-accent-dim class", () => {
     render(
       <PerceptionConfrontation
         mode="shared"
@@ -159,7 +159,7 @@ describe("PerceptionConfrontation", () => {
 
     const row = screen.getByTestId("row-admin");
     // gap = |60 - 50| = 10 <= 15 → not highlighted
-    expect(row.className).not.toContain("bg-accent-light");
+    expect(row.className).not.toContain("bg-accent-dim");
   });
 
   it("shows a contextual alert message when any gap > 15 points", () => {

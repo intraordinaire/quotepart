@@ -33,7 +33,7 @@ export function ResultsShell(): React.JSX.Element {
 
   if (!state.completedTiers.has(1) || !rawInput.p1 || !rawInput.p2) {
     return (
-      <div className="text-text-secondary text-sm py-8 text-center">
+      <div className="text-text-dim text-sm py-8 text-center">
         Complétez le palier 1 pour voir vos résultats.
       </div>
     );

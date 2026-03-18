@@ -41,7 +41,7 @@ export function TemporalProjection({
 
   return (
     <section className="space-y-4">
-      <p className="text-sm text-text-secondary">
+      <p className="text-sm text-text-dim">
         Sur 10 ans, l&apos;écart cumulé entre <strong>{p1Name}</strong> et <strong>{p2Name}</strong>{" "}
         atteint <strong>{formatAmount(m1Year1)}</strong> par an avec le M1. Comparez les modèles
         pour mesurer l&apos;impact dans le temps.
@@ -51,10 +51,10 @@ export function TemporalProjection({
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="border-b border-border">
-              <th className="text-left py-2 pr-4 font-medium text-text-secondary">Modèle</th>
-              <th className="text-right py-2 px-4 font-medium text-text-secondary">1 an</th>
-              <th className="text-right py-2 px-4 font-medium text-text-secondary">5 ans</th>
-              <th className="text-right py-2 pl-4 font-medium text-text-secondary">10 ans</th>
+              <th className="text-left py-2 pr-4 font-medium text-text-dim">Modèle</th>
+              <th className="text-right py-2 px-4 font-medium text-text-dim">1 an</th>
+              <th className="text-right py-2 px-4 font-medium text-text-dim">5 ans</th>
+              <th className="text-right py-2 pl-4 font-medium text-text-dim">10 ans</th>
             </tr>
           </thead>
           <tbody>

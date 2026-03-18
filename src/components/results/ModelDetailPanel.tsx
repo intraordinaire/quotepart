@@ -35,23 +35,23 @@ export function ModelDetailPanel({
           type="button"
           aria-label="Fermer"
           onClick={onClose}
-          className="text-text-secondary hover:text-text transition-colors text-lg leading-none shrink-0 mt-0.5"
+          className="text-text-dim hover:text-text transition-colors text-lg leading-none shrink-0 mt-0.5"
         >
           ✕
         </button>
       </div>
 
       {/* Formula */}
-      <div className="bg-bg-elevated border border-border rounded-lg px-4 py-3">
-        <p className="text-sm font-mono text-text-secondary">{content.formula}</p>
+      <div className="bg-surface border border-border rounded-lg px-4 py-3">
+        <p className="text-sm font-mono text-text-dim">{content.formula}</p>
       </div>
 
       {/* Philosophy */}
-      <p className="text-sm text-text-secondary leading-relaxed">{content.philosophy}</p>
+      <p className="text-sm text-text-dim leading-relaxed">{content.philosophy}</p>
 
       {/* Advantages */}
       <div>
-        <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-2">
+        <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-2">
           Avantages
         </h3>
         <ul className="space-y-1">
@@ -66,7 +66,7 @@ export function ModelDetailPanel({
 
       {/* Limitations */}
       <div>
-        <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-2">
+        <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-2">
           Limites
         </h3>
         <ul className="space-y-1">
@@ -81,7 +81,7 @@ export function ModelDetailPanel({
 
       {/* M4 note */}
       {modelId === "m4_adjusted_time" && results.m4_adjusted_time.isSameAsM2 && (
-        <p className="text-sm text-text-secondary italic">
+        <p className="text-sm text-text-dim italic">
           Avec des revenus à temps plein identiques, ce modèle est identique au M2.
         </p>
       )}
@@ -89,8 +89,8 @@ export function ModelDetailPanel({
       {/* M4 options */}
       {modelId === "m4_adjusted_time" && (
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-bg-elevated border border-border rounded-lg px-4 py-3">
-            <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-2">
+          <div className="bg-surface border border-border rounded-lg px-4 py-3">
+            <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-2">
               Option A — revenus réels
             </h3>
             <p className="text-sm">
@@ -99,8 +99,8 @@ export function ModelDetailPanel({
               P2&nbsp;: {formatMoney(results.m4_adjusted_time.optionA.p2Contribution)}
             </p>
           </div>
-          <div className="bg-bg-elevated border border-border rounded-lg px-4 py-3">
-            <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-2">
+          <div className="bg-surface border border-border rounded-lg px-4 py-3">
+            <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-2">
               Option B — temps plein théorique
             </h3>
             <p className="text-sm">
@@ -114,7 +114,7 @@ export function ModelDetailPanel({
 
       {/* M5 note */}
       {modelId === "m5_total_contribution" && results.m5_total_contribution.isSameAsM2 && (
-        <p className="text-sm text-text-secondary italic">
+        <p className="text-sm text-text-dim italic">
           Avec une répartition équilibrée des tâches domestiques, ce modèle est identique au M2.
         </p>
       )}
@@ -122,16 +122,14 @@ export function ModelDetailPanel({
       {/* M5 domestic breakdown */}
       {modelId === "m5_total_contribution" && (
         <div>
-          <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-secondary mb-2">
+          <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-2">
             Valeur du travail domestique
           </h3>
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-border">
-                <th className="text-left py-1.5 font-medium text-text-secondary">Personne</th>
-                <th className="text-right py-1.5 font-medium text-text-secondary">
-                  Valeur mensuelle
-                </th>
+                <th className="text-left py-1.5 font-medium text-text-dim">Personne</th>
+                <th className="text-right py-1.5 font-medium text-text-dim">Valeur mensuelle</th>
               </tr>
             </thead>
             <tbody>

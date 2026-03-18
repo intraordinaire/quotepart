@@ -57,10 +57,8 @@ export function EquityGauges({ results, unlockedModels }: EquityGaugesProps): Re
 
         return (
           <div key={id} className="flex items-center gap-3">
-            <span className="w-6 shrink-0 text-sm font-semibold text-text-secondary">
-              {shortLabel}
-            </span>
-            <span className="w-40 shrink-0 text-sm text-text-secondary">{fullLabel}</span>
+            <span className="w-6 shrink-0 text-sm font-semibold text-text-dim">{shortLabel}</span>
+            <span className="w-40 shrink-0 text-sm text-text-dim">{fullLabel}</span>
             <div className="relative flex-1 h-4 rounded-full bg-border overflow-hidden">
               <div
                 data-testid={`gauge-${id}`}

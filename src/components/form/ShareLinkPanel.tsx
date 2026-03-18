@@ -50,7 +50,7 @@ export function ShareLinkPanel({ input, mode }: ShareLinkPanelProps): React.JSX.
           <label className="block text-sm font-medium text-text mb-1">
             Inviter votre partenaire (lien P2)
           </label>
-          <p className="text-xs text-text-secondary mb-2">
+          <p className="text-xs text-text-dim mb-2">
             Ce lien ne contient pas vos données personnelles.
           </p>
           <div className="flex gap-2">

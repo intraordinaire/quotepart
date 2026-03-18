@@ -92,10 +92,10 @@ export function Tier4Domestic(): React.JSX.Element {
   return (
     <div className="animate-tier-in">
       <h2 className="font-display text-2xl mb-1">Répartition domestique</h2>
-      <p className="text-sm text-text-secondary mb-1.5">
+      <p className="text-sm text-text-dim mb-1.5">
         Qui fait quoi à la maison ? Débloque le modèle Contribution totale.
       </p>
-      <p className="text-xs italic text-text-secondary mb-8">
+      <p className="text-xs italic text-text-dim mb-8">
         {isShared
           ? `Votre perception. ${p2Name} remplira la sienne via le lien partagé.`
           : "Estimez la répartition. Votre partenaire pourra ajuster via le lien de correction."}
@@ -115,7 +115,7 @@ export function Tier4Domestic(): React.JSX.Element {
         ))}
       </div>
 
-      <div className="p-3 px-4 bg-neutral-50 rounded-lg text-xs text-text-secondary mb-6 leading-relaxed border-l-[3px] border-[#D4D4CC]">
+      <div className="p-3 px-4 bg-surface rounded-lg text-xs text-text-dim mb-6 leading-relaxed border-l-[3px] border-border">
         Heures de référence basées sur l&apos;Enquête Emploi du Temps (INSEE). Valorisation : SMIC
         net horaire (9,57 €/h).
       </div>
@@ -124,7 +124,7 @@ export function Tier4Domestic(): React.JSX.Element {
         <button
           type="button"
           onClick={handleRetour}
-          className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-secondary border border-[#E8E8E4] rounded-md cursor-pointer"
+          className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-dim border border-border rounded-md cursor-pointer"
         >
           Retour
         </button>
@@ -133,7 +133,7 @@ export function Tier4Domestic(): React.JSX.Element {
           <button
             type="button"
             onClick={handleCopyLink}
-            className="text-sm font-semibold px-7 py-3.5 bg-[#D4593A] text-white border-none rounded-lg cursor-pointer flex flex-col items-center gap-1"
+            className="text-sm font-semibold px-7 py-3.5 bg-accent text-white border-none rounded-lg cursor-pointer flex flex-col items-center gap-1"
           >
             {copied ? <span>Lien copié !</span> : <span>Copier le lien pour {p2Name}</span>}
             <span className="text-[11px] font-normal text-white/70">
@@ -144,7 +144,7 @@ export function Tier4Domestic(): React.JSX.Element {
           <button
             type="button"
             onClick={handleComplete}
-            className="text-sm font-semibold px-6 py-3.5 bg-neutral-900 text-white border-none rounded-lg cursor-pointer flex items-center gap-1.5"
+            className="text-sm font-semibold px-6 py-3.5 bg-accent text-white border-none rounded-lg cursor-pointer flex items-center gap-1.5"
           >
             Voir les résultats
           </button>

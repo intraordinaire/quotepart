@@ -80,14 +80,14 @@ function ModeBadge({ mode }: { mode: "full" | "shared" | null }): React.JSX.Elem
 
   if (mode === "full") {
     return (
-      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#FAFAF8] text-[#1A1A1A] border border-[#E8E8E4]">
+      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-bg text-text border border-border">
         Je remplis pour nous deux
       </span>
     );
   }
 
   return (
-    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#FDF2EF] text-[#D4593A]">
+    <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-accent-dim text-accent">
       Chacun·e ses données
     </span>
   );
@@ -123,30 +123,30 @@ export default function SimulatePage(): React.JSX.Element {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFAF8]">
+    <div className="flex flex-col min-h-screen bg-bg">
       {/* ── Top header ─────────────────────────────────────────────────────── */}
-      <header className="h-14 bg-white border-b border-[#E8E8E4] flex items-center px-6 gap-4 shrink-0">
+      <header className="h-14 bg-surface border-b border-border flex items-center px-6 gap-4 shrink-0">
         <Link
           href="/"
-          className="font-[Instrument_Serif,serif] text-xl text-[#1A1A1A] hover:opacity-80 transition-opacity"
+          className="font-display text-xl text-text hover:opacity-80 transition-opacity"
         >
-          Quote<span className="text-[#D4593A]">Part</span>
+          Quote<span className="text-accent">Part</span>
         </Link>
 
-        <span className="text-[#E8E8E4] select-none">|</span>
+        <span className="text-border select-none">|</span>
 
-        <span className="text-sm text-text-secondary">Nouvelle simulation</span>
+        <span className="text-sm text-text-dim">Nouvelle simulation</span>
 
         {state.mode && (
           <>
-            <span className="text-[#E8E8E4] select-none">|</span>
+            <span className="text-border select-none">|</span>
             <ModeBadge mode={state.mode} />
           </>
         )}
       </header>
 
       {/* ── Tab navigation ─────────────────────────────────────────────────── */}
-      <nav role="tablist" className="bg-white border-b border-[#E8E8E4] flex px-6 shrink-0">
+      <nav role="tablist" className="bg-surface border-b border-border flex px-6 shrink-0">
         <button
           role="tab"
           type="button"
@@ -156,8 +156,8 @@ export default function SimulatePage(): React.JSX.Element {
           className={[
             "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
             activeTab === "saisie"
-              ? "border-[#D4593A] text-[#1A1A1A]"
-              : "border-transparent text-text-secondary hover:text-[#1A1A1A]",
+              ? "border-accent text-text"
+              : "border-transparent text-text-dim hover:text-text",
           ].join(" ")}
         >
           <EditIcon />
@@ -176,8 +176,8 @@ export default function SimulatePage(): React.JSX.Element {
           className={[
             "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
             activeTab === "resultats"
-              ? "border-[#D4593A] text-[#1A1A1A]"
-              : "border-transparent text-text-secondary hover:text-[#1A1A1A]",
+              ? "border-accent text-text"
+              : "border-transparent text-text-dim hover:text-text",
             !tier1Complete ? "opacity-50 cursor-not-allowed pointer-events-none" : "",
           ]
             .join(" ")
@@ -199,8 +199,8 @@ export default function SimulatePage(): React.JSX.Element {
           className={[
             "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
             activeTab === "etsi"
-              ? "border-[#D4593A] text-[#1A1A1A]"
-              : "border-transparent text-text-secondary hover:text-[#1A1A1A]",
+              ? "border-accent text-text"
+              : "border-transparent text-text-dim hover:text-text",
             !tier1Complete ? "opacity-50 cursor-not-allowed pointer-events-none" : "",
           ]
             .join(" ")
@@ -226,7 +226,7 @@ export default function SimulatePage(): React.JSX.Element {
               <ResultsShell />
             </div>
             <div role="tabpanel" id="panel-etsi" hidden={activeTab !== "etsi"}>
-              <div className="text-text-secondary">Et si... — coming soon</div>
+              <div className="text-text-dim">Et si... — coming soon</div>
             </div>
           </div>
         </main>

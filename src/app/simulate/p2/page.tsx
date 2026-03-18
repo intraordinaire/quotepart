@@ -37,7 +37,7 @@ function InvalidLink(): React.JSX.Element {
     <div className="flex flex-col min-h-screen bg-bg items-center justify-center p-8">
       <div className="max-w-md text-center space-y-4">
         <h1 className="font-display text-2xl">Lien invalide</h1>
-        <p className="text-text-secondary">
+        <p className="text-text-dim">
           Ce lien de partage est invalide ou a expiré. Demandez à votre partenaire de vous envoyer
           un nouveau lien.
         </p>
@@ -82,12 +82,12 @@ function P2PageContent(): React.JSX.Element {
 
   return (
     <div className="flex flex-col min-h-screen bg-bg">
-      <header className="h-14 bg-bg-elevated border-b border-border flex items-center px-6 gap-4 shrink-0">
+      <header className="h-14 bg-surface border-b border-border flex items-center px-6 gap-4 shrink-0">
         <Link href="/" className="font-display text-xl hover:opacity-80 transition-opacity">
           Quote<span className="text-accent">Part</span>
         </Link>
         <span className="text-border select-none">|</span>
-        <span className="text-sm text-text-secondary">Mode partagé — P2</span>
+        <span className="text-sm text-text-dim">Mode partagé — P2</span>
       </header>
 
       <div className="flex flex-1 overflow-hidden">

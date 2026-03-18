@@ -25,11 +25,11 @@ export function SliderField({
     <div>
       <div className="flex justify-between items-center mb-1.5">
         <span className="text-[13px] font-medium">{label}</span>
-        {hours && <span className="text-[11px] text-[#9A9A96]">{hours}</span>}
+        {hours && <span className="text-[11px] text-text-muted">{hours}</span>}
       </div>
 
       <div className="flex items-center gap-2.5">
-        <span className="text-[11px] font-semibold text-text-secondary w-[55px] text-right">
+        <span className="text-[11px] font-semibold text-text-dim w-[55px] text-right">
           {leftName}
         </span>
 
@@ -43,15 +43,15 @@ export function SliderField({
             aria-label={label}
             className="w-full h-1 appearance-none rounded-sm outline-none cursor-pointer"
             style={{
-              background: `linear-gradient(to right, #1a1a1a 0%, #1a1a1a ${value}%, #D4593A ${value}%, #D4593A 100%)`,
+              background: `linear-gradient(to right, var(--color-text) 0%, var(--color-text) ${value}%, var(--color-accent) ${value}%, var(--color-accent) 100%)`,
             }}
           />
         </div>
 
-        <span className="text-[11px] font-semibold text-[#D4593A] w-[55px]">{rightName}</span>
+        <span className="text-[11px] font-semibold text-accent w-[55px]">{rightName}</span>
       </div>
 
-      <div className="text-center text-[11px] text-[#9A9A96] mt-0.5">
+      <div className="text-center text-[11px] text-text-muted mt-0.5">
         {value}% / {p2Share}%
       </div>
     </div>

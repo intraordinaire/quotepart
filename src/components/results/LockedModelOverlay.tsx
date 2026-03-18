@@ -12,7 +12,7 @@ export function LockedModelOverlay({ tierRequired }: LockedModelOverlayProps): R
       <span className="text-xl mb-2" aria-hidden="true">
         🔒
       </span>
-      <p className="text-xs text-text-secondary leading-snug">
+      <p className="text-xs text-text-dim leading-snug">
         Remplissez le palier {tierRequired} pour débloquer ce modèle
       </p>
     </div>

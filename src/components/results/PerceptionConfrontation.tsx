@@ -55,7 +55,7 @@ export function PerceptionConfrontation({
       </h3>
 
       {hasSignificantGap && (
-        <div role="alert" className="rounded-lg bg-accent-light px-4 py-3 text-sm text-accent">
+        <div role="alert" className="rounded-lg bg-accent-dim px-4 py-3 text-sm text-accent">
           Des écarts significatifs ont été détectés dans votre perception du travail domestique. Ces
           différences méritent une discussion ouverte.
         </div>
@@ -63,7 +63,7 @@ export function PerceptionConfrontation({
 
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left text-text-secondary">
+          <tr className="text-left text-text-dim">
             <th className="pb-2 font-medium">Catégorie</th>
             <th className="pb-2 font-medium text-right">{p1Name}</th>
             <th className="pb-2 font-medium text-right">{p2Name}</th>
@@ -81,13 +81,13 @@ export function PerceptionConfrontation({
               <tr
                 key={key}
                 data-testid={`row-${key}`}
-                className={`border-t border-border ${isHighlighted ? "bg-accent-light" : ""}`}
+                className={`border-t border-border ${isHighlighted ? "bg-accent-dim" : ""}`}
               >
-                <td className="py-2 text-text-secondary">{label}</td>
+                <td className="py-2 text-text-dim">{label}</td>
                 <td className="py-2 text-right font-medium text-text-primary">{p1Value} %</td>
                 <td className="py-2 text-right font-medium text-text-primary">{p2Value} %</td>
                 <td
-                  className={`py-2 text-right font-semibold ${isHighlighted ? "text-accent" : "text-text-secondary"}`}
+                  className={`py-2 text-right font-semibold ${isHighlighted ? "text-accent" : "text-text-dim"}`}
                 >
                   {gap}
                 </td>

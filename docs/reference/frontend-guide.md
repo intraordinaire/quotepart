@@ -1,6 +1,8 @@
 # QuotePart — Guide Frontend
 
-Ce document définit les conventions de design et d'implémentation frontend pour QuotePart. Il est la **source de vérité** pour toute nouvelle interface ou composant.
+Ce document définit les conventions d'implémentation frontend pour QuotePart. Il est la **source de vérité** pour toute nouvelle interface ou composant.
+
+Le design system de référence est `docs/reference/quotepart-design-system.md` (thème "Data Journalism"). Ce guide traduit ce design system en conventions Next.js / Tailwind CSS.
 
 ---
 
@@ -8,29 +10,35 @@ Ce document définit les conventions de design et d'implémentation frontend pou
 
 ### Fonts — `next/font/google` obligatoire
 
-Les polices **doivent** être chargées via `next/font/google` dans `src/app/layout.tsx`, jamais via une balise `<link>` ni une classe Tailwind arbitraire.
+Les polices **doivent** etre chargees via `next/font/google` dans `src/app/layout.tsx`, jamais via une balise `<link>` ni une classe Tailwind arbitraire.
 
 ```tsx
 // src/app/layout.tsx
-import { Manrope, Instrument_Serif } from "next/font/google";
+import { DM_Sans, Fraunces, DM_Mono } from "next/font/google";
 
-const manrope = Manrope({
+const dmSans = DM_Sans({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
 });
 
-const instrumentSerif = Instrument_Serif({
+const fraunces = Fraunces({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["300", "700", "900"],
   style: ["normal", "italic"],
+});
+
+const dmMono = DM_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 ```
 
-Exposer via les variables CSS `--font-body` et `--font-display`.
+Exposer via les variables CSS `--font-body`, `--font-display` et `--font-mono`.
 
-### Tailwind — déclarer les tokens dans `globals.css`
+### Tailwind — declarer les tokens dans `globals.css`
 
 ```css
 /* src/app/globals.css */
@@ -40,92 +48,97 @@ Exposer via les variables CSS `--font-body` et `--font-display`.
   /* Fonts */
   --font-body: var(--font-body);
   --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
 
-  /* Brand colors */
-  --color-bg: #fafaf8;
-  --color-bg-elevated: #ffffff;
-  --color-surface: #f2f2ef;
-  --color-text: #1a1a1a;
-  --color-text-secondary: #6b6b67; /* ≥ 4.6:1 sur blanc — WCAG AA */
-  --color-text-tertiary: #9a9a96; /* réservé déco, ne pas utiliser pour texte informatif */
-  --color-accent: #d4593a;
-  --color-accent-light: #fdf0ec;
-  --color-border: #e8e8e4;
-  --color-border-strong: #d1d1cc;
-  --color-green: #2d8a56;
-  --color-green-light: #edf7f0;
-  --color-amber: #c48a1a;
-  --color-amber-light: #fff8e8;
-}
+  /* Backgrounds */
+  --color-bg: #0c0c0c;
+  --color-surface: #161616;
+  --color-surface-hover: #1e1e1e;
+  --color-border: #2a2a2a;
 
-html {
-  background-color: theme(--color-bg);
-  color: theme(--color-text);
-  font-family: theme(--font-body);
-  -webkit-font-smoothing: antialiased;
+  /* Text */
+  --color-text: #e8e8e8;
+  --color-text-dim: #888888;
+  --color-text-muted: #555555;
+  --color-white: #ffffff;
+
+  /* Accent */
+  --color-accent: #ff6b35;
+  --color-accent-dim: rgba(255, 107, 53, 0.15);
+
+  /* Semantic */
+  --color-green: #34d399;
+  --color-green-dim: rgba(52, 211, 153, 0.12);
+  --color-red: #f87171;
+  --color-red-dim: rgba(248, 113, 113, 0.12);
+  --color-amber: #fbbf24;
+  --color-amber-dim: rgba(251, 191, 36, 0.12);
 }
 ```
 
-Utiliser ensuite `text-text-secondary`, `bg-accent`, `border-border`, etc. — **jamais de valeurs hexadécimales en dur** dans les classNames.
+Utiliser ensuite `text-text-dim`, `bg-accent`, `border-border`, etc.
+
+**Regle absolue : jamais de valeur hexadecimale en dur dans les classNames ou les inline styles.** Toute couleur doit passer par un token Tailwind defini dans `globals.css`. Les seules exceptions sont les variables CSS dans `globals.css` elle-meme.
 
 ---
 
 ## 2. Typographie
 
-| Usage                 | Police           | Tailwind class       |
-| --------------------- | ---------------- | -------------------- |
-| Titres de pages, hero | Instrument Serif | `font-display`       |
-| Corps, UI             | Manrope          | `font-body` (défaut) |
-| Code/monospace        | Geist Mono       | `font-mono`          |
+| Usage                      | Police   | Tailwind class       |
+| -------------------------- | -------- | -------------------- |
+| Titres de pages, hero      | Fraunces | `font-display`       |
+| Corps, UI                  | DM Sans  | `font-body` (defaut) |
+| Labels techniques, donnees | DM Mono  | `font-mono`          |
 
 ### Scale typographique
 
 ```
-Titre de section (h2)  : font-display, text-[28px], font-normal
-Titre de palier         : font-display, text-2xl, font-normal
-Label de champ          : text-xs, font-medium, text-text-secondary
-Texte corps             : text-sm, leading-relaxed
-Texte secondaire        : text-sm, text-text-secondary
-Note/italique           : text-xs, italic, text-text-secondary
-Badge/tag               : text-[10px], font-bold, uppercase, tracking-[0.08em]
+Hero title            : font-display, font-black (900), text-[32px] md:text-[44px], tracking-[-0.03em]
+Section title         : font-display, font-bold (700), text-2xl md:text-[28px], tracking-[-0.02em]
+Big number (impact)   : font-display, font-black (900), text-[36px] md:text-[56px], tracking-[-0.03em]
+Body                  : text-sm md:text-[15px], leading-relaxed (1.7)
+Label uppercase       : font-mono, font-medium, text-[10px], uppercase, tracking-[0.1em]
+Formula block         : font-mono, text-[13px], leading-[1.8]
+Tag                   : font-mono, font-medium, text-[10px], uppercase, tracking-[0.1em]
+Data (tableaux)       : font-mono, text-[13px], tabular-nums
 ```
 
-Ne **pas** redéclarer `font-[Manrope,sans-serif]` dans chaque composant — Manrope est la police du body.
+Ne **pas** redeclarer `font-[DM_Sans,sans-serif]` dans chaque composant — DM Sans est la police du body.
+
+Toujours `font-variant-numeric: tabular-nums` (classe `tabular-nums`) sur les chiffres dans les tableaux et comparaisons.
 
 ---
 
-## 3. Couleurs & Thème
+## 3. Couleurs & Theme
 
-### Palette
+### Palette — Theme sombre "Data Journalism"
 
-| Token            | Hex       | Usage                                 |
-| ---------------- | --------- | ------------------------------------- |
-| `bg`             | `#FAFAF8` | Background général (warm white)       |
-| `bg-elevated`    | `#FFFFFF` | Cards, sidebars, header               |
-| `surface`        | `#F2F2EF` | Inputs non focus, pill inactif        |
-| `text`           | `#1A1A1A` | Texte principal                       |
-| `text-secondary` | `#6B6B67` | Labels, descriptions                  |
-| `text-tertiary`  | `#9A9A96` | Décoratif (heures, badges discrets)   |
-| `accent`         | `#D4593A` | CTA primaire, tab active, accent      |
-| `accent-light`   | `#FDF0EC` | Background badge accent, hover shared |
-| `border`         | `#E8E8E4` | Séparateurs, bordures inputs          |
-| `border-strong`  | `#D1D1CC` | Bordures plus marquées                |
-| `green`          | `#2D8A56` | Résultat positif, équité élevée       |
-| `amber`          | `#C48A1A` | Résultat moyen                        |
+| Token           | Valeur                      | Usage                                    |
+| --------------- | --------------------------- | ---------------------------------------- |
+| `bg`            | `#0C0C0C`                   | Background general (quasi noir)          |
+| `surface`       | `#161616`                   | Cards, inputs, sidebars                  |
+| `surface-hover` | `#1E1E1E`                   | Hover sur surfaces                       |
+| `border`        | `#2A2A2A`                   | Separateurs, bordures                    |
+| `text`          | `#E8E8E8`                   | Texte principal (ratio 16.5:1 sur bg)    |
+| `text-dim`      | `#888888`                   | Labels, descriptions (ratio 5.9:1 — AA)  |
+| `text-muted`    | `#555555`                   | Labels mono uppercase only (ratio 3.2:1) |
+| `white`         | `#FFFFFF`                   | Titres impact                            |
+| `accent`        | `#FF6B35`                   | CTA, highlights, tabs actifs             |
+| `accent-dim`    | `rgba(255, 107, 53, 0.15)`  | Background badges accent                 |
+| `green`         | `#34D399`                   | Resultat positif, transferts favorables  |
+| `green-dim`     | `rgba(52, 211, 153, 0.12)`  | Background tags positifs                 |
+| `red`           | `#F87171`                   | Negatif, alertes, non viable             |
+| `red-dim`       | `rgba(248, 113, 113, 0.12)` | Background tags negatifs                 |
+| `amber`         | `#FBBF24`                   | Warning, attention                       |
+| `amber-dim`     | `rgba(251, 191, 36, 0.12)`  | Background tags warning                  |
 
-### Ratios de contraste (WCAG AA minimum 4.5:1 sur fond blanc)
+### Regles d'usage des couleurs
 
-| Couleur   | Fond      | Ratio  | AA Normal | AA Small      |
-| --------- | --------- | ------ | --------- | ------------- |
-| `#1A1A1A` | blanc     | ~16:1  | ✅        | ✅            |
-| `#6B6B67` | blanc     | ~4.6:1 | ✅        | ❌            |
-| `#7A7A75` | blanc     | ~4.4:1 | ❌        | ❌            |
-| `#D4593A` | blanc     | ~3.3:1 | ❌        | ❌            |
-| `#D4593A` | `#FDF0EC` | ~2.9:1 | ❌ texte  | ✅ gros titre |
-
-**Règle :** `text-secondary` (`#6B6B67`) pour tout texte informatif. `text-tertiary` **uniquement** pour éléments décoratifs non porteurs d'information (ex : heures de référence, numéros de palier discrets). Ne jamais afficher d'erreur ou d'état en tertiary seul.
-
-L'accent `#D4593A` sur fond blanc est insuffisant pour du texte — l'utiliser exclusivement sur fond blanc uniquement pour les grands éléments (≥ 24px, bold) ou avec un autre signal visuel.
+- `text-muted` (`#555`) est reserve aux labels secondaires en uppercase monospace. **Jamais** pour du texte courant.
+- Les fonds `*-dim` (rgba) servent uniquement de background pour les tags et les alertes. Jamais en aplat large.
+- `accent` (`#FF6B35`) n'apparait que sur les CTA, les chiffres cles, et les tags. Pas de surface entiere en accent.
+- Les badges d'etat utilisent toujours le couple `color` + `*-dim` background (ex : `text-red bg-red-dim`).
+- Ne jamais encoder de l'information uniquement par la couleur. Toujours doubler avec un texte, une icone, ou un pattern (WCAG 1.4.1).
 
 ---
 
@@ -133,25 +146,23 @@ L'accent `#D4593A` sur fond blanc est insuffisant pour du texte — l'utiliser e
 
 ### FormField
 
-- Toujours un `<label>` associé via `htmlFor` (pas de placeholder-only)
-- Pour inputs monétaires : `inputMode="numeric"` + `pattern="[0-9 ]*"`
-- Focus ring : `focus:border-accent focus:ring-1 focus:ring-accent/20`
-- Bordure : `border-border`, background : `bg-bg-elevated`
+- Toujours un `<label>` associe via `htmlFor` (pas de placeholder-only)
+- Pour inputs monetaires : `inputMode="numeric"` + `pattern="[0-9 ]*"` (prop `numeric`)
+- Focus ring : `focus:border-accent transition-colors`
+- Bordure : `border-border`, background : `bg-surface`
 
 ### Boutons
 
 ```
-Primaire   : bg-text text-bg (ou bg-accent text-white pour CTA de fin)
-Secondaire : bg-transparent border border-border text-text-secondary
-Danger     : bg-accent text-white
-Lien       : bg-none text-text-secondary underline
+Primaire (CTA) : bg-accent text-white font-semibold rounded-lg min-h-[48px] mobile
+Secondaire     : bg-transparent border border-border text-text-dim rounded-md
 ```
 
 Toujours `type="button"` sur les boutons dans un formulaire. `type="submit"` uniquement si dans un `<form>` avec handler `onSubmit`.
 
 ### Onglets (Tab nav)
 
-Utiliser les rôles ARIA corrects :
+Utiliser les roles ARIA corrects :
 
 ```tsx
 <nav role="tablist">
@@ -164,14 +175,18 @@ Utiliser les rôles ARIA corrects :
 
 Un onglet non disponible : `aria-disabled="true"` + `opacity-50 cursor-not-allowed pointer-events-none`.
 
+Tab active : `border-b-2 border-accent text-text font-semibold`.
+Tab inactive : `border-transparent text-text-dim hover:text-text`.
+
 ### Sidebar / TierNav
 
 - `aria-current="step"` sur le tier actif
 - `aria-label="Progression"` sur l'`<aside>`
+- Background : `bg-surface`, bordure : `border-border`
 
 ### Inputs range (SliderField)
 
-Toujours `aria-label` sur le `<input type="range">`. Styliser le thumb via Tailwind ou CSS pour éviter le rendu navigateur par défaut (très inconsistant) :
+Toujours `aria-label` sur le `<input type="range">`. Styliser le thumb via CSS :
 
 ```css
 input[type="range"]::-webkit-slider-thumb {
@@ -179,9 +194,29 @@ input[type="range"]::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #1a1a1a;
+  background: var(--color-text);
   cursor: pointer;
 }
+```
+
+### Tags
+
+```
+Font      : font-mono, font-medium, text-[10px], uppercase, tracking-[0.1em]
+Padding   : px-2 py-0.5
+Radius    : rounded-sm (3px)
+Couleur   : couleur semantique + fond *-dim correspondant
+```
+
+### EdgeCard (alerte)
+
+```
+Background   : bg-surface
+Border       : border border-border
+Border-left  : border-l-[3px] border-l-[couleur semantique]
+Padding      : p-6 md:p-7
+Radius       : rounded-xl (10px)
+Role         : role="alert" si critique, role="note" sinon
 ```
 
 ---
@@ -191,27 +226,35 @@ input[type="range"]::-webkit-slider-thumb {
 ### Page `/simulate`
 
 ```
-<header>           — h-14, bg-elevated, border-b
-<nav role="tablist"> — tabs Saisie / Résultats / Et si...
+<header>           — h-14, bg-surface, border-b border-border
+<nav role="tablist"> — tabs Saisie / Resultats / Et si...
 <div class="flex flex-1">
-  <aside>          — w-60, TierNav (conditionnel si tier > 0)
+  <aside>          — w-60, TierNav (conditionnel si tier > 0), bg-surface
   <main>           — flex-1, overflow-y-auto, p-8
-    <div class="max-w-2xl mx-auto"> — contenu centré
+    <div class="max-w-2xl mx-auto"> — contenu centre
 ```
 
 ### Grille formulaire
 
 2 colonnes pour P1/P2 : `grid grid-cols-2 gap-4`. Sur mobile : `grid-cols-1`.
 
+### Espacements (base 4px)
+
+- Padding de page : 32px
+- Max-width du contenu : 720px centre
+- Gap entre sections majeures : 64px
+- Padding des cards/surfaces : `p-5 md:p-6 md:px-7`
+- Margin entre un label uppercase et son contenu : 12-16px
+
 ---
 
 ## 6. Animations
 
-Utiliser des classes utilitaires légères, pas de librairie externe pour les transitions de tiers :
+Toutes conditionnees a `prefers-reduced-motion: no-preference`. Pas de librairie externe.
 
 ```css
 /* globals.css */
-@keyframes fadeIn {
+@keyframes tierFadeIn {
   from {
     opacity: 0;
     transform: translateY(8px);
@@ -223,97 +266,101 @@ Utiliser des classes utilitaires légères, pas de librairie externe pour les tr
 }
 
 .animate-tier-in {
-  animation: fadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: tierFadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 ```
 
-Appliquer `animate-tier-in` à la div racine de chaque `TierX` composant.
+Appliquer `animate-tier-in` a la div racine de chaque `TierX` composant.
 
-Transitions CSS : `transition-colors duration-150` sur les éléments interactifs (boutons, inputs, onglets). Jamais de transition sur `background` seul sans `transition-colors`.
+Transitions CSS : `transition-colors duration-150` sur les elements interactifs (boutons, inputs, onglets).
 
 ---
 
-## 7. Accessibilité — checklist
+## 7. Accessibilite — checklist
 
 - [ ] `<html lang="fr">` dans `layout.tsx`
-- [ ] Toute icône SVG décorative : `aria-hidden="true"`
-- [ ] Toute icône SVG fonctionnelle : `aria-label` ou titre adjacent
-- [ ] Inputs monétaires : `inputMode="numeric"`
-- [ ] Ratio de contraste texte secondaire ≥ 4.5:1 (utiliser `#6B6B67` minimum)
-- [ ] Focus visible sur tous les éléments interactifs (pas de `outline-none` sans alternative)
-- [ ] Tab nav avec rôles ARIA (`tablist`, `tab`, `tabpanel`, `aria-selected`)
-- [ ] État désactivé : `aria-disabled="true"` + style visuel distinct
-- [ ] Labels toujours liés aux inputs via `htmlFor`/`id`
+- [ ] Toute icone SVG decorative : `aria-hidden="true"`
+- [ ] Toute icone SVG fonctionnelle : `aria-label` ou titre adjacent
+- [ ] Inputs monetaires : `inputMode="numeric"`
+- [ ] Ratio de contraste texte dim >= 4.5:1 (utiliser `text-dim` #888 minimum)
+- [ ] `text-muted` (#555) uniquement pour labels mono uppercase, jamais pour texte informatif
+- [ ] Focus visible sur tous les elements interactifs (pas de `outline-none` sans alternative)
+- [ ] Tab nav avec roles ARIA (`tablist`, `tab`, `tabpanel`, `aria-selected`)
+- [ ] Etat desactive : `aria-disabled="true"` + style visuel distinct
+- [ ] Labels toujours lies aux inputs via `htmlFor`/`id`
+- [ ] Respecter `prefers-reduced-motion` pour toutes les animations
+- [ ] Zone tactile minimum 48x48px pour tout element interactif mobile
 
 ---
 
-## 8. Pièges courants
+## 8. Pieges courants
 
 ### Ne pas faire
 
 ```tsx
-// ❌ Police hardcodée en classe arbitraire (non chargée)
-<h2 className="font-[Instrument_Serif,serif]">Titre</h2>
+// !! Police hardcodee en classe arbitraire
+<h2 className="font-[Fraunces,serif]">Titre</h2>
 
-// ❌ Couleur hexadécimale en dur
-<p className="text-[#7A7A75]">Description</p>
+// !! Couleur hexadecimale en dur
+<p className="text-[#888888]">Description</p>
 
-// ❌ Font body redéclarée dans chaque composant
-<div className="font-[Manrope,sans-serif]">...</div>
+// !! Couleur Tailwind generique (non tokenisee)
+<div className="bg-neutral-900 text-white">...</div>
+<div className="bg-zinc-500">...</div>
 
-// ❌ Placeholder comme seul label
-<FormField placeholder="3 000" suffix="€/mois" value={...} onChange={...} />
+// !! Font body redeclaree
+<div className="font-[DM_Sans,sans-serif]">...</div>
 
-// ❌ lang anglais sur app française
-<html lang="en">
+// !! Placeholder comme seul label
+<FormField placeholder="3 000" suffix="EUR/mois" value={...} onChange={...} />
 ```
 
-### Faire à la place
+### Faire a la place
 
 ```tsx
-// ✅ Police via token Tailwind configuré
+// Police via token Tailwind configure
 <h2 className="font-display text-2xl">Titre</h2>
 
-// ✅ Token couleur
-<p className="text-text-secondary">Description</p>
+// Token couleur
+<p className="text-text-dim">Description</p>
 
-// ✅ Body police = défaut, rien à redéclarer
+// Bouton primaire avec token
+<button className="bg-accent text-white">Action</button>
 
-// ✅ Input avec label explicite
+// Body police = defaut, rien a redeclarer
+
+// Input avec label explicite
 <FormField
   id="common-charges"
   label="Charges communes mensuelles"
   placeholder="3 000"
-  suffix="€/mois"
+  suffix="EUR/mois"
   value={...}
   onChange={...}
 />
-
-// ✅
-<html lang="fr">
 ```
 
 ---
 
-## 9. Qualité visuelle — standards
+## 9. Qualite visuelle — standards
 
-Le design de référence est `docs/reference/prototype.jsx`. Les écrans implémentés doivent correspondre à ce prototype en termes de hiérarchie, spacing, et rendu typographique.
+Le design de reference est `docs/reference/quotepart-design-system.md`. Les ecrans implementes doivent correspondre a ce design system en termes de hierarchie, spacing, et rendu typographique.
 
 Points de vigilance :
 
-- **Spacing** : `p-6` pour les cards, `gap-4` entre champs en grille, `mb-8` avant boutons de navigation
-- **Radius** : `rounded-md` (6px) pour inputs, `rounded-[10px]` pour cards de mode/palier
-- **Borders** : `border border-border` pour les conteneurs, `border-[1.5px]` pour les cards d'action primaires
-- **Shadows** : éviter les ombres lourdes — `shadow-sm` au maximum, uniquement sur les cards flottantes
+- **Spacing** : base 4px, `p-5` pour les cards, `gap-4` entre champs en grille, `mb-8` avant boutons de navigation
+- **Radius** : `rounded-sm` (3px) pour tags, `rounded-md` (6px) pour inputs/boutons, `rounded-lg` (8px) pour alertes, `rounded-xl` (10px) pour cards
+- **Borders** : `border border-border` pour les conteneurs, `border-l-[3px]` pour les EdgeCards
+- **Shadows** : aucune ombre dans le theme sombre
 
 ---
 
-## 10. Fichiers clés
+## 10. Fichiers cles
 
-| Fichier                        | Rôle                                       |
-| ------------------------------ | ------------------------------------------ |
-| `src/app/layout.tsx`           | Chargement des polices, lang, metadata     |
-| `src/app/globals.css`          | Tokens Tailwind (`@theme`), styles globaux |
-| `src/components/ui/`           | Composants atomiques réutilisables         |
-| `src/components/form/`         | Composants de formulaire par palier        |
-| `docs/reference/prototype.jsx` | Référence visuelle originale               |
+| Fichier                                     | Role                                         |
+| ------------------------------------------- | -------------------------------------------- |
+| `src/app/layout.tsx`                        | Chargement des polices, lang, metadata       |
+| `src/app/globals.css`                       | Tokens Tailwind (`@theme`), styles globaux   |
+| `src/components/ui/`                        | Composants atomiques reutilisables           |
+| `src/components/form/`                      | Composants de formulaire par palier          |
+| `docs/reference/quotepart-design-system.md` | Design system de reference (Data Journalism) |
