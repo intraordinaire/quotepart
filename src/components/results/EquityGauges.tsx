@@ -3,46 +3,16 @@
 import React from "react";
 import type { CalculationResults } from "@/domain/calculate";
 import type { ModelId } from "@/domain/types";
+import {
+  MODEL_CONFIGS,
+  getModelResult,
+  isRedundantModel,
+  isNonViableModel,
+} from "@/lib/modelUtils";
 
 interface EquityGaugesProps {
   results: CalculationResults;
   unlockedModels: Set<ModelId>;
-}
-
-interface ModelConfig {
-  id: ModelId;
-  shortLabel: string;
-  fullLabel: string;
-}
-
-const MODEL_CONFIGS: ModelConfig[] = [
-  { id: "m1_5050", shortLabel: "M1", fullLabel: "50/50" },
-  { id: "m2_income_ratio", shortLabel: "M2", fullLabel: "Ratio revenus" },
-  { id: "m3_equal_rav", shortLabel: "M3", fullLabel: "Reste à vivre égal" },
-  { id: "m4_adjusted_time", shortLabel: "M4", fullLabel: "Temps ajusté" },
-  { id: "m5_total_contribution", shortLabel: "M5", fullLabel: "Contribution totale" },
-];
-
-function getEquityScore(results: CalculationResults, modelId: ModelId): number {
-  if (modelId === "m4_adjusted_time") {
-    return results.m4_adjusted_time.optionB.equityScore;
-  }
-  if (modelId === "m5_total_contribution") {
-    return results.m5_total_contribution.modelResult.equityScore;
-  }
-  return results[modelId].equityScore;
-}
-
-function isRedundantModel(results: CalculationResults, id: ModelId): boolean {
-  if (id === "m4_adjusted_time") return results.m4_adjusted_time.isSameAsM2;
-  if (id === "m5_total_contribution") return results.m5_total_contribution.isSameAsM2;
-  return false;
-}
-
-function isNonViable(results: CalculationResults, id: ModelId): boolean {
-  if (id === "m4_adjusted_time") return !results.m4_adjusted_time.optionB.isViable;
-  if (id === "m5_total_contribution") return !results.m5_total_contribution.modelResult.isViable;
-  return !results[id].isViable;
 }
 
 function getBarColorClass(
@@ -69,8 +39,8 @@ export function EquityGauges({ results, unlockedModels }: EquityGaugesProps): Re
       {MODEL_CONFIGS.map(({ id, shortLabel, fullLabel }) => {
         const isLocked = !unlockedModels.has(id);
         const isRedundant = !isLocked && isRedundantModel(results, id);
-        const nonViable = !isLocked && !isRedundant && isNonViable(results, id);
-        const score = getEquityScore(results, id);
+        const nonViable = !isLocked && !isRedundant && isNonViableModel(results, id);
+        const score = getModelResult(results, id).equityScore;
         const colorClass = getBarColorClass(score, isLocked, isRedundant, nonViable);
         const percentage = Math.round(score * 100);
         const barWidth = nonViable ? 0 : percentage;

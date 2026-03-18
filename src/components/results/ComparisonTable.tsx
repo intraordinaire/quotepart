@@ -1,9 +1,16 @@
 "use client";
 
 import React from "react";
-import type { ModelId, ModelResult } from "@/domain/types";
+import type { ModelId } from "@/domain/types";
 import type { CalculationResults } from "@/domain/calculate";
 import { LockedModelOverlay } from "./LockedModelOverlay";
+import {
+  MODEL_CONFIGS,
+  getModelResult,
+  isRedundantModel,
+  isNonViableModel,
+} from "@/lib/modelUtils";
+import { formatCurrency } from "@/lib/format";
 
 export interface ComparisonTableProps {
   results: CalculationResults;
@@ -12,36 +19,6 @@ export interface ComparisonTableProps {
   onModelSelect: (id: ModelId) => void;
   p1Name: string;
   p2Name: string;
-}
-
-interface ModelConfig {
-  id: ModelId;
-  shortLabel: string;
-  fullLabel: string;
-  tierRequired: 2 | 3 | 4 | null;
-}
-
-const MODEL_CONFIGS: ModelConfig[] = [
-  { id: "m1_5050", shortLabel: "M1", fullLabel: "50/50", tierRequired: null },
-  {
-    id: "m2_income_ratio",
-    shortLabel: "M2",
-    fullLabel: "Revenu proportionnel",
-    tierRequired: null,
-  },
-  { id: "m3_equal_rav", shortLabel: "M3", fullLabel: "Reste à vivre égal", tierRequired: 2 },
-  { id: "m4_adjusted_time", shortLabel: "M4", fullLabel: "Temps ajusté", tierRequired: 3 },
-  {
-    id: "m5_total_contribution",
-    shortLabel: "M5",
-    fullLabel: "Contribution totale",
-    tierRequired: 4,
-  },
-];
-
-function formatAmount(amount: number): string {
-  const formatted = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(amount);
-  return `${formatted}\u00A0€`;
 }
 
 function formatContribution(
@@ -59,23 +36,7 @@ function formatContribution(
       </span>
     );
   }
-  return formatAmount(amount);
-}
-
-function getModelResult(results: CalculationResults, id: ModelId): ModelResult {
-  if (id === "m4_adjusted_time") return results.m4_adjusted_time.optionB;
-  if (id === "m5_total_contribution") return results.m5_total_contribution.modelResult;
-  return results[id];
-}
-
-function isRedundantModel(results: CalculationResults, id: ModelId): boolean {
-  if (id === "m4_adjusted_time") return results.m4_adjusted_time.isSameAsM2;
-  if (id === "m5_total_contribution") return results.m5_total_contribution.isSameAsM2;
-  return false;
-}
-
-function isNonViableModel(results: CalculationResults, id: ModelId): boolean {
-  return !getModelResult(results, id).isViable;
+  return formatCurrency(amount);
 }
 
 function isDimmedColumn(results: CalculationResults, id: ModelId): boolean {
@@ -242,7 +203,7 @@ export function ComparisonTable({
                     key={config.id}
                     className={`py-2 px-3 text-center text-xs${dimmed ? " opacity-40" : ""}`}
                   >
-                    {result ? formatAmount(result.p1DisposableIncome) : "—"}
+                    {result ? formatCurrency(result.p1DisposableIncome) : "—"}
                   </td>
                 );
               })}
@@ -263,7 +224,7 @@ export function ComparisonTable({
                     key={config.id}
                     className={`py-2 px-3 text-center text-xs${dimmed ? " opacity-40" : ""}`}
                   >
-                    {result ? formatAmount(result.p2DisposableIncome) : "—"}
+                    {result ? formatCurrency(result.p2DisposableIncome) : "—"}
                   </td>
                 );
               })}
@@ -289,7 +250,7 @@ export function ComparisonTable({
             </tr>
           </tbody>
           {/* Footer: notes for redundant and non-viable models */}
-          {(() => {
+          {((): React.ReactNode => {
             const footnotes: FootnoteEntry[] = [];
             MODEL_CONFIGS.forEach((c) => {
               if (!unlockedModels.has(c.id)) return;

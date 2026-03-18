@@ -139,7 +139,7 @@ describe("TemporalProjection", () => {
 
     // m1_5050 year10 = 12000 or year1 = 1200 should appear in the intro context
     const fmt = (n: number) =>
-      new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(n) + " €";
+      new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(n) + "\u00A0€";
 
     // The intro must reference the M1 year1 value (1 200 €)
     const allText = document.body.textContent ?? "";
