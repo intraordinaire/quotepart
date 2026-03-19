@@ -8,18 +8,20 @@ export default function Footer(): React.JSX.Element {
 
   return (
     <>
-      <footer className="mx-auto flex max-w-[1200px] items-center justify-between border-t border-border px-6 py-6 md:px-10">
+      <footer className="mx-auto flex max-w-[1200px] flex-col items-center gap-3 border-t border-border px-6 py-6 md:flex-row md:justify-between md:px-10">
         <span className="font-display text-[15px] text-text">
           Quote<span className="text-accent">Part</span>
         </span>
-        <span className="text-xs text-text-muted">
+        <span className="flex flex-wrap justify-center gap-x-1.5 text-xs text-text-muted">
           <button
             onClick={() => setInseeOpen(true)}
             className="cursor-pointer underline underline-offset-2 transition-colors hover:text-text-dim"
           >
             Données INSEE
           </button>
-          {" · Aucune donnée stockée · "}
+          <span aria-hidden="true">·</span>
+          <span>Aucune donnée stockée</span>
+          <span aria-hidden="true">·</span>
           <a
             href="https://github.com/intraordinaire/quotepart"
             target="_blank"
