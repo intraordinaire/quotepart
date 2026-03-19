@@ -1,67 +1,129 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
+import { startFullMode, completeTier1, goToResultsMinimal, switchToResultsTab } from "./helpers";
 
-// Helper: navigate to /simulate, pick full mode, complete Tier 1 with minimal data
-async function completeTier1(page: Page): Promise<void> {
-  await page.goto("/simulate");
-  await page.getByText("Je remplis pour nous deux").click();
-
-  // Wait for Tier 1 to render
-  await expect(page.getByText("Revenus & charges communes")).toBeVisible();
-
-  // Fill minimal required data so p1/p2 are defined in state
-  await page.getByLabel(/revenu net mensuel p1/i).fill("3000");
-  await page.getByLabel(/revenu net mensuel p2/i).fill("2000");
-
-  // Complete Tier 1 by clicking Suivant
-  await page.getByRole("button", { name: /suivant/i }).click();
-
-  // Wait for tier 2 to show — confirms tier1 was completed and state updated
-  await expect(page.getByText("Charges personnelles")).toBeVisible();
-}
-
-test.describe("Results screen", () => {
-  test("after filling Tier 1, Results tab is enabled and shows model columns", async ({ page }) => {
+test.describe("Results — progressive model unlocking", () => {
+  test("Tier 1 only: M1+M2 unlocked, M3-M5 locked", async ({ page }) => {
+    await startFullMode(page);
     await completeTier1(page);
+    await switchToResultsTab(page);
 
-    // Résultats tab should now be enabled
-    const resultatsTab = page.getByRole("tab", { name: /résultats/i });
-    await expect(resultatsTab).not.toHaveAttribute("aria-disabled", "true");
-    await resultatsTab.click();
-
-    // All 5 model column headers should exist
     await expect(page.locator("[data-model='m1_5050']")).toBeVisible();
     await expect(page.locator("[data-model='m2_income_ratio']")).toBeVisible();
 
-    // M3–M5 should show locked overlay text
-    await expect(page.getByText(/palier 2/i).first()).toBeVisible();
+    await expect(
+      page.getByText("Remplissez le palier 2 pour débloquer ce modèle").first()
+    ).toBeVisible();
+    await expect(
+      page.getByText("Remplissez le palier 3 pour débloquer ce modèle").first()
+    ).toBeVisible();
+    await expect(
+      page.getByText("Remplissez le palier 4 pour débloquer ce modèle").first()
+    ).toBeVisible();
   });
 
-  test("clicking a model column header opens the detail panel", async ({ page }) => {
+  test("Tier 1+2 completed: M3 unlocked", async ({ page }) => {
+    await startFullMode(page);
     await completeTier1(page);
+    // Complete tier 2 (not skip) — click Suivant without filling charges
+    await page.getByRole("button", { name: /suivant/i }).click();
+    await expect(page.getByRole("heading", { name: "Temps de travail" })).toBeVisible();
+    await switchToResultsTab(page);
 
-    const resultatsTab = page.getByRole("tab", { name: /résultats/i });
-    await resultatsTab.click();
+    // M3 now unlocked — no palier 2 message
+    await expect(
+      page.getByText("Remplissez le palier 2 pour débloquer ce modèle")
+    ).not.toBeVisible();
+    // M4 still locked
+    await expect(
+      page.getByText("Remplissez le palier 3 pour débloquer ce modèle").first()
+    ).toBeVisible();
+  });
 
-    // Click M1 column header to open detail panel
+  test("All tiers completed: all 5 models unlocked", async ({ page }) => {
+    await goToResultsMinimal(page);
+
+    await expect(page.getByText(/Remplissez le palier/)).not.toBeVisible();
+  });
+});
+
+test.describe("Results — calculated values (P1=3000, P2=2000, charges=1500)", () => {
+  test("M1 (50/50): each pays 750€", async ({ page }) => {
+    await goToResultsMinimal(page, { p1Income: "3000", p2Income: "2000", commonCharges: "1500" });
+
+    const tableRows = page.locator("table tbody tr");
+
+    // Row 1 = Part P1, Row 2 = Part P2 (row 0 = Modèle label)
+    const p1ContribRow = tableRows.nth(1);
+    await expect(p1ContribRow).toContainText("750");
+
+    const p2ContribRow = tableRows.nth(2);
+    await expect(p2ContribRow).toContainText("750");
+  });
+
+  test("M2 (prorata): P1 pays 900€, P2 pays 600€", async ({ page }) => {
+    await goToResultsMinimal(page, { p1Income: "3000", p2Income: "2000", commonCharges: "1500" });
+
+    const tableRows = page.locator("table tbody tr");
+
+    await expect(tableRows.nth(1)).toContainText("900");
+    await expect(tableRows.nth(2)).toContainText("600");
+  });
+
+  test("disposable income: M1 RAV P1=2250, P2=1250 / M2 RAV P1=2100, P2=1400", async ({ page }) => {
+    await goToResultsMinimal(page, { p1Income: "3000", p2Income: "2000", commonCharges: "1500" });
+
+    const tableRows = page.locator("table tbody tr");
+
+    // Row 3 = Reste à vivre P1, Row 4 = Reste à vivre P2
+    await expect(tableRows.nth(3)).toContainText("2 250");
+    await expect(tableRows.nth(3)).toContainText("2 100");
+    await expect(tableRows.nth(4)).toContainText("1 250");
+    await expect(tableRows.nth(4)).toContainText("1 400");
+  });
+});
+
+test.describe("Results — edge cases", () => {
+  test("charges exceed combined income shows alert", async ({ page }) => {
+    await goToResultsMinimal(page, { p1Income: "1000", p2Income: "500", commonCharges: "2000" });
+
+    const alert = page.getByText("Les charges communes dépassent");
+    await expect(alert).toBeVisible();
+  });
+
+  test("non-viable model when contribution exceeds income", async ({ page }) => {
+    // M1: 1000/2 = 500 per person. P1=200, P2=200 → 500 > 200
+    await goToResultsMinimal(page, { p1Income: "200", p2Income: "200", commonCharges: "1000" });
+
+    await expect(page.getByText(/non viable/i).first()).toBeVisible();
+  });
+});
+
+test.describe("Results — model detail panel", () => {
+  test("clicking M1 opens detail panel with formula, closing hides it", async ({ page }) => {
+    await goToResultsMinimal(page);
+
     await page.locator("[data-model='m1_5050']").click();
-
-    // Detail panel should show formula text for M1
     await expect(page.getByText("Chacun paie la moitié des charges communes.")).toBeVisible();
 
-    // Close the panel
     await page.getByRole("button", { name: /fermer/i }).click();
-
-    // Detail panel should close
     await expect(page.getByText("Chacun paie la moitié des charges communes.")).not.toBeVisible();
   });
+});
 
-  test("'Et si...' CTA link is present in results", async ({ page }) => {
-    await completeTier1(page);
+test.describe("Results — Et si... tab", () => {
+  test("'Et si...' button switches to what-if tab", async ({ page }) => {
+    await goToResultsMinimal(page);
 
-    const resultatsTab = page.getByRole("tab", { name: /résultats/i });
-    await resultatsTab.click();
+    await page.getByRole("button", { name: /et si/i }).click();
+    await expect(page.getByText("Scénario modifié")).toBeVisible();
+  });
 
-    // The Et si... link should be present
-    await expect(page.getByRole("link", { name: /et si/i })).toBeVisible();
+  test("what-if panel shows pre-filled income values", async ({ page }) => {
+    await goToResultsMinimal(page, { p1Income: "3000", p2Income: "2000" });
+
+    await page.getByRole("button", { name: /et si/i }).click();
+
+    await expect(page.locator('input[value="3000"]').first()).toBeVisible();
+    await expect(page.locator('input[value="2000"]').first()).toBeVisible();
   });
 });
