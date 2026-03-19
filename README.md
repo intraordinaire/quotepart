@@ -1,15 +1,41 @@
-# QuotePart
+<p align="center">
+  <img src="public/logo.png" alt="QuotePart" height="48">
+</p>
 
-> _"Pas une calculette. Un outil de dialogue."_
+<p align="center">
+  <em>"Pas une calculette. Un outil de dialogue."</em>
+</p>
 
-Simulateur d'équité financière pour les couples. Compare 5 modèles de répartition des charges appliqués aux données réelles d'un foyer, pour faciliter des conversations éclairées sur l'argent.
+<p align="center">
+  <a href="https://github.com/intraordinaire/quotepart/actions/workflows/ci.yml">
+    <img src="https://github.com/intraordinaire/quotepart/actions/workflows/ci.yml/badge.svg" alt="CI">
+  </a>
+</p>
+
+<p align="center">
+  <strong><a href="https://quotepart.intraordinai.re/">quotepart.intraordinai.re</a></strong>
+</p>
+
+---
+
+Simulateur d'équité financière. 5 modèles de répartition des dépenses communes, appliqués à vos vrais chiffres — du 50/50 à la contribution totale, incluant la valeur du travail domestique.
 
 ## Fonctionnement
 
-- **5 modèles d'équité** : de la répartition 50/50 jusqu'à la contribution totale (incluant le travail domestique)
-- **Sans compte** : toutes les données restent dans le navigateur, aucun serveur
-- **Mode couple** : P1 remplit le formulaire, partage un lien — P2 complète ses données de son côté
-- **Progressif** : chaque tier débloque de nouveaux modèles
+1. **Revenus & charges** — saisissez l'essentiel en 90 secondes, deux modèles débloqués immédiatement
+2. **Contexte** — temps partiel, charges personnelles, répartition domestique : chaque palier affine la simulation
+3. **Comparez** — 5 modèles côte à côte, aucun n'est présenté comme "le bon"
+4. **Partagez** — envoyez le lien à votre partenaire, comparez vos perceptions, choisissez ensemble
+
+## Vie privée
+
+- **Zéro compte, zéro serveur** — toutes les données restent dans le navigateur
+- **Aucun tracking** — pas de cookies, pas d'analytics invasifs
+- **Code source ouvert** — vérifiable par quiconque
+
+## Données de référence
+
+Le travail domestique est estimé à partir de l'enquête [Emploi du temps 2010](https://www.insee.fr/fr/statistiques/2123967) de l'INSEE (28h/semaine avec enfants, 23h sans) et valorisé au SMIC horaire net.
 
 ## Stack
 
@@ -32,6 +58,6 @@ npm run test:e2e  # e2e (Playwright)
 
 ## Documentation
 
-- `CLAUDE.md` — conventions et architecture du projet
-- `quotepart-cadrage-v03.md` — spécification produit complète
-- `docs/plans/` — plans d'implémentation
+- [`CLAUDE.md`](CLAUDE.md) — conventions et architecture du projet
+- [`quotepart-cadrage-v03.md`](quotepart-cadrage-v03.md) — spécification produit complète
+- [`docs/plans/`](docs/plans/) — plans d'implémentation

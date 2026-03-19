@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <clipPath id="c">
+      <circle cx="16" cy="16" r="14"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#c)">
+    <!-- Orange part (larger, ~225°): 30° → 255° clockwise from top -->
+    <path d="M 16 16 L 23 3.88 A 14 14 0 1 1 2.48 19.63 Z" fill="#ff6b35" transform="translate(0.91, 1.19)"/>
+    <!-- Gray part (smaller, ~135°): 255° → 30° clockwise from top -->
+    <path d="M 16 16 L 2.48 19.63 A 14 14 0 0 1 23 3.88 Z" fill="#888888" transform="translate(-0.91, -1.19)"/>
+  </g>
+</svg>
