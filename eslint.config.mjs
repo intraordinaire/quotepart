@@ -20,10 +20,7 @@ const eslintConfig = defineConfig([
   ]),
   {
     rules: {
-      "@typescript-eslint/explicit-function-return-type": [
-        "warn",
-        { allowExpressions: true },
-      ],
+      "@typescript-eslint/explicit-function-return-type": ["warn", { allowExpressions: true }],
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unused-vars": "error",
     },
