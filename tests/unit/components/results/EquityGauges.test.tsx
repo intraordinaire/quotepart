@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import React from "react";
 import { EquityGauges } from "@/components/results/EquityGauges";
 import type { CalculationResults } from "@/domain/calculate";
 import type { ModelId } from "@/domain/types";

@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import React from "react";
 import { ComparisonTable } from "@/components/results/ComparisonTable";
 import type { CalculationResults } from "@/domain/calculate";
 import type { ModelId } from "@/domain/types";

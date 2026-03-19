@@ -105,7 +105,7 @@ export function getUnlockedModels(state: SimulationState): Set<ModelId> {
 
 // ─── Context ───────────────────────────────────────────────────────────────
 
-interface SimulationContextValue {
+export interface SimulationContextValue {
   state: SimulationState;
   dispatch: React.Dispatch<SimulationAction>;
 }

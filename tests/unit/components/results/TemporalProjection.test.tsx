@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import React from "react";
 import { TemporalProjection } from "@/components/results/TemporalProjection";
 import type { CalculationResults } from "@/domain/calculate";
 import type { ModelId } from "@/domain/types";
