@@ -80,16 +80,20 @@ export default function PreviewTable(): React.JSX.Element {
                 <div className="mb-3 font-mono text-[11px] uppercase tracking-wider text-text-muted">
                   {model}
                 </div>
-                <div className="flex justify-between text-sm">
-                  <div>
-                    <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-text" />
-                    <span className="font-medium text-text">Personne 1</span>
-                    <span className="ml-2 tabular-nums text-text-dim">{P1[i]}</span>
+                <div className="flex flex-col gap-1.5 text-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-text" />
+                      <span className="font-medium text-text">Personne 1</span>
+                    </div>
+                    <span className="tabular-nums text-text-dim">{P1[i]}</span>
                   </div>
-                  <div>
-                    <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-accent" />
-                    <span className="font-medium text-text">Personne 2</span>
-                    <span className="ml-2 tabular-nums text-text-dim">{P2[i]}</span>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-accent" />
+                      <span className="font-medium text-text">Personne 2</span>
+                    </div>
+                    <span className="tabular-nums text-text-dim">{P2[i]}</span>
                   </div>
                 </div>
                 {ecart && (
