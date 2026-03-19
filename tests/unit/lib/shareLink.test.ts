@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { getFullLink, getP2InviteLink } from "@/lib/shareLink";
+import { getFullLink, getP2InviteLink, decodeP2Payload } from "@/lib/shareLink";
 import type { SimulationInput } from "@/domain/types";
 
 const fullInput: SimulationInput = {
@@ -113,5 +113,46 @@ describe("getP2InviteLink", () => {
     const fullLink = getFullLink(fullInput);
     const inviteLink = getP2InviteLink(fullInput);
     expect(inviteLink.length).toBeLessThan(fullLink.length);
+  });
+});
+
+describe("getP2InviteLink → decodeP2Payload round-trip", () => {
+  it("decodes a link generated from complete input", () => {
+    const link = getP2InviteLink(fullInput);
+    const url = new URL(link);
+    const data = url.searchParams.get("data")!;
+    const payload = decodeP2Payload(data);
+    expect(payload).not.toBeNull();
+    expect(payload!.commonCharges).toBe(1500);
+    expect(payload!.hasChildren).toBe(true);
+    expect(payload!.hourlyRate).toBe(9.52);
+    expect(payload!.p1Name).toBe("P1");
+  });
+
+  it("decodes a link when p1 name is missing (user never filled the name field)", () => {
+    // Simulates Partial<SimulationInput> cast to SimulationInput — p1.name is undefined
+    const partialInput = {
+      ...fullInput,
+      p1: { ...fullInput.p1, name: undefined as unknown as string },
+    };
+    const link = getP2InviteLink(partialInput);
+    const url = new URL(link);
+    const data = url.searchParams.get("data")!;
+    const payload = decodeP2Payload(data);
+    expect(payload).not.toBeNull();
+    expect(payload!.p1Name).toBe("");
+  });
+
+  it("decodes a link with accented French name", () => {
+    const accentedInput = {
+      ...fullInput,
+      p1: { ...fullInput.p1, name: "Élodie" },
+    };
+    const link = getP2InviteLink(accentedInput);
+    const url = new URL(link);
+    const data = url.searchParams.get("data")!;
+    const payload = decodeP2Payload(data);
+    expect(payload).not.toBeNull();
+    expect(payload!.p1Name).toBe("Élodie");
   });
 });

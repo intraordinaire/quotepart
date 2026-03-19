@@ -40,7 +40,7 @@ export function getP2InviteLink(input: SimulationInput): string {
     commonCharges: input.commonCharges,
     hasChildren: input.hasChildren,
     hourlyRate: input.hourlyRate,
-    p1Name: input.p1.name,
+    p1Name: input.p1?.name ?? "",
   };
   const encoded = btoa(JSON.stringify(payload))
     .replace(/\+/g, "-")
