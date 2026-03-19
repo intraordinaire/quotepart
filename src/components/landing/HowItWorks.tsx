@@ -21,8 +21,8 @@ const STEPS = [
   },
   {
     step: "04",
-    title: "Partagez & décidez",
-    desc: "Envoyez le lien à votre partenaire. Comparez vos perceptions. Choisissez ensemble.",
+    title: "Discutez & décidez",
+    desc: "Remplissez ensemble ou envoyez le lien à votre partenaire. Comparez vos perceptions. Décidez en connaissance de cause.",
     accent: true,
   },
 ] as const;
