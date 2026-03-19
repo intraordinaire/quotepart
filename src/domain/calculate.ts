@@ -7,7 +7,7 @@ import { computeM5, type M5Result } from "./models/m5-total-contribution";
 import { validateInput, type ValidationError } from "./validators";
 import type { ModelResult } from "./types";
 
-export interface ProjectionRow {
+interface ProjectionRow {
   year1: number;
   year5: number;
   year10: number;

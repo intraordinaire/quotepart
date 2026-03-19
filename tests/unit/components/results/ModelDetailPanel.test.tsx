@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import React from "react";
 import { ModelDetailPanel } from "@/components/results/ModelDetailPanel";
 import type { CalculationResults } from "@/domain/calculate";
-import type { SimulationInput, ModelResult } from "@/domain/types";
+import type { ModelResult } from "@/domain/types";
 
 function makeModelResult(overrides: Partial<ModelResult> = {}): ModelResult {
   return {
@@ -43,47 +43,12 @@ const defaultResults: CalculationResults = {
   validationErrors: [],
 };
 
-const defaultInput: SimulationInput = {
-  p1: {
-    name: "P1",
-    income: 2000,
-    personalCharges: 300,
-    workQuota: 1,
-    fullTimeIncome: 2000,
-    partTimeReason: null,
-  },
-  p2: {
-    name: "P2",
-    income: 1500,
-    personalCharges: 200,
-    workQuota: 1,
-    fullTimeIncome: 1500,
-    partTimeReason: null,
-  },
-  commonCharges: 1000,
-  hasChildren: false,
-  domesticSliders: {
-    p1: {
-      groceries: 60,
-      cooking: 70,
-      cleaning: 50,
-      admin: 50,
-      childrenAppointments: 50,
-      schoolSupport: 50,
-      maintenance: 40,
-      planning: 60,
-    },
-  },
-  hourlyRate: 9.52,
-};
-
 describe("ModelDetailPanel", () => {
   it("renders nothing when modelId is null", () => {
     const { container } = render(
       <ModelDetailPanel
         modelId={null}
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -97,7 +62,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m1_5050"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -111,7 +75,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m1_5050"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -127,7 +90,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m2_income_ratio"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -141,7 +103,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m3_equal_rav"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -157,7 +118,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m4_adjusted_time"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -173,7 +133,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m5_total_contribution"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -189,7 +148,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m1_5050"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -204,7 +162,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m1_5050"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -219,7 +176,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m4_adjusted_time"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -234,7 +190,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m5_total_contribution"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={vi.fn()}
@@ -252,7 +207,6 @@ describe("ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m1_5050"
         results={defaultResults}
-        input={defaultInput}
         p1Name="P1"
         p2Name="P2"
         onClose={onClose}

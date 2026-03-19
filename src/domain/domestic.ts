@@ -79,7 +79,7 @@ export function mergeDomesticSliders(
   ) as DomesticSliders;
 }
 
-export interface DomesticValueResult {
+interface DomesticValueResult {
   p1MonthlyValue: number;
   p2MonthlyValue: number;
   p1WeeklyHours: number;

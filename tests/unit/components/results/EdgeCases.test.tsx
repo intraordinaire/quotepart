@@ -4,7 +4,7 @@ import React from "react";
 import { ComparisonTable } from "@/components/results/ComparisonTable";
 import { ModelDetailPanel } from "@/components/results/ModelDetailPanel";
 import type { CalculationResults } from "@/domain/calculate";
-import type { ModelId, SimulationInput } from "@/domain/types";
+import type { ModelId } from "@/domain/types";
 import type { M4Result } from "@/domain/models/m4-adjusted-time";
 import type { M5Result } from "@/domain/models/m5-total-contribution";
 
@@ -75,40 +75,6 @@ const ALL_MODELS: Set<ModelId> = new Set([
   "m4_adjusted_time",
   "m5_total_contribution",
 ]);
-
-const defaultInput: SimulationInput = {
-  p1: {
-    name: "P1",
-    income: 2000,
-    personalCharges: 300,
-    workQuota: 1,
-    fullTimeIncome: 2000,
-    partTimeReason: null,
-  },
-  p2: {
-    name: "P2",
-    income: 1500,
-    personalCharges: 200,
-    workQuota: 1,
-    fullTimeIncome: 1500,
-    partTimeReason: null,
-  },
-  commonCharges: 1000,
-  hasChildren: false,
-  domesticSliders: {
-    p1: {
-      groceries: 60,
-      cooking: 70,
-      cleaning: 50,
-      admin: 50,
-      childrenAppointments: 50,
-      schoolSupport: 50,
-      maintenance: 40,
-      planning: 60,
-    },
-  },
-  hourlyRate: 9.52,
-};
 
 describe("Edge cases — ComparisonTable", () => {
   it("shows 'Non viable' footer note when isViable = false on a model", () => {
@@ -244,7 +210,6 @@ describe("Edge cases — ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m4_adjusted_time"
         results={results}
-        input={defaultInput}
         p1Name="Alice"
         p2Name="Bob"
         onClose={vi.fn()}
@@ -263,7 +228,6 @@ describe("Edge cases — ModelDetailPanel", () => {
       <ModelDetailPanel
         modelId="m5_total_contribution"
         results={results}
-        input={defaultInput}
         p1Name="Alice"
         p2Name="Bob"
         onClose={vi.fn()}

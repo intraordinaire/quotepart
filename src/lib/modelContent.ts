@@ -1,6 +1,6 @@
 import type { ModelId } from "@/domain/types";
 
-export interface ModelContent {
+interface ModelContent {
   label: string;
   formula: string;
   philosophy: string;

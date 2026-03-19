@@ -3,13 +3,11 @@
 import React from "react";
 import type { ModelId } from "@/domain/types";
 import type { CalculationResults } from "@/domain/calculate";
-import type { SimulationInput } from "@/domain/types";
 import { MODEL_CONTENT } from "@/lib/modelContent";
 
 interface ModelDetailPanelProps {
   modelId: ModelId | null;
   results: CalculationResults;
-  input: SimulationInput;
   p1Name: string;
   p2Name: string;
   onClose: () => void;

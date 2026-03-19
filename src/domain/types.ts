@@ -47,5 +47,3 @@ export type ModelId =
   | "m3_equal_rav"
   | "m4_adjusted_time"
   | "m5_total_contribution";
-
-export type SimulationResults = Record<ModelId, ModelResult>;

@@ -59,7 +59,6 @@ export function ResultsShell(): React.JSX.Element {
         <ModelDetailPanel
           modelId={selectedModel}
           results={results}
-          input={input}
           p1Name={p1Name}
           p2Name={p2Name}
           onClose={() => setSelectedModel(null)}
