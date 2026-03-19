@@ -12,7 +12,7 @@ Full product spec: `quotepart-cadrage-v03.md`
 
 ## Current State
 
-**Phase: Et si... (Plan 06)**
+**Phase: Post-Plan 08** — Plans 01–06 et 08 terminés. Plan 07 (E2E, CI & Landing) en draft.
 
 Reference files:
 
@@ -38,14 +38,30 @@ Plans are in `docs/plans/` — execute in order:
 
 ## Stack
 
-- **Framework**: Next.js (latest stable, App Router), TypeScript strict
-- **Styling**: Tailwind CSS
+- **Framework**: Next.js 16 (App Router), TypeScript strict mode, Node 24 (`.nvmrc`)
+- **Styling**: Tailwind CSS v4
 - **State**: encoded URL params (base64) + localStorage fallback — **no backend**
-- **Tests**: Vitest + Testing Library (unit/integration) · Playwright (e2e)
-- **CI**: GitHub Actions
+- **Tests**: Vitest 4 + Testing Library (unit/integration) · Playwright (e2e)
+- **CI**: GitHub Actions — lint → typecheck → unit → e2e
+- **Pre-commit**: Husky + lint-staged (eslint --fix + prettier on staged files, tsc --noEmit)
 - **Hosting**: Vercel or Netlify
 - **Analytics**: Plausible or Umami (no invasive cookies)
 - **PWA**: manifest + service worker for offline support (post-MVP)
+
+## Commands
+
+```bash
+npm run dev            # Dev server
+npm run build          # Production build
+npm run lint           # ESLint
+npm run format         # Prettier (write)
+npm run format:check   # Prettier (check only)
+npm test               # Vitest (run once)
+npm run test:watch     # Vitest (watch)
+npm run test:coverage  # Vitest + coverage
+npm run test:e2e       # Playwright
+npm run test:e2e:ui    # Playwright UI mode
+```
 
 ## Core Architecture Concepts
 
@@ -96,23 +112,18 @@ Free-form parameter editing from the results screen. All 4 tiers pre-filled with
 
 No server-side storage → no GDPR processing obligation. No third-party cookies. Mention "Vos données restent sur votre appareil" prominently.
 
-## Stack (implemented)
-
-- **Framework**: Next.js 16 (App Router), TypeScript strict mode, Node 24 (`.nvmrc`)
-- **Styling**: Tailwind CSS v4
-- **Tests**: Vitest 4 + Testing Library (unit/integration) · Playwright (e2e)
-- **CI**: GitHub Actions — lint → typecheck → unit → e2e
-- **Pre-commit**: Husky + lint-staged (eslint --fix + prettier on staged files, tsc --noEmit)
-
 ## Directory structure
 
 ```
 src/
   app/
     page.tsx              — Homepage → /simulate
+    globals.css           — Tailwind token definitions (seule source de hex)
+    layout.tsx            — Root layout
     simulate/
       layout.tsx          — Wraps SimulationProvider
       page.tsx            — Shell: header + tab nav + TierNav + tier content
+      p2/                 — Sous-route P2 (shared mode)
   components/
     form/
       ModeChoice.tsx      — Mode selector (full / shared)
@@ -122,24 +133,63 @@ src/
       Tier3WorkTime.tsx   — Work quota, part-time handling
       Tier4Domestic.tsx   — 8 domestic sliders
       LockedField.tsx     — P2 placeholder in shared mode
+      P2Banner.tsx        — Banner for P2 shared mode
+      ShareLinkPanel.tsx  — Share link generation panel
+    landing/
+      Hero.tsx, HowItWorks.tsx, ModelsOverview.tsx, PreviewTable.tsx
+      CTABlock.tsx, SocialProof.tsx, Footer.tsx, InseeModal.tsx
+    results/
+      ResultsShell.tsx    — Results container (requires tier 1 + P1/P2)
+      ComparisonTable.tsx — Side-by-side model comparison
+      EquityGauges.tsx    — Visual equity gauges
+      ModelDetailPanel.tsx — Detail view with formula
+      LockedModelOverlay.tsx — Grayed-out locked models
+      PerceptionConfrontation.tsx — Domestic perception gaps
+      TemporalProjection.tsx
+    whatif/
+      WhatIfShell.tsx     — What-if container
+      WhatIfPanel.tsx     — Parameter editing panel
+      WhatIfSummary.tsx   — Summary of changes
+      DeltaRow.tsx        — Delta display row
+      SnapshotPanel.tsx   — Scenario snapshot
     ui/
-      FormField.tsx       — Labeled input with suffix
+      FormField.tsx       — Labeled input with suffix (numeric prop for monetary)
       SelectField.tsx     — Labeled select
       SliderField.tsx     — Range slider with P1/P2 labels
       PillToggle.tsx      — Pill-style toggle button
   context/
     SimulationContext.tsx — SimulationState, reducer, getUnlockedModels, SimulationProvider
+    WhatIfContext.tsx     — What-if state management
     useSimulation.ts      — Hook with provider guard
   domain/                 — Pure functions (equity models)
     types.ts              — Shared TypeScript interfaces
+    constants.ts          — DOMESTIC_HOURS, DEFAULT_HOURLY_RATE, WEEKS_PER_MONTH, DEFAULT_SLIDERS
+    domestic.ts           — DOMESTIC_CATEGORIES, mergeDomesticSliders, computeDomesticValue
+    calculate.ts          — calculate() — runs all 5 models
+    validators.ts         — Input validation
+    models/
+      m1-5050.ts, m2-income-ratio.ts, m3-equal-rav.ts
+      m4-adjusted-time.ts, m5-total-contribution.ts
   lib/
     names.ts              — randomPlaceholderPair, displayName
+    format.ts             — formatCurrency (Intl fr-FR + nbsp €)
+    modelUtils.ts         — MODEL_CONFIGS, MODEL_LABELS, MODEL_ORDER, getModelResult, isRedundantModel, isNonViableModel
+    modelContent.ts       — Model descriptions and explanations
+    inputDefaults.ts      — toFullInput(partial → SimulationInput with defaults)
+    urlState.ts           — URL state encoding/decoding (base64)
+    shareLink.ts          — Share link generation
+    persistState.ts       — localStorage persistence
 tests/
   unit/                   — Vitest (mirrors src/)
-  e2e/                    — Playwright (form-flow.spec.ts)
+  e2e/                    — Playwright
+    form-flow.spec.ts     — Form navigation and tier completion
+    results.spec.ts       — Results display and model calculations
+    landing.spec.ts       — Landing page
+    sharing.spec.ts       — Share link flow
+    smoke.spec.ts         — Basic smoke tests
 docs/
   plans/                  — Implementation plans
-  reference/              — Original prototype and spec references
+  reference/              — Design system, frontend guide, prototype
 ```
 
 ## Development conventions
@@ -147,15 +197,26 @@ docs/
 - All `src/domain/` code is TDD: test first, then implement
 - No `any` in TypeScript — enforced by ESLint (`@typescript-eslint/no-explicit-any: error`)
 - Coverage threshold: 80% on domain logic
-- Pre-commit: lint-staged + `tsc --noEmit`
 - All client components need `"use client"` directive (Next.js App Router)
 - IDE diagnostics `Cannot find module '@/...'` are false positives from the TS language server — `tsc --noEmit` is the source of truth
-- `FormField` accepts a `numeric` prop (boolean) for monetary inputs — activates `inputMode="numeric"` + `pattern` on mobile
 - **Zero hardcoded colors**: all colors must use Tailwind tokens defined in `globals.css` (`text-text-dim`, `bg-accent`, `border-border`, etc.) — never `text-[#888]`, `bg-neutral-900`, `bg-zinc-500`, or any hex/generic Tailwind color class. The only place hex values appear is in `globals.css` token definitions.
+- `formatCurrency()` in `src/lib/format.ts` uses `\u00A0` (non-breaking space) before €. Tests comparing formatted amounts must use `\u00A0€`, not `" €"`
+
+## Ne pas faire
+
+- **Ne pas reconstruire `SimulationInput` inline** — toujours utiliser `toFullInput()` de `src/lib/inputDefaults.ts`
+- **Ne pas hardcoder de couleurs** — pas de `text-[#xxx]`, `bg-neutral-*`, `bg-zinc-*` ; utiliser exclusivement les tokens Tailwind de `globals.css`
+- **Ne pas hardcoder de prénoms** dans les tests ou le domain — utiliser `P1`/`P2` ; en UI, les placeholders viennent de `src/lib/names.ts`
+- **Ne pas créer de route séparée pour les résultats** — c'est un tab panel dans `/simulate/page.tsx`
+- **Ne pas assumer que les champs optionnels de `SimulationInput` sont définis** — toujours optional chaining (`input.p1?.name`, `domesticSliders?.p1`)
+- **Ne pas comparer `formatCurrency()` avec un espace normal** — utiliser `\u00A0€` (non-breaking space)
+- **Ne pas mocker les modèles dans les tests domain** — tester avec des vrais inputs, les fonctions sont pures
+- **Ne pas utiliser `any`** — ESLint le bloque, préférer des types explicites ou `unknown`
 
 ## Runtime gotchas
 
 - `calculate()` calls all 5 models unconditionnellement — M5 uses `DEFAULT_SLIDERS` fallback if `domesticSliders` is absent; models must never assume optional `SimulationInput` fields are set
+- Use `toFullInput()` from `src/lib/inputDefaults.ts` to normalize `Partial<SimulationInput>` → `SimulationInput` — never reconstruct inline
 - Always use optional chaining on `SimulationInput` sub-fields (`input.p1?.name`, `domesticSliders?.p1`) — fields are populated progressively as tiers are filled
 - `ResultsShell` requires both `completedTiers.has(1)` AND non-null `input.p1`/`input.p2` — completing Tier 1 without filling incomes leaves them undefined
 - Tier 1 validates P1 + P2 income > 0 before advancing — all e2e helpers must fill both income fields (see `completeTier1` in `tests/e2e/results.spec.ts`)
@@ -163,7 +224,7 @@ docs/
 ## Architecture decisions (Plan 04)
 
 - Results screen is a **tab panel** inside `/simulate/page.tsx`, not a separate route — state lives in `SimulationContext` scoped to the layout; URL encoding comes in Plan 05
-- M4 returns `M4Result` (two sub-options A/B), M5 returns `M5Result` (extends with domestic breakdown) — not plain `ModelResult`; use `getModelResult()` helper in `ComparisonTable` as reference when accessing these
+- M4 returns `M4Result` (two sub-options A/B), M5 returns `M5Result` (extends with domestic breakdown) — not plain `ModelResult`; use `getModelResult()` from `src/lib/modelUtils.ts` when accessing these
 
 ## Naming conventions
 

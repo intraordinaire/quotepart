@@ -83,7 +83,7 @@ function ModeBadge({ mode }: { mode: "full" | "shared" | null }): React.JSX.Elem
   if (mode === "full") {
     return (
       <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-bg text-text border border-border">
-        Je remplis pour nous deux
+        On remplit ensemble
       </span>
     );
   }
