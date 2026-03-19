@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useSimulation } from "@/context/useSimulation";
 import { FormField } from "@/components/ui/FormField";
-import { PillToggle } from "@/components/ui/PillToggle";
 import { LockedField } from "@/components/form/LockedField";
 import { randomPlaceholderPair } from "@/lib/names";
 import type { Person } from "@/domain/types";
@@ -11,7 +10,6 @@ import type { Person } from "@/domain/types";
 export function Tier1Incomes(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
   const [placeholders] = useState<[string, string]>(() => randomPlaceholderPair());
-  const [chargesMode, setChargesMode] = useState<"global" | "detail">("global");
   const [attempted, setAttempted] = useState(false);
 
   const isShared = state.mode === "shared";
@@ -112,18 +110,6 @@ export function Tier1Incomes(): React.JSX.Element {
 
       <div className="mb-5">
         <div className="text-sm font-semibold mb-3">Charges communes mensuelles</div>
-        <div className="flex gap-2 mb-4 flex-wrap">
-          <PillToggle
-            label="Montant global"
-            active={chargesMode === "global"}
-            onClick={() => setChargesMode("global")}
-          />
-          <PillToggle
-            label="Détail par catégorie"
-            active={chargesMode === "detail"}
-            onClick={() => setChargesMode("detail")}
-          />
-        </div>
         <FormField
           placeholder="3 000"
           suffix="€/mois"
