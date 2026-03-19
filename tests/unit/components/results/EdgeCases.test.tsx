@@ -6,18 +6,9 @@ import type { CalculationResults } from "@/domain/calculate";
 import type { ModelId } from "@/domain/types";
 import type { M4Result } from "@/domain/models/m4-adjusted-time";
 import type { M5Result } from "@/domain/models/m5-total-contribution";
+import type { ModelResult } from "@/domain/types";
 
-function makeModelResult(
-  overrides: Partial<{
-    equityScore: number;
-    isViable: boolean;
-    warnings: string[];
-    p1Contribution: number;
-    p2Contribution: number;
-    p1DisposableIncome: number;
-    p2DisposableIncome: number;
-  }> = {}
-) {
+function makeModelResult(overrides: Partial<ModelResult> = {}): ModelResult {
   return {
     p1Contribution: 500,
     p2Contribution: 500,

@@ -4,6 +4,8 @@ import { TemporalProjection } from "@/components/results/TemporalProjection";
 import type { CalculationResults } from "@/domain/calculate";
 import type { ModelId } from "@/domain/types";
 
+const normalize = (s: string): string => s.replace(/[\s\u202F\u00A0]/g, " ");
+
 function makeResults(overrides: Partial<CalculationResults> = {}): CalculationResults {
   const baseModelResult = {
     p1Contribution: 500,
@@ -88,7 +90,6 @@ describe("TemporalProjection", () => {
     // year1 for m1_5050 = 1200 — check it appears in the table
     const allText = container.textContent ?? "";
     // fr-FR formats 1200 as "1 200" (NNBSP) → normalize any space variant
-    const normalize = (s: string) => s.replace(/[\s\u202F\u00A0]/g, " ");
     expect(normalize(allText)).toContain("1 200 €");
     // year1 for m2_income_ratio = 840
     expect(normalize(allText)).toContain("840 €");
@@ -105,7 +106,6 @@ describe("TemporalProjection", () => {
     );
 
     // m1_5050: year1=1200, year5=6000, year10=12000
-    const normalize = (s: string) => s.replace(/[\s\u202F\u00A0]/g, " ");
     const allText = normalize(container.textContent ?? "");
     expect(allText).toContain("1 200 €");
     expect(allText).toContain("6 000 €");
@@ -137,7 +137,7 @@ describe("TemporalProjection", () => {
     );
 
     // m1_5050 year10 = 12000 or year1 = 1200 should appear in the intro context
-    const fmt = (n: number) =>
+    const fmt = (n: number): string =>
       new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(n) + "\u00A0€";
 
     // The intro must reference the M1 year1 value (1 200 €)
