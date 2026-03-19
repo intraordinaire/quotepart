@@ -12,8 +12,7 @@ import { Tier4Domestic } from "@/components/form/Tier4Domestic";
 import { TierNav } from "@/components/form/TierNav";
 import { ResultsShell } from "@/components/results/ResultsShell";
 import { WhatIfShell } from "@/components/whatif/WhatIfShell";
-import type { SimulationInput } from "@/domain/types";
-import { DEFAULT_HOURLY_RATE, DEFAULT_SLIDERS } from "@/domain/constants";
+import { toFullInput } from "@/lib/inputDefaults";
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
 
@@ -127,31 +126,7 @@ function EtSiContent(): React.JSX.Element {
     );
   }
 
-  const p1 = rawInput.p1;
-  const p2 = rawInput.p2;
-
-  const input: SimulationInput = {
-    p1: {
-      name: p1.name ?? "",
-      income: p1.income ?? 0,
-      personalCharges: p1.personalCharges ?? 0,
-      workQuota: p1.workQuota ?? 1.0,
-      fullTimeIncome: p1.fullTimeIncome ?? p1.income ?? 0,
-      partTimeReason: p1.partTimeReason ?? null,
-    },
-    p2: {
-      name: p2.name ?? "",
-      income: p2.income ?? 0,
-      personalCharges: p2.personalCharges ?? 0,
-      workQuota: p2.workQuota ?? 1.0,
-      fullTimeIncome: p2.fullTimeIncome ?? p2.income ?? 0,
-      partTimeReason: p2.partTimeReason ?? null,
-    },
-    commonCharges: rawInput.commonCharges ?? 0,
-    hasChildren: rawInput.hasChildren ?? false,
-    domesticSliders: rawInput.domesticSliders ?? { p1: DEFAULT_SLIDERS },
-    hourlyRate: rawInput.hourlyRate ?? DEFAULT_HOURLY_RATE,
-  };
+  const input = toFullInput(rawInput);
 
   return <WhatIfShell input={input} />;
 }

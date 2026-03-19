@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useSimulation } from "@/context/useSimulation";
 import { getUnlockedModels } from "@/context/SimulationContext";
 import { calculate } from "@/domain/calculate";
-import type { ModelId, SimulationInput } from "@/domain/types";
+import type { ModelId } from "@/domain/types";
 import { ComparisonTable } from "./ComparisonTable";
 import { EquityGauges } from "./EquityGauges";
 import { TemporalProjection } from "./TemporalProjection";
@@ -12,7 +12,7 @@ import { ModelDetailPanel } from "./ModelDetailPanel";
 import { PerceptionConfrontation } from "./PerceptionConfrontation";
 import { displayName } from "@/lib/names";
 import type { DomesticSliders } from "@/domain/types";
-import { DEFAULT_HOURLY_RATE, DEFAULT_SLIDERS } from "@/domain/constants";
+import { toFullInput } from "@/lib/inputDefaults";
 
 export function ResultsShell(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
@@ -29,31 +29,7 @@ export function ResultsShell(): React.JSX.Element {
     );
   }
 
-  const p1 = rawInput.p1;
-  const p2 = rawInput.p2;
-
-  const input: SimulationInput = {
-    p1: {
-      name: p1.name ?? "",
-      income: p1.income ?? 0,
-      personalCharges: p1.personalCharges ?? 0,
-      workQuota: p1.workQuota ?? 1.0,
-      fullTimeIncome: p1.fullTimeIncome ?? p1.income ?? 0,
-      partTimeReason: p1.partTimeReason ?? null,
-    },
-    p2: {
-      name: p2.name ?? "",
-      income: p2.income ?? 0,
-      personalCharges: p2.personalCharges ?? 0,
-      workQuota: p2.workQuota ?? 1.0,
-      fullTimeIncome: p2.fullTimeIncome ?? p2.income ?? 0,
-      partTimeReason: p2.partTimeReason ?? null,
-    },
-    commonCharges: rawInput.commonCharges ?? 0,
-    hasChildren: rawInput.hasChildren ?? false,
-    domesticSliders: rawInput.domesticSliders ?? { p1: DEFAULT_SLIDERS },
-    hourlyRate: rawInput.hourlyRate ?? DEFAULT_HOURLY_RATE,
-  };
+  const input = toFullInput(rawInput);
 
   const results = calculate(input);
   const p1Name = displayName(input.p1?.name ?? "", "Personne 1");
