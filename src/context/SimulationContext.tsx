@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useEffect, useReducer, type ReactNode } from "react";
-import { saveState, loadState } from "@/lib/persistState";
+import { saveState, loadState, clearState } from "@/lib/persistState";
 import type { SimulationInput, ModelId } from "@/domain/types";
 import { DEFAULT_HOURLY_RATE } from "@/domain/constants";
 
@@ -27,7 +27,8 @@ export type SimulationAction =
   | { type: "COMPLETE_TIER"; payload: 1 | 2 | 3 | 4 }
   | { type: "SKIP_TIER"; payload: 2 | 3 | 4 }
   | { type: "UPDATE_INPUT"; payload: Partial<SimulationInput> }
-  | { type: "HYDRATE"; payload: SimulationState };
+  | { type: "HYDRATE"; payload: SimulationState }
+  | { type: "RESET" };
 
 // ─── Initial state ─────────────────────────────────────────────────────────
 
@@ -76,6 +77,10 @@ export function simulationReducer(
 
     case "HYDRATE":
       return action.payload;
+
+    case "RESET":
+      clearState();
+      return { ...initialState };
 
     default:
       return state;

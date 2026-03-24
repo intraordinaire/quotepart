@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSimulation } from "@/context/useSimulation";
 import type { TabId } from "@/context/SimulationContext";
@@ -75,6 +75,97 @@ function WhatIfIcon(): React.JSX.Element {
   );
 }
 
+// ─── Reset icon ─────────────────────────────────────────────────────────────
+
+function ResetIcon(): React.JSX.Element {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="1 4 1 10 7 10" />
+      <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+    </svg>
+  );
+}
+
+// ─── Reset confirmation dialog ──────────────────────────────────────────────
+
+function ResetConfirmDialog({
+  open,
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}): React.JSX.Element | null {
+  const cancelRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      cancelRef.current?.focus();
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleKeyDown(e: KeyboardEvent): void {
+      if (e.key === "Escape") onCancel();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open, onCancel]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="reset-dialog-title"
+      onClick={onCancel}
+    >
+      <div
+        className="bg-surface border border-border rounded-lg p-6 max-w-sm mx-4 shadow-lg"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 id="reset-dialog-title" className="font-display text-lg text-text mb-2">
+          Recommencer la simulation ?
+        </h2>
+        <p className="text-sm text-text-dim mb-6">
+          Toutes les données saisies seront effacées. Cette action est irréversible.
+        </p>
+        <div className="flex gap-3 justify-end">
+          <button
+            ref={cancelRef}
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 text-sm font-medium text-text-dim border border-border rounded-md hover:text-text transition-colors"
+          >
+            Annuler
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className="px-4 py-2 text-sm font-medium text-white bg-red rounded-md hover:opacity-90 transition-opacity"
+          >
+            Tout effacer
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Mode badge ─────────────────────────────────────────────────────────────
 
 function ModeBadge({ mode }: { mode: "full" | "shared" | null }): React.JSX.Element | null {
@@ -135,6 +226,7 @@ function EtSiContent(): React.JSX.Element {
 
 export default function SimulatePage(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
+  const [showResetDialog, setShowResetDialog] = useState(false);
 
   const activeTab: TabId = state.activeTab;
   const tier1Complete = state.completedTiers.has(1);
@@ -142,6 +234,11 @@ export default function SimulatePage(): React.JSX.Element {
   function setActiveTab(tab: TabId): void {
     dispatch({ type: "SET_TAB", payload: tab });
   }
+
+  const handleReset = useCallback(() => {
+    dispatch({ type: "RESET" });
+    setShowResetDialog(false);
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col min-h-screen bg-bg">
@@ -164,7 +261,27 @@ export default function SimulatePage(): React.JSX.Element {
             <ModeBadge mode={state.mode} />
           </>
         )}
+
+        {/* Reset button — pushed to the right */}
+        {state.mode && (
+          <button
+            type="button"
+            onClick={() => setShowResetDialog(true)}
+            className="ml-auto flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-text-dim border border-border rounded-md hover:text-text hover:border-text-dim transition-colors"
+            aria-label="Recommencer la simulation"
+            title="Recommencer la simulation"
+          >
+            <ResetIcon />
+            <span className="hidden sm:inline">Recommencer</span>
+          </button>
+        )}
       </header>
+
+      <ResetConfirmDialog
+        open={showResetDialog}
+        onConfirm={handleReset}
+        onCancel={() => setShowResetDialog(false)}
+      />
 
       {/* ── Tab navigation ─────────────────────────────────────────────────── */}
       <nav
