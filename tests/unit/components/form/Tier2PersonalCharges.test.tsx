@@ -19,6 +19,7 @@ function makeState(mode: "full" | "shared" | null = "full"): SimulationState {
     skippedTiers: new Set<2 | 3 | 4>(),
     input: {},
     activeTab: "saisie" as const,
+    domesticEnabled: false,
   };
 }
 

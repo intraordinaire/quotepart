@@ -5,7 +5,7 @@ import type { CalculationResults } from "@/domain/calculate";
 import type { ModelId } from "@/domain/types";
 import {
   MODEL_CONFIGS,
-  getModelResult,
+  getActiveResult,
   isRedundantModel,
   isNonViableModel,
 } from "@/lib/modelUtils";
@@ -13,6 +13,7 @@ import {
 interface EquityGaugesProps {
   results: CalculationResults;
   unlockedModels: Set<ModelId>;
+  domesticEnabled?: boolean;
 }
 
 function getBarColorClass(
@@ -33,14 +34,19 @@ function getBarColorClass(
   return "bg-accent";
 }
 
-export function EquityGauges({ results, unlockedModels }: EquityGaugesProps): React.JSX.Element {
+export function EquityGauges({
+  results,
+  unlockedModels,
+  domesticEnabled = false,
+}: EquityGaugesProps): React.JSX.Element {
   return (
     <div className="flex flex-col gap-3">
       {MODEL_CONFIGS.map(({ id, shortLabel, fullLabel }) => {
         const isLocked = !unlockedModels.has(id);
-        const isRedundant = !isLocked && isRedundantModel(results, id);
-        const nonViable = !isLocked && !isRedundant && isNonViableModel(results, id);
-        const score = getModelResult(results, id).equityScore;
+        const isRedundant = !isLocked && isRedundantModel(results, id, domesticEnabled);
+        const nonViable =
+          !isLocked && !isRedundant && isNonViableModel(results, id, domesticEnabled);
+        const score = getActiveResult(results, id, domesticEnabled).equityScore;
         const colorClass = getBarColorClass(score, isLocked, isRedundant, nonViable);
         const percentage = Math.round(score * 100);
         const barWidth = nonViable ? 0 : percentage;

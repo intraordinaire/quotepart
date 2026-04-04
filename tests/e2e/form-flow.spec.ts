@@ -111,7 +111,7 @@ test.describe("Form flow — TierNav sidebar", () => {
 });
 
 test.describe("Form flow — full 4-tier completion", () => {
-  test("completing all tiers end-to-end unlocks all 5 models", async ({ page }) => {
+  test("completing all tiers end-to-end unlocks all 4 models", async ({ page }) => {
     await startFullMode(page);
 
     // Tier 1
@@ -137,11 +137,10 @@ test.describe("Form flow — full 4-tier completion", () => {
     await page.getByRole("button", { name: /voir les résultats/i }).click();
     await expect(page.getByRole("heading", { name: "Comparaison des modèles" })).toBeVisible();
 
-    // All 5 model columns visible
+    // All 4 model columns visible
     await expect(page.locator("[data-model='m1_5050']")).toBeVisible();
     await expect(page.locator("[data-model='m2_income_ratio']")).toBeVisible();
     await expect(page.locator("[data-model='m3_equal_rav']")).toBeVisible();
     await expect(page.locator("[data-model='m4_adjusted_time']")).toBeVisible();
-    await expect(page.locator("[data-model='m5_total_contribution']")).toBeVisible();
   });
 });

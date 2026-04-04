@@ -25,23 +25,17 @@ const MODELS = [
     desc: "Le temps partiel choisi est compensé dans le calcul.",
     tag: "Contextuel",
   },
-  {
-    num: "05",
-    name: "Contribution totale",
-    desc: "Intègre la valeur du travail domestique dans la répartition.",
-    tag: "Complet",
-  },
 ] as const;
 
 export default function ModelsOverview(): React.JSX.Element {
   return (
     <section className="mx-auto max-w-[900px] px-6 py-16 md:px-10">
       <h2 className="mb-3 text-center font-display text-3xl font-bold tracking-tight text-white md:text-4xl">
-        5 façons de voir l&apos;équité
+        4 modèles + valorisation domestique
       </h2>
       <p className="mx-auto mb-12 max-w-[500px] text-center text-[15px] text-text-dim">
-        Aucun modèle n&apos;est &quot;le bon&quot;. L&apos;outil vous les montre tous pour que vous
-        choisissiez celui qui correspond à votre situation.
+        Aucun modèle n&apos;est &quot;le bon&quot;. L&apos;outil vous les montre tous, avec une
+        option pour intégrer la valeur du travail domestique dans chaque calcul.
       </p>
 
       <div className="flex flex-col gap-px">

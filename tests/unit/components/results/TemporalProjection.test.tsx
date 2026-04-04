@@ -27,22 +27,13 @@ function makeResults(overrides: Partial<CalculationResults> = {}): CalculationRe
       partTimeCostMonthly: 0,
       isSameAsM2: false,
     },
-    m5_total_contribution: {
-      modelResult: { ...baseModelResult },
-      p1DomesticMonthlyValue: 100,
-      p2DomesticMonthlyValue: 100,
-      p1WeeklyDomesticHours: 10,
-      p2WeeklyDomesticHours: 10,
-      ratioBeforeDomestic: 0.5,
-      ratioAfterDomestic: 0.5,
-      isSameAsM2: false,
-    },
+    domestic: null,
+    domesticProjections: {},
     projections: {
       m1_5050: { year1: 1200, year5: 6000, year10: 12000 },
       m2_income_ratio: { year1: 840, year5: 4200, year10: 8400 },
       m3_equal_rav: { year1: 600, year5: 3000, year10: 6000 },
       m4_adjusted_time: { year1: 480, year5: 2400, year10: 4800 },
-      m5_total_contribution: { year1: 360, year5: 1800, year10: 3600 },
     },
     validationErrors: [],
     ...overrides,
@@ -54,7 +45,6 @@ const ALL_MODELS: Set<ModelId> = new Set([
   "m2_income_ratio",
   "m3_equal_rav",
   "m4_adjusted_time",
-  "m5_total_contribution",
 ]);
 
 const ONLY_TIER1: Set<ModelId> = new Set(["m1_5050", "m2_income_ratio"]);
@@ -155,12 +145,12 @@ describe("TemporalProjection", () => {
       />
     );
 
-    // m3, m4, m5 rows should be visually disabled
+    // m3, m4 rows should be visually disabled
     const rows = document.querySelectorAll("tr[aria-disabled='true'], tr.opacity-40");
-    expect(rows.length).toBeGreaterThanOrEqual(3);
+    expect(rows.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("shows all 5 model label rows in the table", () => {
+  it("shows all 4 model label rows in the table", () => {
     render(
       <TemporalProjection
         results={makeResults()}
@@ -174,7 +164,6 @@ describe("TemporalProjection", () => {
     expect(screen.getByText(/Revenu proportionnel/i)).toBeInTheDocument();
     expect(screen.getByText(/Reste à vivre égal/i)).toBeInTheDocument();
     expect(screen.getByText(/Temps ajusté/i)).toBeInTheDocument();
-    expect(screen.getByText(/Contribution totale/i)).toBeInTheDocument();
   });
 
   it("M4 row is dimmed when isSameAsM2", () => {

@@ -11,6 +11,7 @@ interface ModelDetailPanelProps {
   p1Name: string;
   p2Name: string;
   onClose: () => void;
+  domesticEnabled?: boolean;
 }
 
 function formatMoney(value: number): string {
@@ -23,10 +24,12 @@ export function ModelDetailPanel({
   p1Name,
   p2Name,
   onClose,
+  domesticEnabled = false,
 }: ModelDetailPanelProps): React.ReactElement | null {
   if (modelId === null) return null;
 
   const content = MODEL_CONTENT[modelId];
+  const domestic = results.domestic;
 
   return (
     <div className="bg-bg border border-border rounded-xl p-6 space-y-4">
@@ -114,37 +117,33 @@ export function ModelDetailPanel({
         </div>
       )}
 
-      {/* M5 note */}
-      {modelId === "m5_total_contribution" && results.m5_total_contribution.isSameAsM2 && (
-        <p className="text-sm text-text-dim italic">
-          Avec une répartition équilibrée des tâches domestiques, ce modèle est identique au M2.
-        </p>
-      )}
-
-      {/* M5 domestic breakdown */}
-      {modelId === "m5_total_contribution" && (
+      {/* Domestic adjustment section (when toggle is on, for M2/M3/M4) */}
+      {domesticEnabled && modelId !== "m1_5050" && domestic && (
         <div>
           <h3 className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-2">
-            Valeur du travail domestique
+            Ajustement domestique
           </h3>
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-border">
                 <th className="text-left py-1.5 font-medium text-text-dim">Personne</th>
+                <th className="text-right py-1.5 font-medium text-text-dim">Heures/sem</th>
                 <th className="text-right py-1.5 font-medium text-text-dim">Valeur mensuelle</th>
               </tr>
             </thead>
             <tbody>
               <tr className="border-b border-border">
                 <td className="py-1.5">{p1Name}</td>
+                <td className="py-1.5 text-right">{domestic.p1WeeklyDomesticHours.toFixed(1)}h</td>
                 <td className="py-1.5 text-right">
-                  {formatMoney(results.m5_total_contribution.p1DomesticMonthlyValue)}
+                  {formatMoney(domestic.p1DomesticMonthlyValue)}
                 </td>
               </tr>
               <tr>
                 <td className="py-1.5">{p2Name}</td>
+                <td className="py-1.5 text-right">{domestic.p2WeeklyDomesticHours.toFixed(1)}h</td>
                 <td className="py-1.5 text-right">
-                  {formatMoney(results.m5_total_contribution.p2DomesticMonthlyValue)}
+                  {formatMoney(domestic.p2DomesticMonthlyValue)}
                 </td>
               </tr>
             </tbody>

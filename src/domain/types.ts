@@ -41,9 +41,4 @@ export interface ModelResult {
   warnings: string[];
 }
 
-export type ModelId =
-  | "m1_5050"
-  | "m2_income_ratio"
-  | "m3_equal_rav"
-  | "m4_adjusted_time"
-  | "m5_total_contribution";
+export type ModelId = "m1_5050" | "m2_income_ratio" | "m3_equal_rav" | "m4_adjusted_time";

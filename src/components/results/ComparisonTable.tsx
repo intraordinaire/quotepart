@@ -6,7 +6,7 @@ import type { CalculationResults } from "@/domain/calculate";
 import { LockedModelOverlay } from "./LockedModelOverlay";
 import {
   MODEL_CONFIGS,
-  getModelResult,
+  getActiveResult,
   isRedundantModel,
   isNonViableModel,
 } from "@/lib/modelUtils";
@@ -19,6 +19,7 @@ export interface ComparisonTableProps {
   onModelSelect: (id: ModelId) => void;
   p1Name: string;
   p2Name: string;
+  domesticEnabled?: boolean;
 }
 
 function formatContribution(
@@ -39,8 +40,14 @@ function formatContribution(
   return formatCurrency(amount);
 }
 
-function isDimmedColumn(results: CalculationResults, id: ModelId): boolean {
-  return isRedundantModel(results, id) || isNonViableModel(results, id);
+function isDimmedColumn(
+  results: CalculationResults,
+  id: ModelId,
+  domesticEnabled?: boolean
+): boolean {
+  return (
+    isRedundantModel(results, id, domesticEnabled) || isNonViableModel(results, id, domesticEnabled)
+  );
 }
 
 interface FootnoteEntry {
@@ -51,7 +58,6 @@ interface FootnoteEntry {
 
 const REDUNDANT_MESSAGES: Partial<Record<ModelId, string>> = {
   m4_adjusted_time: "Les deux personnes travaillent à temps plein : identique au M2.",
-  m5_total_contribution: "Répartition domestique équilibrée : identique au M2.",
 };
 
 export function ComparisonTable({
@@ -61,6 +67,7 @@ export function ComparisonTable({
   onModelSelect,
   p1Name,
   p2Name,
+  domesticEnabled = false,
 }: ComparisonTableProps): React.JSX.Element {
   const chargesAlert = results.validationErrors.find((e) => e.type === "charges_exceed_income");
 
@@ -126,7 +133,7 @@ export function ComparisonTable({
               <td className="py-2 px-3 text-text-dim text-xs">Modèle</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
-                const dimmed = !isLocked && isDimmedColumn(results, config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id, domesticEnabled);
 
                 return (
                   <td
@@ -155,8 +162,10 @@ export function ComparisonTable({
               <td className="py-2 px-3 text-text-dim text-xs">Part {p1Name || "Personne 1"}</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
-                const dimmed = !isLocked && isDimmedColumn(results, config.id);
-                const result = isLocked ? null : getModelResult(results, config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id, domesticEnabled);
+                const result = isLocked
+                  ? null
+                  : getActiveResult(results, config.id, domesticEnabled);
 
                 return (
                   <td
@@ -174,8 +183,10 @@ export function ComparisonTable({
               <td className="py-2 px-3 text-text-dim text-xs">Part {p2Name || "Personne 2"}</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
-                const dimmed = !isLocked && isDimmedColumn(results, config.id);
-                const result = isLocked ? null : getModelResult(results, config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id, domesticEnabled);
+                const result = isLocked
+                  ? null
+                  : getActiveResult(results, config.id, domesticEnabled);
 
                 return (
                   <td
@@ -195,8 +206,10 @@ export function ComparisonTable({
               </td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
-                const dimmed = !isLocked && isDimmedColumn(results, config.id);
-                const result = isLocked ? null : getModelResult(results, config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id, domesticEnabled);
+                const result = isLocked
+                  ? null
+                  : getActiveResult(results, config.id, domesticEnabled);
 
                 return (
                   <td
@@ -216,8 +229,10 @@ export function ComparisonTable({
               </td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
-                const dimmed = !isLocked && isDimmedColumn(results, config.id);
-                const result = isLocked ? null : getModelResult(results, config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id, domesticEnabled);
+                const result = isLocked
+                  ? null
+                  : getActiveResult(results, config.id, domesticEnabled);
 
                 return (
                   <td
@@ -235,8 +250,10 @@ export function ComparisonTable({
               <td className="py-2 px-3 text-text-dim text-xs">Score équité</td>
               {MODEL_CONFIGS.map((config) => {
                 const isLocked = !unlockedModels.has(config.id);
-                const dimmed = !isLocked && isDimmedColumn(results, config.id);
-                const result = isLocked ? null : getModelResult(results, config.id);
+                const dimmed = !isLocked && isDimmedColumn(results, config.id, domesticEnabled);
+                const result = isLocked
+                  ? null
+                  : getActiveResult(results, config.id, domesticEnabled);
 
                 return (
                   <td
@@ -254,14 +271,14 @@ export function ComparisonTable({
             const footnotes: FootnoteEntry[] = [];
             MODEL_CONFIGS.forEach((c) => {
               if (!unlockedModels.has(c.id)) return;
-              if (isRedundantModel(results, c.id)) {
+              if (isRedundantModel(results, c.id, domesticEnabled)) {
                 footnotes.push({
                   shortLabel: c.shortLabel,
                   message: REDUNDANT_MESSAGES[c.id] ?? "",
                   variant: "redundant",
                 });
-              } else if (isNonViableModel(results, c.id)) {
-                const result = getModelResult(results, c.id);
+              } else if (isNonViableModel(results, c.id, domesticEnabled)) {
+                const result = getActiveResult(results, c.id, domesticEnabled);
                 const warning = result.warnings[0] ?? "La contribution dépasse le revenu.";
                 footnotes.push({
                   shortLabel: c.shortLabel,
@@ -274,7 +291,7 @@ export function ComparisonTable({
             return (
               <tfoot>
                 <tr>
-                  <td colSpan={6} className="pt-3 px-3">
+                  <td colSpan={5} className="pt-3 px-3">
                     {footnotes.map((fn) => (
                       <p
                         key={fn.shortLabel}

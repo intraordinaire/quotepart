@@ -14,6 +14,7 @@ function makeState(overrides: Partial<SimulationState> = {}): SimulationState {
       hourlyRate: 9.52,
     },
     activeTab: "saisie",
+    domesticEnabled: false,
     ...overrides,
   };
 }
@@ -66,6 +67,41 @@ describe("persistState", () => {
     saveState(makeState());
     clearState();
     expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+  });
+
+  it("persists and restores domesticEnabled", () => {
+    const state = makeState({ domesticEnabled: true });
+    saveState(state);
+    const loaded = loadState();
+    expect(loaded!.domesticEnabled).toBe(true);
+  });
+
+  it("backward compat: missing domesticEnabled defaults based on tier 4 completion", () => {
+    // Simulate old format without domesticEnabled
+    const oldFormat = {
+      mode: "full",
+      activeTier: 1,
+      completedTiers: [1, 2, 3, 4],
+      skippedTiers: [],
+      input: { commonCharges: 1500, hasChildren: false, hourlyRate: 9.52 },
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(oldFormat));
+    const loaded = loadState();
+    // Tier 4 was completed → domesticEnabled should be true
+    expect(loaded!.domesticEnabled).toBe(true);
+  });
+
+  it("backward compat: missing domesticEnabled without tier 4 defaults to false", () => {
+    const oldFormat = {
+      mode: "full",
+      activeTier: 1,
+      completedTiers: [1, 2],
+      skippedTiers: [],
+      input: { commonCharges: 1500, hasChildren: false, hourlyRate: 9.52 },
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(oldFormat));
+    const loaded = loadState();
+    expect(loaded!.domesticEnabled).toBe(false);
   });
 
   it("saveState silently handles localStorage quota errors", () => {

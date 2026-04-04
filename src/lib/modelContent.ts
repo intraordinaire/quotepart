@@ -21,14 +21,20 @@ export const MODEL_CONTENT: Record<ModelId, ModelContent> = {
     formula: "Contribution = Charges × (Revenu individuel / Revenu total du couple)",
     philosophy: "Chacun contribue selon ses moyens financiers.",
     advantages: ["Proportionnel aux revenus", "Équité financière directe"],
-    limitations: ["Ne tient pas compte des charges personnelles", "Ignore le travail domestique"],
+    limitations: [
+      "Ne tient pas compte des charges personnelles",
+      "Ajustable avec le toggle domestique",
+    ],
   },
   m3_equal_rav: {
     label: "M3 — Reste à vivre égal",
     formula: "Chaque partenaire garde le même revenu disponible après charges communes.",
     philosophy: "Égaliser ce qu'il reste après avoir payé sa part.",
     advantages: ["Même niveau de vie pour les deux", "Prend en compte les charges perso"],
-    limitations: ["Nécessite de connaître les charges personnelles", "Plus complexe à calculer"],
+    limitations: [
+      "Nécessite de connaître les charges personnelles",
+      "Ajustable avec le toggle domestique",
+    ],
   },
   m4_adjusted_time: {
     label: "M4 — Temps ajusté",
@@ -38,13 +44,9 @@ export const MODEL_CONTENT: Record<ModelId, ModelContent> = {
       "Équitable pour les personnes à temps partiel",
       "Valorise le choix du temps partiel",
     ],
-    limitations: ["Nécessite de connaître le revenu temps plein théorique"],
-  },
-  m5_total_contribution: {
-    label: "M5 — Contribution totale",
-    formula: "Ajuste M2 en tenant compte de la valeur monétaire du travail domestique.",
-    philosophy: "Reconnaît que le travail domestique a une valeur économique réelle.",
-    advantages: ["Reconnaît toutes les formes de contribution", "Valorise le travail invisible"],
-    limitations: ["Subjectif (évaluation des tâches)", "Dépend de la perception de chacun"],
+    limitations: [
+      "Nécessite de connaître le revenu temps plein théorique",
+      "Ajustable avec le toggle domestique",
+    ],
   },
 };

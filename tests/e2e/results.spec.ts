@@ -39,7 +39,7 @@ test.describe("Results — progressive model unlocking", () => {
     ).toBeVisible();
   });
 
-  test("All tiers completed: all 5 models unlocked", async ({ page }) => {
+  test("All tiers completed: all 4 models unlocked", async ({ page }) => {
     await goToResultsMinimal(page);
 
     await expect(page.getByText(/Remplissez le palier/)).not.toBeVisible();

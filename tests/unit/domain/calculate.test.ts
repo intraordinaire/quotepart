@@ -37,13 +37,20 @@ const base: SimulationInput = {
 };
 
 describe("calculate — orchestrator", () => {
-  it("returns results for all 5 models", () => {
+  it("returns results for all 4 models", () => {
     const results = calculate(base);
     expect(results.m1_5050).toBeDefined();
     expect(results.m2_income_ratio).toBeDefined();
     expect(results.m3_equal_rav).toBeDefined();
     expect(results.m4_adjusted_time).toBeDefined();
-    expect(results.m5_total_contribution).toBeDefined();
+  });
+
+  it("returns domestic overlays", () => {
+    const results = calculate(base);
+    expect(results.domestic).toBeDefined();
+    expect(results.domestic!.m2_income_ratio).toBeDefined();
+    expect(results.domestic!.m3_equal_rav).toBeDefined();
+    expect(results.domestic!.m4_adjusted_time).toBeDefined();
   });
 
   it("m1 has lower equity score than m2 for unequal incomes", () => {
@@ -63,5 +70,12 @@ describe("calculate — orchestrator", () => {
     expect(proj).toBeDefined();
     expect(proj!.year1).toBeGreaterThan(0);
     expect(proj!.year10).toBe(proj!.year1 * 10);
+  });
+
+  it("includes domestic projection data", () => {
+    const results = calculate(base);
+    const proj = results.domesticProjections["m2_income_ratio"];
+    expect(proj).toBeDefined();
+    expect(proj!.year1).toBeGreaterThanOrEqual(0);
   });
 });

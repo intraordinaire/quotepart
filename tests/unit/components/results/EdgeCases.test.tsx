@@ -5,7 +5,6 @@ import { ModelDetailPanel } from "@/components/results/ModelDetailPanel";
 import type { CalculationResults } from "@/domain/calculate";
 import type { ModelId } from "@/domain/types";
 import type { M4Result } from "@/domain/models/m4-adjusted-time";
-import type { M5Result } from "@/domain/models/m5-total-contribution";
 import type { ModelResult } from "@/domain/types";
 
 function makeModelResult(overrides: Partial<ModelResult> = {}): ModelResult {
@@ -31,27 +30,14 @@ function makeM4Result(overrides: Partial<M4Result> = {}): M4Result {
   };
 }
 
-function makeM5Result(overrides: Partial<M5Result> = {}): M5Result {
-  return {
-    modelResult: makeModelResult(),
-    p1DomesticMonthlyValue: 200,
-    p2DomesticMonthlyValue: 200,
-    p1WeeklyDomesticHours: 20,
-    p2WeeklyDomesticHours: 20,
-    ratioBeforeDomestic: 0.5,
-    ratioAfterDomestic: 0.5,
-    isSameAsM2: false,
-    ...overrides,
-  };
-}
-
 function makeResults(overrides: Partial<CalculationResults> = {}): CalculationResults {
   return {
     m1_5050: makeModelResult(),
     m2_income_ratio: makeModelResult(),
     m3_equal_rav: makeModelResult(),
     m4_adjusted_time: makeM4Result(),
-    m5_total_contribution: makeM5Result(),
+    domestic: null,
+    domesticProjections: {},
     projections: {},
     validationErrors: [],
     ...overrides,
@@ -63,7 +49,6 @@ const ALL_MODELS: Set<ModelId> = new Set([
   "m2_income_ratio",
   "m3_equal_rav",
   "m4_adjusted_time",
-  "m5_total_contribution",
 ]);
 
 describe("Edge cases — ComparisonTable", () => {
@@ -162,32 +147,6 @@ describe("Edge cases — Transfer display", () => {
     // Should show positive amount with arrow direction
     expect(screen.getByText(/Alice → Bob/)).toBeInTheDocument();
   });
-
-  it("shows 'Non viable' footer note for contribution > income", () => {
-    const results = makeResults({
-      m5_total_contribution: makeM5Result({
-        modelResult: makeModelResult({
-          isViable: false,
-          warnings: ["La contribution dépasse son revenu."],
-        }),
-      }),
-    });
-
-    render(
-      <ComparisonTable
-        results={results}
-        unlockedModels={ALL_MODELS}
-        selectedModel={null}
-        onModelSelect={vi.fn()}
-        p1Name="Alice"
-        p2Name="Bob"
-      />
-    );
-
-    const tfoot = document.querySelector("tfoot");
-    expect(tfoot).not.toBeNull();
-    expect(tfoot!.textContent).toMatch(/M5.*Non viable/i);
-  });
 });
 
 describe("Edge cases — ModelDetailPanel", () => {
@@ -199,24 +158,6 @@ describe("Edge cases — ModelDetailPanel", () => {
     render(
       <ModelDetailPanel
         modelId="m4_adjusted_time"
-        results={results}
-        p1Name="Alice"
-        p2Name="Bob"
-        onClose={vi.fn()}
-      />
-    );
-
-    expect(screen.getByText(/identique au M2/i)).toBeInTheDocument();
-  });
-
-  it("M5 shows 'identique au M2' mention when isSameAsM2 = true", () => {
-    const results = makeResults({
-      m5_total_contribution: makeM5Result({ isSameAsM2: true }),
-    });
-
-    render(
-      <ModelDetailPanel
-        modelId="m5_total_contribution"
         results={results}
         p1Name="Alice"
         p2Name="Bob"

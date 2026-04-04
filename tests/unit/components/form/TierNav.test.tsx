@@ -16,6 +16,7 @@ function makeState(overrides: Partial<SimulationState> = {}): SimulationState {
     skippedTiers: new Set(),
     input: {},
     activeTab: "saisie" as const,
+    domesticEnabled: false,
     ...overrides,
   };
 }
