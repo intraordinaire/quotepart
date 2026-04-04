@@ -29,8 +29,12 @@ function adjustForDomestic(
 ): ModelResult {
   const p1Contribution = rawResult.p1Contribution - p1DomesticValue;
   const p2Contribution = rawResult.p2Contribution - p2DomesticValue;
-  const p1Disposable = input.p1.income - p1Contribution;
-  const p2Disposable = input.p2.income - p2Contribution;
+  // Keep the raw disposable income: it was computed by the model on inflated
+  // charges and already accounts for the total contribution (financial + domestic).
+  // Recalculating as income − financialContribution would ignore the time cost
+  // of domestic work and produce misleading equity scores.
+  const p1Disposable = rawResult.p1DisposableIncome;
+  const p2Disposable = rawResult.p2DisposableIncome;
 
   const warnings: string[] = [];
   let isViable = true;

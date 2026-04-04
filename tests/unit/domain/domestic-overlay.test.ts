@@ -208,6 +208,27 @@ describe("Domestic overlay — M3", () => {
     expect(result.m3_equal_rav.p1Contribution).toBeLessThan(result.m3_equal_rav.p2Contribution);
   });
 
+  it("M3+domestic preserves equal disposable income", () => {
+    const input: SimulationInput = {
+      ...base,
+      p1: { ...base.p1, personalCharges: 200 },
+      p2: { ...base.p2, personalCharges: 100 },
+      domesticSliders: { p1: p1Heavy },
+    };
+    const result = computeDomesticOverlays(input);
+    // M3's promise: equal disposable income. With domestic overlay, this must
+    // still hold — the overlay should not break model semantics.
+    expect(result.m3_equal_rav.p1DisposableIncome).toBeCloseTo(
+      result.m3_equal_rav.p2DisposableIncome,
+      2
+    );
+  });
+
+  it("M3+domestic equity score is 100%", () => {
+    const result = computeDomesticOverlays(base);
+    expect(result.m3_equal_rav.equityScore).toBeCloseTo(1.0, 2);
+  });
+
   it("M3+domestic equals base M3 when hourly rate is 0", () => {
     const input: SimulationInput = {
       ...base,

@@ -181,6 +181,63 @@ describe("ComparisonTable", () => {
     expect(onSelect).not.toHaveBeenCalledWith("m3_equal_rav");
   });
 
+  it("shows domestic credit rows when domesticEnabled", () => {
+    render(
+      <ComparisonTable
+        results={makeResults()}
+        unlockedModels={ALL_MODELS}
+        selectedModel={null}
+        onModelSelect={vi.fn()}
+        p1Name="Alice"
+        p2Name="Bob"
+        domesticEnabled={true}
+      />
+    );
+
+    expect(screen.getByText(/dont crédit Alice/)).toBeInTheDocument();
+    expect(screen.getByText(/dont crédit Bob/)).toBeInTheDocument();
+  });
+
+  it("hides domestic credit rows when domesticEnabled is false", () => {
+    render(
+      <ComparisonTable
+        results={makeResults()}
+        unlockedModels={ALL_MODELS}
+        selectedModel={null}
+        onModelSelect={vi.fn()}
+        p1Name="Alice"
+        p2Name="Bob"
+        domesticEnabled={false}
+      />
+    );
+
+    expect(screen.queryByText(/dont crédit/)).not.toBeInTheDocument();
+  });
+
+  it("shows dash for M1 in domestic credit rows", () => {
+    const { container } = render(
+      <ComparisonTable
+        results={makeResults()}
+        unlockedModels={ALL_MODELS}
+        selectedModel={null}
+        onModelSelect={vi.fn()}
+        p1Name="Alice"
+        p2Name="Bob"
+        domesticEnabled={true}
+      />
+    );
+
+    // The credit rows should contain "—" for M1 columns
+    const creditRows = container.querySelectorAll("tr");
+    const creditP1Row = Array.from(creditRows).find((row) =>
+      row.textContent?.includes("dont crédit Alice")
+    );
+    expect(creditP1Row).toBeDefined();
+    const cells = creditP1Row!.querySelectorAll("td");
+    // First data cell (M1) should be "—"
+    expect(cells[1]?.textContent).toBe("—");
+  });
+
   it("shows footer note when M4 isSameAsM2", () => {
     const results = makeResults({
       m4_adjusted_time: makeM4Result({ isSameAsM2: true }),
