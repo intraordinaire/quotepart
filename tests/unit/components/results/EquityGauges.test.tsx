@@ -23,7 +23,6 @@ function makeResults(overrides: Partial<Record<string, number>> = {}): Calculati
     m2: overrides.m2 ?? 0.7,
     m3: overrides.m3 ?? 0.5,
     m4optionB: overrides.m4optionB ?? 0.4,
-    m5: overrides.m5 ?? 0.2,
   };
 
   return {
@@ -36,16 +35,8 @@ function makeResults(overrides: Partial<Record<string, number>> = {}): Calculati
       partTimeCostMonthly: 100,
       isSameAsM2: false,
     },
-    m5_total_contribution: {
-      modelResult: makeModelResult(scores.m5),
-      p1DomesticMonthlyValue: 200,
-      p2DomesticMonthlyValue: 150,
-      p1WeeklyDomesticHours: 15,
-      p2WeeklyDomesticHours: 10,
-      ratioBeforeDomestic: 0.5,
-      ratioAfterDomestic: 0.55,
-      isSameAsM2: false,
-    },
+    domestic: null,
+    domesticProjections: {},
     projections: {},
     validationErrors: [],
   };
@@ -56,18 +47,16 @@ const ALL_MODELS: Set<ModelId> = new Set([
   "m2_income_ratio",
   "m3_equal_rav",
   "m4_adjusted_time",
-  "m5_total_contribution",
 ]);
 
 describe("EquityGauges", () => {
-  it("renders 5 gauge bars, one per model", () => {
+  it("renders 4 gauge bars, one per model", () => {
     render(<EquityGauges results={makeResults()} unlockedModels={ALL_MODELS} />);
 
     expect(screen.getByTestId("gauge-m1_5050")).toBeInTheDocument();
     expect(screen.getByTestId("gauge-m2_income_ratio")).toBeInTheDocument();
     expect(screen.getByTestId("gauge-m3_equal_rav")).toBeInTheDocument();
     expect(screen.getByTestId("gauge-m4_adjusted_time")).toBeInTheDocument();
-    expect(screen.getByTestId("gauge-m5_total_contribution")).toBeInTheDocument();
   });
 
   it("unlocked bar width reflects equityScore * 100%", () => {
@@ -116,21 +105,13 @@ describe("EquityGauges", () => {
     expect(bar).toHaveStyle({ width: "65%" });
   });
 
-  it("uses m5_total_contribution.modelResult.equityScore for M5 bar width", () => {
-    render(<EquityGauges results={makeResults({ m5: 0.55 })} unlockedModels={ALL_MODELS} />);
-
-    const bar = screen.getByTestId("gauge-m5_total_contribution");
-    expect(bar).toHaveStyle({ width: "55%" });
-  });
-
-  it("displays model short labels M1 through M5", () => {
+  it("displays model short labels M1 through M4", () => {
     render(<EquityGauges results={makeResults()} unlockedModels={ALL_MODELS} />);
 
     expect(screen.getByText("M1")).toBeInTheDocument();
     expect(screen.getByText("M2")).toBeInTheDocument();
     expect(screen.getByText("M3")).toBeInTheDocument();
     expect(screen.getByText("M4")).toBeInTheDocument();
-    expect(screen.getByText("M5")).toBeInTheDocument();
   });
 
   it("M4 gauge shows '= M2' label when isSameAsM2", () => {
@@ -142,17 +123,6 @@ describe("EquityGauges", () => {
     const bar = screen.getByTestId("gauge-m4_adjusted_time");
     expect(bar.className).toContain("bg-surface");
     expect(screen.getByText("= M2")).toBeInTheDocument();
-  });
-
-  it("M5 gauge shows '= M2' label when isSameAsM2", () => {
-    const results = makeResults();
-    results.m5_total_contribution.isSameAsM2 = true;
-
-    render(<EquityGauges results={results} unlockedModels={ALL_MODELS} />);
-
-    const bar = screen.getByTestId("gauge-m5_total_contribution");
-    expect(bar.className).toContain("bg-surface");
-    expect(screen.getAllByText("= M2").length).toBeGreaterThanOrEqual(1);
   });
 
   it("non-viable model shows 'Non viable' label and empty gauge", () => {

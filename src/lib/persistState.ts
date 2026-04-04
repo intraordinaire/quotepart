@@ -11,6 +11,7 @@ interface SerializedState {
   completedTiers: number[];
   skippedTiers: number[];
   input: SimulationState["input"];
+  domesticEnabled?: boolean;
 }
 
 function serialize(state: SimulationState): SerializedState {
@@ -20,17 +21,21 @@ function serialize(state: SimulationState): SerializedState {
     completedTiers: Array.from(state.completedTiers),
     skippedTiers: Array.from(state.skippedTiers),
     input: state.input,
+    domesticEnabled: state.domesticEnabled,
   };
 }
 
 function deserialize(raw: SerializedState): SimulationState {
+  const completedTiers = new Set(raw.completedTiers as Array<1 | 2 | 3 | 4>);
   return {
     mode: raw.mode,
     activeTier: raw.activeTier,
-    completedTiers: new Set(raw.completedTiers as Array<1 | 2 | 3 | 4>),
+    completedTiers,
     skippedTiers: new Set(raw.skippedTiers as Array<2 | 3 | 4>),
     input: raw.input,
     activeTab: "saisie",
+    // Backward compat: auto-enable domestic if tier 4 was completed in old state
+    domesticEnabled: raw.domesticEnabled ?? completedTiers.has(4),
   };
 }
 

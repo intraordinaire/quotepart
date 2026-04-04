@@ -5,6 +5,7 @@ import { randomPlaceholderPair, displayName } from "@/lib/names";
 import {
   simulationReducer,
   getUnlockedModels,
+  isDomesticAvailable,
   initialState,
   SimulationProvider,
 } from "@/context/SimulationContext";
@@ -94,6 +95,23 @@ describe("simulationReducer", () => {
     expect(next.input.commonCharges).toBe(800);
     expect(next.input.hasChildren).toBe(false);
   });
+
+  it("TOGGLE_DOMESTIC sets domesticEnabled", () => {
+    const next = simulationReducer(initialState, { type: "TOGGLE_DOMESTIC", payload: true });
+    expect(next.domesticEnabled).toBe(true);
+    const off = simulationReducer(next, { type: "TOGGLE_DOMESTIC", payload: false });
+    expect(off.domesticEnabled).toBe(false);
+  });
+
+  it("COMPLETE_TIER 4 auto-enables domesticEnabled", () => {
+    const next = simulationReducer(initialState, { type: "COMPLETE_TIER", payload: 4 });
+    expect(next.domesticEnabled).toBe(true);
+  });
+
+  it("COMPLETE_TIER 1 does not change domesticEnabled", () => {
+    const next = simulationReducer(initialState, { type: "COMPLETE_TIER", payload: 1 });
+    expect(next.domesticEnabled).toBe(false);
+  });
 });
 
 // ─── Part C: getUnlockedModels ─────────────────────────────────────────────
@@ -134,7 +152,7 @@ describe("getUnlockedModels", () => {
     expect(unlocked.has("m3_equal_rav")).toBe(true);
   });
 
-  it("all tiers complete → all 5 models unlocked", () => {
+  it("all tiers complete → all 4 models unlocked", () => {
     const state: SimulationState = {
       ...initialState,
       completedTiers: new Set([1, 2, 3, 4]),
@@ -144,8 +162,32 @@ describe("getUnlockedModels", () => {
     expect(unlocked.has("m2_income_ratio")).toBe(true);
     expect(unlocked.has("m3_equal_rav")).toBe(true);
     expect(unlocked.has("m4_adjusted_time")).toBe(true);
-    expect(unlocked.has("m5_total_contribution")).toBe(true);
-    expect(unlocked.size).toBe(5);
+    expect(unlocked.size).toBe(4);
+  });
+});
+
+// ─── Part C-bis: isDomesticAvailable ──────────────────────────────────────
+
+describe("isDomesticAvailable", () => {
+  it("returns false when tier 4 not completed", () => {
+    expect(isDomesticAvailable(initialState)).toBe(false);
+  });
+
+  it("returns true when tier 4 completed", () => {
+    const state: SimulationState = {
+      ...initialState,
+      completedTiers: new Set([1, 2, 3, 4]),
+    };
+    expect(isDomesticAvailable(state)).toBe(true);
+  });
+
+  it("returns false when tier 4 only skipped (no data entered)", () => {
+    const state: SimulationState = {
+      ...initialState,
+      completedTiers: new Set([1, 2, 3]),
+      skippedTiers: new Set([4]),
+    };
+    expect(isDomesticAvailable(state)).toBe(false);
   });
 });
 

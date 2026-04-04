@@ -61,7 +61,7 @@ export function Tier4Domestic(): React.JSX.Element {
     <div className="animate-tier-in">
       <h2 className="font-display text-2xl mb-1">Répartition domestique</h2>
       <p className="text-sm text-text-dim mb-1.5">
-        Qui fait quoi à la maison ? Débloque le modèle Contribution totale.
+        Qui fait quoi à la maison ? Active la valorisation du travail domestique dans les résultats.
       </p>
       <p className="text-xs italic text-text-dim mb-8">
         {isShared

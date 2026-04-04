@@ -11,6 +11,7 @@ interface TemporalProjectionProps {
   unlockedModels: Set<ModelId>;
   p1Name: string;
   p2Name: string;
+  domesticEnabled?: boolean;
 }
 
 export function TemporalProjection({
@@ -18,6 +19,7 @@ export function TemporalProjection({
   unlockedModels,
   p1Name,
   p2Name,
+  domesticEnabled = false,
 }: TemporalProjectionProps): React.ReactElement {
   const m1Year1 = results.projections.m1_5050?.year1 ?? 0;
 
@@ -42,9 +44,12 @@ export function TemporalProjection({
           <tbody>
             {MODEL_ORDER.map((modelId) => {
               const isLocked = !unlockedModels.has(modelId);
-              const isRedundant = !isLocked && isRedundantModel(results, modelId);
+              const isRedundant = !isLocked && isRedundantModel(results, modelId, domesticEnabled);
               const isDimmed = isLocked || isRedundant;
-              const row = results.projections[modelId];
+              const projections = domesticEnabled
+                ? results.domesticProjections
+                : results.projections;
+              const row = projections[modelId];
 
               return (
                 <tr

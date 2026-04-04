@@ -28,16 +28,8 @@ const defaultResults: CalculationResults = {
     partTimeCostMonthly: 80,
     isSameAsM2: false,
   },
-  m5_total_contribution: {
-    modelResult: makeModelResult(),
-    p1DomesticMonthlyValue: 320,
-    p2DomesticMonthlyValue: 180,
-    p1WeeklyDomesticHours: 20,
-    p2WeeklyDomesticHours: 12,
-    ratioBeforeDomestic: 0.6,
-    ratioAfterDomestic: 0.55,
-    isSameAsM2: false,
-  },
+  domestic: null,
+  domesticProjections: {},
   projections: {},
   validationErrors: [],
 };
@@ -127,21 +119,6 @@ describe("ModelDetailPanel", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows philosophy text for m5_total_contribution", () => {
-    render(
-      <ModelDetailPanel
-        modelId="m5_total_contribution"
-        results={defaultResults}
-        p1Name="P1"
-        p2Name="P2"
-        onClose={vi.fn()}
-      />
-    );
-    expect(
-      screen.getByText("Reconnaît que le travail domestique a une valeur économique réelle.")
-    ).toBeInTheDocument();
-  });
-
   it("shows advantages list items for m1_5050", () => {
     render(
       <ModelDetailPanel
@@ -182,22 +159,6 @@ describe("ModelDetailPanel", () => {
     );
     expect(screen.getAllByText(/Option A/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/Option B/i).length).toBeGreaterThanOrEqual(1);
-  });
-
-  it("M5 detail shows p1DomesticMonthlyValue and p2DomesticMonthlyValue formatted in €", () => {
-    render(
-      <ModelDetailPanel
-        modelId="m5_total_contribution"
-        results={defaultResults}
-        p1Name="P1"
-        p2Name="P2"
-        onClose={vi.fn()}
-      />
-    );
-    // 320 formatted in fr-FR = "320 €"
-    expect(screen.getByText(/320/)).toBeInTheDocument();
-    // 180 formatted in fr-FR = "180 €"
-    expect(screen.getByText(/180/)).toBeInTheDocument();
   });
 
   it("close button calls onClose callback", async () => {

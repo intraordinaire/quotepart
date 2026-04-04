@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useSimulation } from "@/context/useSimulation";
-import { getUnlockedModels } from "@/context/SimulationContext";
+import { getUnlockedModels, isDomesticAvailable } from "@/context/SimulationContext";
 import { calculate } from "@/domain/calculate";
 import type { ModelId } from "@/domain/types";
 import { ComparisonTable } from "./ComparisonTable";
@@ -13,6 +13,8 @@ import { PerceptionConfrontation } from "./PerceptionConfrontation";
 import { displayName } from "@/lib/names";
 import type { DomesticSliders } from "@/domain/types";
 import { toFullInput } from "@/lib/inputDefaults";
+import { PillToggle } from "@/components/ui/PillToggle";
+import { FormField } from "@/components/ui/FormField";
 
 export function ResultsShell(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
@@ -35,10 +37,33 @@ export function ResultsShell(): React.JSX.Element {
   const p1Name = displayName(input.p1?.name ?? "", "Personne 1");
   const p2Name = displayName(input.p2?.name ?? "", "Personne 2");
 
-  const tier4Done = state.completedTiers.has(4) || state.skippedTiers.has(4);
+  const domesticAvailable = isDomesticAvailable(state);
+  const domesticEnabled = state.domesticEnabled;
 
   return (
     <div className="space-y-10">
+      {/* Domestic toggle */}
+      {domesticAvailable && (
+        <div className="flex flex-wrap items-center gap-4 p-4 rounded-lg bg-surface border border-border">
+          <PillToggle
+            active={domesticEnabled}
+            onClick={() => dispatch({ type: "TOGGLE_DOMESTIC", payload: !domesticEnabled })}
+            label="Valoriser le travail domestique"
+          />
+          {domesticEnabled && (
+            <FormField
+              label="Valeur horaire"
+              value={String(input.hourlyRate)}
+              onChange={(v) =>
+                dispatch({ type: "UPDATE_INPUT", payload: { hourlyRate: Number(v) || 0 } })
+              }
+              suffix="€/h"
+              numeric
+            />
+          )}
+        </div>
+      )}
+
       {/* Comparison table */}
       <section>
         <h2 className="font-display text-xl md:text-[28px] font-normal mb-4 md:mb-6">
@@ -51,6 +76,7 @@ export function ResultsShell(): React.JSX.Element {
           onModelSelect={setSelectedModel}
           p1Name={p1Name}
           p2Name={p2Name}
+          domesticEnabled={domesticEnabled}
         />
       </section>
 
@@ -62,6 +88,7 @@ export function ResultsShell(): React.JSX.Element {
           p1Name={p1Name}
           p2Name={p2Name}
           onClose={() => setSelectedModel(null)}
+          domesticEnabled={domesticEnabled}
         />
       )}
 
@@ -70,7 +97,11 @@ export function ResultsShell(): React.JSX.Element {
         <h2 className="font-display text-xl md:text-[28px] font-normal mb-4 md:mb-6">
           Score d&apos;équité
         </h2>
-        <EquityGauges results={results} unlockedModels={unlockedModels} />
+        <EquityGauges
+          results={results}
+          unlockedModels={unlockedModels}
+          domesticEnabled={domesticEnabled}
+        />
       </section>
 
       {/* Temporal projection */}
@@ -83,11 +114,12 @@ export function ResultsShell(): React.JSX.Element {
           unlockedModels={unlockedModels}
           p1Name={p1Name}
           p2Name={p2Name}
+          domesticEnabled={domesticEnabled}
         />
       </section>
 
-      {/* Perception confrontation (couple mode only) */}
-      {state.mode === "shared" && tier4Done && (
+      {/* Perception confrontation (when domestic enabled + couple mode) */}
+      {domesticEnabled && state.mode === "shared" && (
         <section>
           <h2 className="font-display text-xl md:text-[28px] font-normal mb-4 md:mb-6">
             Perception du travail domestique

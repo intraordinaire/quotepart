@@ -4,7 +4,6 @@ import { ComparisonTable } from "@/components/results/ComparisonTable";
 import type { CalculationResults } from "@/domain/calculate";
 import type { ModelId } from "@/domain/types";
 import type { M4Result } from "@/domain/models/m4-adjusted-time";
-import type { M5Result } from "@/domain/models/m5-total-contribution";
 import type { ModelResult } from "@/domain/types";
 
 function makeModelResult(overrides: Partial<ModelResult> = {}): ModelResult {
@@ -30,31 +29,31 @@ function makeM4Result(overrides: Partial<M4Result> = {}): M4Result {
   };
 }
 
-function makeM5Result(overrides: Partial<M5Result> = {}): M5Result {
-  return {
-    modelResult: makeModelResult({ equityScore: 0.95 }),
-    p1DomesticMonthlyValue: 200,
-    p2DomesticMonthlyValue: 150,
-    p1WeeklyDomesticHours: 20,
-    p2WeeklyDomesticHours: 15,
-    ratioBeforeDomestic: 0.5,
-    ratioAfterDomestic: 0.48,
-    isSameAsM2: false,
-    ...overrides,
-  };
-}
-
 function makeResults(overrides: Partial<CalculationResults> = {}): CalculationResults {
   return {
     m1_5050: makeModelResult({ equityScore: 0.7 }),
     m2_income_ratio: makeModelResult({ equityScore: 0.85 }),
     m3_equal_rav: makeModelResult({ equityScore: 0.9 }),
     m4_adjusted_time: makeM4Result(),
-    m5_total_contribution: makeM5Result(),
+    domestic: {
+      m2_income_ratio: makeModelResult({ p1Contribution: 400, equityScore: 0.9 }),
+      m3_equal_rav: makeModelResult({ p1Contribution: 350, equityScore: 0.92 }),
+      m4_adjusted_time: {
+        optionA: makeModelResult({ p1Contribution: 450 }),
+        optionB: makeModelResult({ p1Contribution: 380 }),
+        isSameAsM2: false,
+        partTimeCostMonthly: 0,
+      },
+      p1DomesticMonthlyValue: 200,
+      p2DomesticMonthlyValue: 150,
+      p1WeeklyDomesticHours: 20,
+      p2WeeklyDomesticHours: 15,
+    },
     projections: {},
+    domesticProjections: {},
     validationErrors: [],
     ...overrides,
-  };
+  } as CalculationResults;
 }
 
 const ALL_MODELS: Set<ModelId> = new Set([
@@ -62,13 +61,12 @@ const ALL_MODELS: Set<ModelId> = new Set([
   "m2_income_ratio",
   "m3_equal_rav",
   "m4_adjusted_time",
-  "m5_total_contribution",
 ]);
 
 const TIER1_ONLY: Set<ModelId> = new Set(["m1_5050", "m2_income_ratio"]);
 
 describe("ComparisonTable", () => {
-  it("renders 5 column headers M1 through M5", () => {
+  it("renders 4 column headers M1 through M4", () => {
     const { container } = render(
       <ComparisonTable
         results={makeResults()}
@@ -80,12 +78,10 @@ describe("ComparisonTable", () => {
       />
     );
 
-    // Each model has a <th data-model="..."> column header
     expect(container.querySelector("[data-model='m1_5050']")).toBeInTheDocument();
     expect(container.querySelector("[data-model='m2_income_ratio']")).toBeInTheDocument();
     expect(container.querySelector("[data-model='m3_equal_rav']")).toBeInTheDocument();
     expect(container.querySelector("[data-model='m4_adjusted_time']")).toBeInTheDocument();
-    expect(container.querySelector("[data-model='m5_total_contribution']")).toBeInTheDocument();
   });
 
   it("locked model column shows LockedModelOverlay text", () => {
@@ -100,10 +96,9 @@ describe("ComparisonTable", () => {
       />
     );
 
-    // M3 requires tier 2, M4 requires tier 3, M5 requires tier 4
+    // M3 requires tier 2, M4 requires tier 3
     expect(screen.getByText(/palier 2/i)).toBeInTheDocument();
     expect(screen.getByText(/palier 3/i)).toBeInTheDocument();
-    expect(screen.getByText(/palier 4/i)).toBeInTheDocument();
   });
 
   it("contributions are formatted as French locale with no decimals and € suffix", () => {
@@ -122,8 +117,6 @@ describe("ComparisonTable", () => {
       />
     );
 
-    // French locale formats 1811 as "1 811" (non-breaking space or narrow no-break space)
-    // \u00A0 = non-breaking space, \u202F = narrow no-break space (used by fr-FR in modern engines)
     expect(screen.getAllByText(/1[\s\u00A0\u202F]811[\s\u00A0\u202F]€/).length).toBeGreaterThan(0);
   });
 
@@ -162,7 +155,6 @@ describe("ComparisonTable", () => {
       />
     );
 
-    // Click the <th> header cell for M1
     const m1Header = container.querySelector("[data-model='m1_5050']");
     expect(m1Header).not.toBeNull();
     fireEvent.click(m1Header!);
@@ -183,7 +175,6 @@ describe("ComparisonTable", () => {
       />
     );
 
-    // M3 header exists but is locked — clicking it should not call onModelSelect
     const m3Header = container.querySelector("[data-model='m3_equal_rav']");
     expect(m3Header).not.toBeNull();
     fireEvent.click(m3Header!);
@@ -207,28 +198,8 @@ describe("ComparisonTable", () => {
     );
 
     expect(screen.getByText(/identique au M2/i)).toBeInTheDocument();
-    // Footer note contains the message in a tfoot
     const tfoot = document.querySelector("tfoot");
     expect(tfoot).not.toBeNull();
     expect(tfoot!.textContent).toMatch(/M4.*identique au M2/i);
-  });
-
-  it("shows footer note for M5 when isSameAsM2", () => {
-    const results = makeResults({
-      m5_total_contribution: makeM5Result({ isSameAsM2: true }),
-    });
-
-    render(
-      <ComparisonTable
-        results={results}
-        unlockedModels={ALL_MODELS}
-        selectedModel={null}
-        onModelSelect={vi.fn()}
-        p1Name="Alice"
-        p2Name="Bob"
-      />
-    );
-
-    expect(screen.getByText(/identique au M2/i)).toBeInTheDocument();
   });
 });

@@ -16,6 +16,7 @@ export interface SimulationState {
   skippedTiers: Set<2 | 3 | 4>;
   input: Partial<SimulationInput>;
   activeTab: TabId;
+  domesticEnabled: boolean;
 }
 
 // ─── Actions ───────────────────────────────────────────────────────────────
@@ -27,6 +28,7 @@ export type SimulationAction =
   | { type: "COMPLETE_TIER"; payload: 1 | 2 | 3 | 4 }
   | { type: "SKIP_TIER"; payload: 2 | 3 | 4 }
   | { type: "UPDATE_INPUT"; payload: Partial<SimulationInput> }
+  | { type: "TOGGLE_DOMESTIC"; payload: boolean }
   | { type: "HYDRATE"; payload: SimulationState }
   | { type: "RESET" };
 
@@ -39,6 +41,7 @@ export const initialState: SimulationState = {
   skippedTiers: new Set(),
   input: { commonCharges: 0, hasChildren: false, hourlyRate: DEFAULT_HOURLY_RATE },
   activeTab: "saisie",
+  domesticEnabled: false,
 };
 
 // ─── Reducer ───────────────────────────────────────────────────────────────
@@ -61,6 +64,8 @@ export function simulationReducer(
       return {
         ...state,
         completedTiers: new Set([...state.completedTiers, action.payload]),
+        // Auto-enable domestic overlay when tier 4 is completed
+        ...(action.payload === 4 ? { domesticEnabled: true } : {}),
       };
 
     case "SKIP_TIER":
@@ -74,6 +79,9 @@ export function simulationReducer(
         ...state,
         input: { ...state.input, ...action.payload },
       };
+
+    case "TOGGLE_DOMESTIC":
+      return { ...state, domesticEnabled: action.payload };
 
     case "HYDRATE":
       return action.payload;
@@ -95,7 +103,6 @@ export function getUnlockedModels(state: SimulationState): Set<ModelId> {
   const tier1Done = state.completedTiers.has(1);
   const tier2Done = state.completedTiers.has(2) || state.skippedTiers.has(2);
   const tier3Done = state.completedTiers.has(3) || state.skippedTiers.has(3);
-  const tier4Done = state.completedTiers.has(4) || state.skippedTiers.has(4);
 
   if (tier1Done) {
     unlocked.add("m1_5050");
@@ -103,9 +110,12 @@ export function getUnlockedModels(state: SimulationState): Set<ModelId> {
   }
   if (tier1Done && tier2Done) unlocked.add("m3_equal_rav");
   if (tier1Done && tier2Done && tier3Done) unlocked.add("m4_adjusted_time");
-  if (tier1Done && tier2Done && tier3Done && tier4Done) unlocked.add("m5_total_contribution");
 
   return unlocked;
+}
+
+export function isDomesticAvailable(state: SimulationState): boolean {
+  return state.completedTiers.has(4);
 }
 
 // ─── Context ───────────────────────────────────────────────────────────────

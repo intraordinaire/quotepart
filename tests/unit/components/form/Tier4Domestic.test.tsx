@@ -22,6 +22,7 @@ function makeState(
     skippedTiers: new Set<2 | 3 | 4>(),
     input,
     activeTab: "saisie" as const,
+    domesticEnabled: false,
   };
 }
 
