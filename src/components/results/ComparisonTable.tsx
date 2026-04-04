@@ -199,6 +199,56 @@ export function ComparisonTable({
               })}
             </tr>
 
+            {/* Row: P1 domestic credit (when toggle ON) */}
+            {domesticEnabled && results.domestic && (
+              <tr className="border-b border-border">
+                <td className="py-1.5 px-3 text-text-dim text-[11px] italic">
+                  dont crédit {p1Name}
+                </td>
+                {MODEL_CONFIGS.map((config) => {
+                  const isLocked = !unlockedModels.has(config.id);
+                  const dimmed = !isLocked && isDimmedColumn(results, config.id, domesticEnabled);
+                  return (
+                    <td
+                      key={config.id}
+                      className={`py-1.5 px-3 text-center text-[11px] italic text-text-dim${dimmed ? " opacity-40" : ""}`}
+                    >
+                      {isLocked
+                        ? "—"
+                        : config.id === "m1_5050"
+                          ? "—"
+                          : `−${formatCurrency(results.domestic!.p1DomesticMonthlyValue)}`}
+                    </td>
+                  );
+                })}
+              </tr>
+            )}
+
+            {/* Row: P2 domestic credit (when toggle ON) */}
+            {domesticEnabled && results.domestic && (
+              <tr className="border-b border-border">
+                <td className="py-1.5 px-3 text-text-dim text-[11px] italic">
+                  dont crédit {p2Name}
+                </td>
+                {MODEL_CONFIGS.map((config) => {
+                  const isLocked = !unlockedModels.has(config.id);
+                  const dimmed = !isLocked && isDimmedColumn(results, config.id, domesticEnabled);
+                  return (
+                    <td
+                      key={config.id}
+                      className={`py-1.5 px-3 text-center text-[11px] italic text-text-dim${dimmed ? " opacity-40" : ""}`}
+                    >
+                      {isLocked
+                        ? "—"
+                        : config.id === "m1_5050"
+                          ? "—"
+                          : `−${formatCurrency(results.domestic!.p2DomesticMonthlyValue)}`}
+                    </td>
+                  );
+                })}
+              </tr>
+            )}
+
             {/* Row: P1 disposable income */}
             <tr className="border-b border-border">
               <td className="py-2 px-3 text-text-dim text-xs">

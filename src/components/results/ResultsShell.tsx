@@ -13,8 +13,10 @@ import { PerceptionConfrontation } from "./PerceptionConfrontation";
 import { displayName } from "@/lib/names";
 import type { DomesticSliders } from "@/domain/types";
 import { toFullInput } from "@/lib/inputDefaults";
-import { PillToggle } from "@/components/ui/PillToggle";
+import { Switch } from "@/components/ui/Switch";
 import { FormField } from "@/components/ui/FormField";
+import { ResultsSummary } from "./ResultsSummary";
+import { formatCurrency } from "@/lib/format";
 
 export function ResultsShell(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
@@ -42,24 +44,57 @@ export function ResultsShell(): React.JSX.Element {
 
   return (
     <div className="space-y-10">
+      {/* Context summary */}
+      <ResultsSummary
+        p1Name={p1Name}
+        p2Name={p2Name}
+        p1Income={input.p1.income}
+        p2Income={input.p2.income}
+        p1PersonalCharges={input.p1.personalCharges}
+        p2PersonalCharges={input.p2.personalCharges}
+        commonCharges={input.commonCharges}
+      />
+
       {/* Domestic toggle */}
       {domesticAvailable && (
-        <div className="flex flex-wrap items-center gap-4 p-4 rounded-lg bg-surface border border-border">
-          <PillToggle
-            active={domesticEnabled}
-            onClick={() => dispatch({ type: "TOGGLE_DOMESTIC", payload: !domesticEnabled })}
+        <div className="bg-surface border border-border rounded-xl p-5 md:px-7 md:py-5 space-y-4">
+          <Switch
+            checked={domesticEnabled}
+            onChange={(v) => dispatch({ type: "TOGGLE_DOMESTIC", payload: v })}
             label="Valoriser le travail domestique"
           />
           {domesticEnabled && (
-            <FormField
-              label="Valeur horaire"
-              value={String(input.hourlyRate)}
-              onChange={(v) =>
-                dispatch({ type: "UPDATE_INPUT", payload: { hourlyRate: Number(v) || 0 } })
-              }
-              suffix="€/h"
-              numeric
-            />
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-end gap-3">
+                <FormField
+                  label="Taux horaire"
+                  value={String(input.hourlyRate)}
+                  onChange={(v) =>
+                    dispatch({ type: "UPDATE_INPUT", payload: { hourlyRate: Number(v) || 0 } })
+                  }
+                  suffix="€/h"
+                  numeric
+                />
+                <span className="text-xs text-text-dim pb-3">SMIC net 2026</span>
+              </div>
+              {results.domestic && (
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted mb-2">
+                    Répartition estimée
+                  </p>
+                  <p className="text-sm text-text-dim">
+                    {p1Name} : {results.domestic.p1WeeklyDomesticHours.toFixed(1)}h/sem
+                    {" · "}
+                    {formatCurrency(results.domestic.p1DomesticMonthlyValue)}/mois
+                  </p>
+                  <p className="text-sm text-text-dim">
+                    {p2Name} : {results.domestic.p2WeeklyDomesticHours.toFixed(1)}h/sem
+                    {" · "}
+                    {formatCurrency(results.domestic.p2DomesticMonthlyValue)}/mois
+                  </p>
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}
