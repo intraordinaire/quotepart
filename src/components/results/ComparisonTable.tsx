@@ -291,7 +291,7 @@ export function ComparisonTable({
             return (
               <tfoot>
                 <tr>
-                  <td colSpan={5} className="pt-3 px-3">
+                  <td colSpan={MODEL_CONFIGS.length + 1} className="pt-3 px-3">
                     {footnotes.map((fn) => (
                       <p
                         key={fn.shortLabel}

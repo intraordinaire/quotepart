@@ -23,7 +23,7 @@ const dmMono = DM_Mono({
 
 export const metadata: Metadata = {
   title: "QuotePart — Simulateur d'équité financière",
-  description: "5 modèles d'équité appliqués à vos vrais chiffres.",
+  description: "4 modèles d'équité appliqués à vos vrais chiffres.",
 };
 
 export default function RootLayout({

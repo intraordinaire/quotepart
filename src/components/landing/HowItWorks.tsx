@@ -15,8 +15,8 @@ const STEPS = [
   },
   {
     step: "03",
-    title: "Comparez 5 modèles",
-    desc: "Du 50/50 à la contribution totale. Projections sur 1, 5 et 10 ans.",
+    title: "Comparez 4 modèles",
+    desc: "Du 50/50 au temps ajusté, avec valorisation du travail domestique. Projections sur 1, 5 et 10 ans.",
     accent: false,
   },
   {

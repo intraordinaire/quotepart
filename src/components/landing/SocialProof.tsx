@@ -80,7 +80,7 @@ const STATS = [
   {
     value: 3,
     suffix: " min",
-    desc: "pour simuler et comparer 5 modèles d'équité sur vos vrais chiffres",
+    desc: "pour simuler et comparer 4 modèles d'équité sur vos vrais chiffres",
   },
 ] as const;
 

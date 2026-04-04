@@ -16,6 +16,8 @@ export interface SimulationState {
   skippedTiers: Set<2 | 3 | 4>;
   input: Partial<SimulationInput>;
   activeTab: TabId;
+  /** UI-only display preference — not encoded in share URLs.
+   *  Auto-enabled when Tier 4 is completed, so P2 gets it naturally after filling their sliders. */
   domesticEnabled: boolean;
 }
 

@@ -15,7 +15,7 @@ const TIERS: TierItem[] = [
   { n: 1, label: "Revenus & charges", unlocks: "Modèles 1-2" },
   { n: 2, label: "Charges perso", unlocks: "Modèle 3" },
   { n: 3, label: "Temps de travail", unlocks: "Modèle 4" },
-  { n: 4, label: "Charge domestique", unlocks: "Modèle 5" },
+  { n: 4, label: "Charge domestique", unlocks: "Valorisation domestique" },
 ];
 
 // ─── Component ─────────────────────────────────────────────────────────────
