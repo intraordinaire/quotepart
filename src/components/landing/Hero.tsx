@@ -16,7 +16,7 @@ export default function Hero(): React.JSX.Element {
       </h1>
 
       <p className="mx-auto mb-10 max-w-[520px] text-base leading-relaxed text-text-dim md:text-[17px]">
-        5 modèles d&apos;équité appliqués à vos vrais chiffres. Pas une calculette, un outil pour
+        4 modèles d&apos;équité appliqués à vos vrais chiffres. Pas une calculette, un outil pour
         choisir ensemble ce qui est juste pour vous.
       </p>
 

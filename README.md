@@ -18,13 +18,13 @@
 
 ---
 
-Simulateur d'équité financière. 5 modèles de répartition des dépenses communes, appliqués à vos vrais chiffres — du 50/50 à la contribution totale, incluant la valeur du travail domestique.
+Simulateur d'équité financière. 4 modèles de répartition des dépenses communes, appliqués à vos vrais chiffres — du 50/50 au temps ajusté, avec une option pour intégrer la valeur du travail domestique.
 
 ## Fonctionnement
 
 1. **Revenus & charges** — saisissez l'essentiel en 90 secondes, deux modèles débloqués immédiatement
 2. **Contexte** — temps partiel, charges personnelles, répartition domestique : chaque palier affine la simulation
-3. **Comparez** — 5 modèles côte à côte, aucun n'est présenté comme "le bon"
+3. **Comparez** — 4 modèles côte à côte, aucun n'est présenté comme "le bon"
 4. **Partagez** — envoyez le lien à votre partenaire, comparez vos perceptions, choisissez ensemble
 
 ## Vie privée
