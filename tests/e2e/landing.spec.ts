@@ -23,17 +23,16 @@ test.describe("Landing page", () => {
     await expect(page.getByRole("heading", { name: /comment ça marche/i })).toBeVisible();
   });
 
-  test("5 equity models section lists all models", async ({ page }) => {
-    await expect(page.getByRole("heading", { name: /façons de voir l'équité/i })).toBeVisible();
+  test("4 equity models section lists all models", async ({ page }) => {
+    await expect(page.getByRole("heading", { name: /modèles.*domestique/i })).toBeVisible();
     // Model names are in <span> elements with font-semibold styling
     const modelSection = page.locator("section", {
-      has: page.getByRole("heading", { name: /façons de voir l'équité/i }),
+      has: page.getByRole("heading", { name: /modèles.*domestique/i }),
     });
     await expect(modelSection.getByText("50/50")).toBeVisible();
     await expect(modelSection.getByText("Prorata revenus")).toBeVisible();
     await expect(modelSection.getByText("Reste à vivre égal")).toBeVisible();
     await expect(modelSection.getByText("Ajusté temps de travail")).toBeVisible();
-    await expect(modelSection.getByText("Contribution totale")).toBeVisible();
   });
 
   test("mobile viewport — no horizontal scroll", async ({ page }) => {

@@ -40,7 +40,7 @@ export async function completeTier4AndViewResults(page: Page): Promise<void> {
   await expect(page.getByRole("heading", { name: "Comparaison des modèles" })).toBeVisible();
 }
 
-/** Full flow: start → fill tier 1 → skip tiers 2-4 → view results */
+/** Full flow: start → fill tier 1 → skip tiers 2-3 → switch to results */
 export async function goToResultsMinimal(
   page: Page,
   opts: { p1Income?: string; p2Income?: string; commonCharges?: string } = {}
@@ -49,7 +49,7 @@ export async function goToResultsMinimal(
   await completeTier1(page, opts);
   await skipTier2(page);
   await skipTier3(page);
-  await completeTier4AndViewResults(page);
+  await switchToResultsTab(page);
 }
 
 /** Navigate to results tab */

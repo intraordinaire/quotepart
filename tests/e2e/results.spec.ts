@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { startFullMode, completeTier1, goToResultsMinimal, switchToResultsTab } from "./helpers";
 
 test.describe("Results — progressive model unlocking", () => {
-  test("Tier 1 only: M1+M2 unlocked, M3-M5 locked", async ({ page }) => {
+  test("Tier 1 only: M1+M2 unlocked, M3-M4 locked", async ({ page }) => {
     await startFullMode(page);
     await completeTier1(page);
     await switchToResultsTab(page);
@@ -15,9 +15,6 @@ test.describe("Results — progressive model unlocking", () => {
     ).toBeVisible();
     await expect(
       page.getByText("Remplissez le palier 3 pour débloquer ce modèle").first()
-    ).toBeVisible();
-    await expect(
-      page.getByText("Remplissez le palier 4 pour débloquer ce modèle").first()
     ).toBeVisible();
   });
 
@@ -111,19 +108,12 @@ test.describe("Results — model detail panel", () => {
 });
 
 test.describe("Results — Et si... tab", () => {
-  test("'Et si...' button switches to what-if tab", async ({ page }) => {
+  test("'Et si...' tab is disabled with 'Bientôt' badge", async ({ page }) => {
     await goToResultsMinimal(page);
 
-    await page.getByRole("button", { name: /et si/i }).click();
-    await expect(page.getByText("Scénario modifié")).toBeVisible();
-  });
-
-  test("what-if panel shows pre-filled income values", async ({ page }) => {
-    await goToResultsMinimal(page, { p1Income: "3000", p2Income: "2000" });
-
-    await page.getByRole("button", { name: /et si/i }).click();
-
-    await expect(page.locator('input[value="3000"]').first()).toBeVisible();
-    await expect(page.locator('input[value="2000"]').first()).toBeVisible();
+    const etSiTab = page.getByRole("tab", { name: /et si/i });
+    await expect(etSiTab).toBeVisible();
+    await expect(etSiTab).toHaveAttribute("aria-disabled", "true");
+    await expect(etSiTab).toContainText("Bientôt");
   });
 });
