@@ -169,17 +169,6 @@ export function ResultsShell(): React.JSX.Element {
           />
         </section>
       )}
-
-      {/* Et si... CTA */}
-      <div className="pt-4 border-t border-border flex justify-end">
-        <button
-          type="button"
-          onClick={() => dispatch({ type: "SET_TAB", payload: "etsi" })}
-          className="inline-flex items-center gap-2 bg-text text-bg px-5 py-2.5 rounded-md text-sm font-medium transition-colors hover:opacity-80"
-        >
-          Et si... explorer des scénarios
-        </button>
-      </div>
     </div>
   );
 }
