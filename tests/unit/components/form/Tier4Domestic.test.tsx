@@ -17,6 +17,7 @@ function makeState(
 ): SimulationState {
   return {
     mode,
+    role: null,
     activeTier: 4,
     completedTiers: new Set<1 | 2 | 3 | 4>([1, 2, 3]),
     skippedTiers: new Set<2 | 3 | 4>(),

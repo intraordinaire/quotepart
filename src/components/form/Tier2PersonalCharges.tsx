@@ -34,7 +34,9 @@ export function Tier2PersonalCharges(): React.JSX.Element {
   const [p1Fields, setP1Fields] = useState<ChargeSubFields>(EMPTY_CHARGES);
   const [p2Fields, setP2Fields] = useState<ChargeSubFields>(EMPTY_CHARGES);
 
-  const isShared = state.mode === "shared";
+  const role = state.role;
+  const isP2 = role === "p2";
+  const isP1Shared = role === "p1" && state.mode === "shared";
   const input = state.input;
   const p2Name = displayName(input.p2?.name ?? "", "Personne 2");
 
@@ -88,58 +90,72 @@ export function Tier2PersonalCharges(): React.JSX.Element {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {/* P1 column */}
-        <div>
-          <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
-            {displayName(input.p1?.name ?? "", "Personne 1")}
+        {isP2 ? (
+          <div>
+            <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
+              {displayName(input.p1?.name ?? "", "Personne 1")}
+            </div>
+            <LockedField name={displayName(input.p1?.name ?? "", "Personne 1")} />
           </div>
-          <div className="flex flex-col gap-3">
-            <FormField
-              id="p1-transport"
-              label="Transport domicile-travail"
-              placeholder="80"
-              suffix="€"
-              numeric
-              value={p1Fields.transport}
-              onChange={(v) => handleP1Change("transport", v)}
-            />
-            <FormField
-              id="p1-loan"
-              label="Prêt personnel"
-              placeholder="0"
-              suffix="€"
-              numeric
-              value={p1Fields.loan}
-              onChange={(v) => handleP1Change("loan", v)}
-            />
-            <FormField
-              id="p1-mutuelle"
-              label="Mutuelle individuelle"
-              placeholder="45"
-              suffix="€"
-              numeric
-              value={p1Fields.mutuelle}
-              onChange={(v) => handleP1Change("mutuelle", v)}
-            />
-            <FormField
-              id="p1-other"
-              label="Autre"
-              placeholder="0"
-              suffix="€"
-              numeric
-              value={p1Fields.other}
-              onChange={(v) => handleP1Change("other", v)}
-            />
+        ) : (
+          <div>
+            <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
+              {displayName(input.p1?.name ?? "", "Personne 1")}
+            </div>
+            <div className="flex flex-col gap-3">
+              <FormField
+                id="p1-transport"
+                label="Transport domicile-travail"
+                placeholder="80"
+                suffix="€"
+                numeric
+                value={p1Fields.transport}
+                onChange={(v) => handleP1Change("transport", v)}
+              />
+              <FormField
+                id="p1-loan"
+                label="Prêt personnel"
+                placeholder="0"
+                suffix="€"
+                numeric
+                value={p1Fields.loan}
+                onChange={(v) => handleP1Change("loan", v)}
+              />
+              <FormField
+                id="p1-mutuelle"
+                label="Mutuelle individuelle"
+                placeholder="45"
+                suffix="€"
+                numeric
+                value={p1Fields.mutuelle}
+                onChange={(v) => handleP1Change("mutuelle", v)}
+              />
+              <FormField
+                id="p1-other"
+                label="Autre"
+                placeholder="0"
+                suffix="€"
+                numeric
+                value={p1Fields.other}
+                onChange={(v) => handleP1Change("other", v)}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* P2 column */}
-        <div>
-          <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
-            {p2Name}
-          </div>
-          {isShared ? (
+        {isP1Shared ? (
+          <div>
+            <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
+              {p2Name}
+            </div>
             <LockedField name={p2Name} />
-          ) : (
+          </div>
+        ) : (
+          <div>
+            <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
+              {p2Name}
+            </div>
             <div className="flex flex-col gap-3">
               <FormField
                 id="p2-transport"
@@ -178,8 +194,8 @@ export function Tier2PersonalCharges(): React.JSX.Element {
                 onChange={(v) => handleP2Change("other", v)}
               />
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-between">

@@ -8,7 +8,11 @@ import type { SimulationInput } from "@/domain/types";
  */
 export function encodeState(input: SimulationInput): string {
   const json = JSON.stringify(input);
-  return btoa(json).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+  const bytes = new TextEncoder().encode(json);
+  return btoa(String.fromCodePoint(...bytes))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 }
 
 /**
@@ -21,7 +25,7 @@ export function decodeState(encoded: string): SimulationInput | null {
     // Restore standard base64 padding
     const base64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
     const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
-    const json = atob(padded);
+    const json = new TextDecoder().decode(Uint8Array.from(atob(padded), (c) => c.codePointAt(0)!));
     const parsed: unknown = JSON.parse(json);
     if (!isSimulationInput(parsed)) return null;
     return parsed;

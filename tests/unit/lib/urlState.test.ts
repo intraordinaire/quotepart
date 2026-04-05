@@ -110,4 +110,21 @@ describe("urlState", () => {
   it("returns null for empty string", () => {
     expect(decodeState("")).toBeNull();
   });
+
+  it("round-trips names with accented characters (UTF-8)", () => {
+    const accentedInput: SimulationInput = {
+      ...fullInput,
+      p1: { ...fullInput.p1, name: "Élodie" },
+      p2: { ...fullInput.p2, name: "François" },
+    };
+    expect(decodeState(encodeState(accentedInput))).toEqual(accentedInput);
+  });
+
+  it("round-trips names with emoji (UTF-8 multi-byte)", () => {
+    const emojiInput: SimulationInput = {
+      ...fullInput,
+      p1: { ...fullInput.p1, name: "Marie 💜" },
+    };
+    expect(decodeState(encodeState(emojiInput))).toEqual(emojiInput);
+  });
 });

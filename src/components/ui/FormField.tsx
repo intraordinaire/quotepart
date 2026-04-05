@@ -8,8 +8,9 @@ export interface FormFieldProps {
   placeholder?: string;
   suffix?: string;
   value: string;
-  onChange: (v: string) => void;
+  onChange?: (v: string) => void;
   numeric?: boolean;
+  readOnly?: boolean;
 }
 
 export function FormField({
@@ -20,6 +21,7 @@ export function FormField({
   value,
   onChange,
   numeric = false,
+  readOnly = false,
 }: FormFieldProps): React.JSX.Element {
   const inputId = id ?? (label ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
 
@@ -38,10 +40,13 @@ export function FormField({
           pattern={numeric ? "[0-9 ]*" : undefined}
           placeholder={placeholder}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          readOnly={readOnly}
+          onChange={readOnly ? undefined : (e) => onChange?.(e.target.value)}
           className={[
             "w-full text-sm py-3 px-3 border border-border rounded-md bg-surface",
-            "outline-none focus:border-accent transition-colors",
+            readOnly
+              ? "text-text-dim cursor-default"
+              : "outline-none focus:border-accent transition-colors",
             suffix ? "pr-10" : "",
           ]
             .filter(Boolean)

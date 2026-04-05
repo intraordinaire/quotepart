@@ -17,6 +17,7 @@ import { Switch } from "@/components/ui/Switch";
 import { FormField } from "@/components/ui/FormField";
 import { ResultsSummary } from "./ResultsSummary";
 import { formatCurrency } from "@/lib/format";
+import { ShareLinkPanel } from "@/components/form/ShareLinkPanel";
 
 export function ResultsShell(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
@@ -29,6 +30,35 @@ export function ResultsShell(): React.JSX.Element {
     return (
       <div className="text-text-dim text-sm py-8 text-center">
         Complétez le palier 1 pour voir vos résultats.
+      </div>
+    );
+  }
+
+  // P1 in shared mode: show waiting screen with invite link
+  if (state.role === "p1" && state.mode === "shared") {
+    const fullInput = toFullInput(rawInput);
+    const p2DisplayName = displayName(fullInput.p2?.name ?? "", "Personne 2");
+    return (
+      <div className="max-w-lg mx-auto py-12 text-center space-y-6">
+        <h2 className="font-display text-2xl">En attente de {p2DisplayName}</h2>
+        <p className="text-sm text-text-dim">
+          Vous avez terminé votre partie. Envoyez ce lien à votre partenaire pour qu&apos;il
+          complète ses données et découvre les résultats.
+        </p>
+        <ShareLinkPanel input={fullInput} mode="shared" role="p1" />
+        <div className="text-xs text-text-dim space-y-1 pt-4">
+          <p className="font-medium">Paliers complétés</p>
+          {[1, 2, 3, 4].map((t) => {
+            const tier = t as 1 | 2 | 3 | 4;
+            const done = state.completedTiers.has(tier);
+            const skipped = state.skippedTiers.has(tier as 2 | 3 | 4);
+            return (
+              <p key={tier}>
+                Palier {tier} : {done ? "complété" : skipped ? "passé" : "—"}
+              </p>
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -169,6 +199,12 @@ export function ResultsShell(): React.JSX.Element {
           />
         </section>
       )}
+
+      {/* Share link panel */}
+      <section>
+        <h2 className="font-display text-xl md:text-[28px] font-normal mb-4 md:mb-6">Partager</h2>
+        <ShareLinkPanel input={input} mode={state.mode ?? "full"} role={state.role} />
+      </section>
     </div>
   );
 }

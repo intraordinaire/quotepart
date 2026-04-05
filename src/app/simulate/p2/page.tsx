@@ -4,7 +4,7 @@ import React, { Suspense, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useSimulation } from "@/context/useSimulation";
-import { decodeP2Payload } from "@/lib/shareLink";
+import { decodeState } from "@/lib/urlState";
 import { P2Banner } from "@/components/form/P2Banner";
 import { Tier1Incomes } from "@/components/form/Tier1Incomes";
 import { Tier2PersonalCharges } from "@/components/form/Tier2PersonalCharges";
@@ -59,26 +59,25 @@ function P2PageContent(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
 
   const dataParam = searchParams.get("data");
-  const payload = useMemo(() => (dataParam ? decodeP2Payload(dataParam) : null), [dataParam]);
+  const decodedInput = useMemo(() => (dataParam ? decodeState(dataParam) : null), [dataParam]);
 
   useEffect(() => {
-    if (!payload) return;
+    if (!decodedInput) return;
 
     dispatch({ type: "SET_MODE", payload: "shared" });
-    dispatch({
-      type: "UPDATE_INPUT",
-      payload: {
-        commonCharges: payload.commonCharges,
-        hasChildren: payload.hasChildren,
-        hourlyRate: payload.hourlyRate,
-      },
-    });
+    dispatch({ type: "SET_ROLE", payload: "p2" });
+    dispatch({ type: "UPDATE_INPUT", payload: decodedInput });
     dispatch({ type: "SET_TIER", payload: 1 });
-  }, [payload, dispatch]);
+  }, [decodedInput, dispatch]);
 
-  if (!payload) return <InvalidLink />;
+  if (!decodedInput) return <InvalidLink />;
 
-  const tier1Complete = state.completedTiers.has(1);
+  const p1Name = decodedInput.p1?.name?.trim() || "Personne 1";
+  const allTiersDone =
+    state.completedTiers.has(1) &&
+    (state.completedTiers.has(2) || state.skippedTiers.has(2)) &&
+    (state.completedTiers.has(3) || state.skippedTiers.has(3)) &&
+    (state.completedTiers.has(4) || state.skippedTiers.has(4));
 
   return (
     <div className="flex flex-col min-h-screen bg-bg">
@@ -95,9 +94,9 @@ function P2PageContent(): React.JSX.Element {
 
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-2xl mx-auto space-y-6">
-            <P2Banner p1Name={payload.p1Name} />
+            <P2Banner p1Name={p1Name} />
 
-            {tier1Complete ? <ResultsShell /> : <TierContent activeTier={state.activeTier} />}
+            {allTiersDone ? <ResultsShell /> : <TierContent activeTier={state.activeTier} />}
           </div>
         </main>
       </div>

@@ -11,14 +11,19 @@ import { DOMESTIC_CATEGORIES } from "@/domain/domestic";
 
 export function Tier4Domestic(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
-  const isShared = state.mode === "shared";
+  const role = state.role;
+  const isP2 = role === "p2";
+  const isP1Shared = role === "p1" && state.mode === "shared";
   const input = state.input;
   const hasChildren = input.hasChildren ?? false;
 
   const p1Name = displayName(input.p1?.name ?? "", "Personne 1");
   const p2Name = displayName(input.p2?.name ?? "", "Personne 2");
 
-  const [sliders, setSliders] = useState<DomesticSliders>(DEFAULT_SLIDERS);
+  // For P2: init sliders from P1's values (pre-fill), otherwise use defaults
+  const [sliders, setSliders] = useState<DomesticSliders>(
+    () => (isP2 ? input.domesticSliders?.p1 : undefined) ?? DEFAULT_SLIDERS
+  );
   const [copied, setCopied] = useState(false);
 
   const visibleCategories = DOMESTIC_CATEGORIES.filter((cat) => !cat.childrenOnly || hasChildren);
@@ -26,13 +31,15 @@ export function Tier4Domestic(): React.JSX.Element {
   function handleSliderChange(key: DomesticCategory, value: number): void {
     const updated = { ...sliders, [key]: value };
     setSliders(updated);
+
+    // P2 writes to domesticSliders.p2, P1 writes to domesticSliders.p1
+    const existing = input.domesticSliders;
     dispatch({
       type: "UPDATE_INPUT",
       payload: {
-        domesticSliders: {
-          ...(input.domesticSliders ?? {}),
-          p1: updated,
-        },
+        domesticSliders: isP2
+          ? { p1: existing?.p1 ?? DEFAULT_SLIDERS, p2: updated }
+          : { ...existing, p1: updated },
       },
     });
   }
@@ -49,7 +56,6 @@ export function Tier4Domestic(): React.JSX.Element {
   function handleCopyLink(): void {
     dispatch({ type: "COMPLETE_TIER", payload: 4 });
     if (!input.p1) return;
-    // state.input is Partial<SimulationInput>; by Tier 4 all required fields are set
     const link = getP2InviteLink(input as SimulationInput);
     void navigator.clipboard.writeText(link).then(() => {
       setCopied(true);
@@ -57,17 +63,19 @@ export function Tier4Domestic(): React.JSX.Element {
     });
   }
 
+  const subtitle = isP2
+    ? `Votre perception de la répartition. ${p1Name} a déjà rempli la sienne.`
+    : isP1Shared
+      ? `Votre perception. ${p2Name} remplira la sienne via le lien partagé.`
+      : "Estimez la répartition. Votre partenaire pourra ajuster via le lien de correction.";
+
   return (
     <div className="animate-tier-in">
       <h2 className="font-display text-2xl mb-1">Répartition domestique</h2>
       <p className="text-sm text-text-dim mb-1.5">
         Qui fait quoi à la maison ? Active la valorisation du travail domestique dans les résultats.
       </p>
-      <p className="text-xs italic text-text-dim mb-8">
-        {isShared
-          ? `Votre perception. ${p2Name} remplira la sienne via le lien partagé.`
-          : "Estimez la répartition. Votre partenaire pourra ajuster via le lien de correction."}
-      </p>
+      <p className="text-xs italic text-text-dim mb-8">{subtitle}</p>
 
       <div className="flex flex-col gap-5 mb-8">
         {visibleCategories.map((cat) => (
@@ -97,7 +105,7 @@ export function Tier4Domestic(): React.JSX.Element {
           Retour
         </button>
 
-        {isShared ? (
+        {isP1Shared ? (
           <button
             type="button"
             onClick={handleCopyLink}

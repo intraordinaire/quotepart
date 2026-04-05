@@ -5,6 +5,7 @@ import type { SimulationState } from "@/context/SimulationContext";
 function makeState(overrides: Partial<SimulationState> = {}): SimulationState {
   return {
     mode: "full",
+    role: null,
     activeTier: 1,
     completedTiers: new Set<1 | 2 | 3 | 4>([1]),
     skippedTiers: new Set<2 | 3 | 4>(),
