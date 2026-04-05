@@ -328,28 +328,18 @@ export default function SimulatePage(): React.JSX.Element {
           Résultats
         </button>
 
-        <button
+        <span
           role="tab"
-          type="button"
-          aria-selected={activeTab === "etsi"}
-          aria-controls="panel-etsi"
-          aria-disabled={!tier1Complete}
-          onClick={() => {
-            if (tier1Complete) setActiveTab("etsi");
-          }}
-          className={[
-            "flex items-center gap-1.5 px-3 md:px-4 py-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
-            activeTab === "etsi"
-              ? "border-accent text-text"
-              : "border-transparent text-text-dim hover:text-text",
-            !tier1Complete ? "opacity-50 cursor-not-allowed pointer-events-none" : "",
-          ]
-            .join(" ")
-            .trim()}
+          aria-selected={false}
+          aria-disabled={true}
+          className="flex items-center gap-1.5 px-3 md:px-4 py-3 text-xs md:text-sm font-medium border-b-2 border-transparent text-text-dim opacity-50 cursor-not-allowed whitespace-nowrap"
         >
           <WhatIfIcon />
           Et si...
-        </button>
+          <span className="text-[10px] font-semibold uppercase tracking-wider bg-accent-dim text-accent px-1.5 py-0.5 rounded-full leading-none">
+            Bientôt
+          </span>
+        </span>
       </nav>
 
       {/* ── Content area ───────────────────────────────────────────────────── */}
@@ -373,7 +363,7 @@ export default function SimulatePage(): React.JSX.Element {
               <ResultsShell />
             </div>
           </div>
-          <div role="tabpanel" id="panel-etsi" hidden={activeTab !== "etsi"}>
+          <div role="tabpanel" id="panel-etsi" hidden={true}>
             <div className="max-w-5xl mx-auto">
               <EtSiContent />
             </div>
