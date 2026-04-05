@@ -29,6 +29,7 @@ function deserialize(raw: SerializedState): SimulationState {
   const completedTiers = new Set(raw.completedTiers as Array<1 | 2 | 3 | 4>);
   return {
     mode: raw.mode,
+    role: null, // role is session-only, never persisted
     activeTier: raw.activeTier,
     completedTiers,
     skippedTiers: new Set(raw.skippedTiers as Array<2 | 3 | 4>),

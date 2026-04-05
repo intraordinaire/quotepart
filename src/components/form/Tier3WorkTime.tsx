@@ -35,7 +35,9 @@ function isPartTime(quota: string): boolean {
 
 export function Tier3WorkTime(): React.JSX.Element {
   const { state, dispatch } = useSimulation();
-  const isShared = state.mode === "shared";
+  const role = state.role;
+  const isP2 = role === "p2";
+  const isP1Shared = role === "p1" && state.mode === "shared";
   const input = state.input;
 
   const p1Name = displayName(input.p1?.name ?? "", "Personne 1");
@@ -61,7 +63,7 @@ export function Tier3WorkTime(): React.JSX.Element {
             : (input.p1?.income ?? 0),
           partTimeReason: isPartTime(p1Quota) ? parseReason(p1Reason) : null,
         } as Person,
-        ...(!isShared && {
+        ...(!isP1Shared && {
           p2: {
             ...(input.p2 ?? {}),
             workQuota: parseQuota(p2Quota),
@@ -102,32 +104,36 @@ export function Tier3WorkTime(): React.JSX.Element {
           <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
             {p1Name}
           </div>
-          <div className="flex flex-col gap-3">
-            <SelectField
-              label="Quotité"
-              options={QUOTA_OPTIONS}
-              value={p1Quota}
-              onChange={setP1Quota}
-            />
-            {isPartTime(p1Quota) && (
-              <>
-                <FormField
-                  label="Salaire théorique temps plein"
-                  placeholder="2 500"
-                  suffix="€"
-                  numeric
-                  value={p1FullTimeIncome}
-                  onChange={setP1FullTimeIncome}
-                />
-                <SelectField
-                  label="Motif"
-                  options={REASON_OPTIONS}
-                  value={p1Reason}
-                  onChange={setP1Reason}
-                />
-              </>
-            )}
-          </div>
+          {isP2 ? (
+            <LockedField name={p1Name} />
+          ) : (
+            <div className="flex flex-col gap-3">
+              <SelectField
+                label="Quotité"
+                options={QUOTA_OPTIONS}
+                value={p1Quota}
+                onChange={setP1Quota}
+              />
+              {isPartTime(p1Quota) && (
+                <>
+                  <FormField
+                    label="Salaire théorique temps plein"
+                    placeholder="2 500"
+                    suffix="€"
+                    numeric
+                    value={p1FullTimeIncome}
+                    onChange={setP1FullTimeIncome}
+                  />
+                  <SelectField
+                    label="Motif"
+                    options={REASON_OPTIONS}
+                    value={p1Reason}
+                    onChange={setP1Reason}
+                  />
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         {/* P2 column */}
@@ -135,7 +141,7 @@ export function Tier3WorkTime(): React.JSX.Element {
           <div className="text-xs font-bold uppercase tracking-[0.06em] text-text-dim mb-3">
             {p2Name}
           </div>
-          {isShared ? (
+          {isP1Shared ? (
             <LockedField name={p2Name} />
           ) : (
             <div className="flex flex-col gap-3">

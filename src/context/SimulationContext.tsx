@@ -11,6 +11,8 @@ export type TabId = "saisie" | "resultats" | "etsi";
 
 export interface SimulationState {
   mode: "full" | "shared" | null;
+  /** Current user's role in shared mode. null = solo/full mode. */
+  role: "p1" | "p2" | null;
   activeTier: 0 | 1 | 2 | 3 | 4;
   completedTiers: Set<1 | 2 | 3 | 4>;
   skippedTiers: Set<2 | 3 | 4>;
@@ -25,6 +27,7 @@ export interface SimulationState {
 
 export type SimulationAction =
   | { type: "SET_MODE"; payload: "full" | "shared" }
+  | { type: "SET_ROLE"; payload: "p1" | "p2" }
   | { type: "SET_TIER"; payload: 0 | 1 | 2 | 3 | 4 }
   | { type: "SET_TAB"; payload: TabId }
   | { type: "COMPLETE_TIER"; payload: 1 | 2 | 3 | 4 }
@@ -38,6 +41,7 @@ export type SimulationAction =
 
 export const initialState: SimulationState = {
   mode: null,
+  role: null,
   activeTier: 0,
   completedTiers: new Set(),
   skippedTiers: new Set(),
@@ -55,6 +59,9 @@ export function simulationReducer(
   switch (action.type) {
     case "SET_MODE":
       return { ...state, mode: action.payload };
+
+    case "SET_ROLE":
+      return { ...state, role: action.payload };
 
     case "SET_TIER":
       return { ...state, activeTier: action.payload };

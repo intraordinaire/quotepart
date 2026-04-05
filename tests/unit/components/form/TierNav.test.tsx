@@ -11,6 +11,7 @@ import { TierNav } from "@/components/form/TierNav";
 function makeState(overrides: Partial<SimulationState> = {}): SimulationState {
   return {
     mode: null,
+    role: null,
     activeTier: 1,
     completedTiers: new Set(),
     skippedTiers: new Set(),
