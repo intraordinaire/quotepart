@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { getFullLink, getP2InviteLink, decodeP2Payload } from "@/lib/shareLink";
+import { getFullLink, getP2InviteLink } from "@/lib/shareLink";
+import { decodeState } from "@/lib/urlState";
 import type { SimulationInput } from "@/domain/types";
 
 const fullInput: SimulationInput = {
@@ -74,9 +75,9 @@ describe("getFullLink", () => {
     const link = getFullLink(fullInput);
     const url = new URL(link);
     const data = url.searchParams.get("data")!;
-    // The encoded data should contain P1's income when decoded
-    const decoded = JSON.parse(atob(data.replace(/-/g, "+").replace(/_/g, "/")));
-    expect(decoded.p1.income).toBe(3000);
+    const decoded = decodeState(data);
+    expect(decoded).not.toBeNull();
+    expect(decoded!.p1.income).toBe(3000);
   });
 });
 
@@ -87,72 +88,30 @@ describe("getP2InviteLink", () => {
     expect(url.pathname).toBe("/simulate/p2");
   });
 
-  it("includes common charges in the encoded data", () => {
+  it("encodes the full SimulationInput (soft privacy)", () => {
     const link = getP2InviteLink(fullInput);
     const url = new URL(link);
     const data = url.searchParams.get("data")!;
-    const decoded = JSON.parse(atob(data.replace(/-/g, "+").replace(/_/g, "/")));
-    expect(decoded.commonCharges).toBe(1500);
-    expect(decoded.hasChildren).toBe(true);
+    const decoded = decodeState(data);
+    expect(decoded).not.toBeNull();
+    expect(decoded!.commonCharges).toBe(1500);
+    expect(decoded!.hasChildren).toBe(true);
+    expect(decoded!.p1.income).toBe(3000);
+    expect(decoded!.p1.name).toBe("P1");
   });
 
-  it("does NOT include P1 income in the P2 invite link", () => {
-    const link = getP2InviteLink(fullInput);
-    const url = new URL(link);
-    const data = url.searchParams.get("data")!;
-    const decoded = JSON.parse(atob(data.replace(/-/g, "+").replace(/_/g, "/")));
-    // P1 income should be stripped from the P2 invite payload
-    expect(decoded.p1Income).toBeUndefined();
-    expect(decoded.p2Income).toBeUndefined();
-    // Only shared data fields should be present
-    expect(decoded.p1).toBeUndefined();
-    expect(decoded.p2).toBeUndefined();
-  });
-
-  it("P2 invite link is shorter than full link (less data)", () => {
-    const fullLink = getFullLink(fullInput);
-    const inviteLink = getP2InviteLink(fullInput);
-    expect(inviteLink.length).toBeLessThan(fullLink.length);
-  });
-});
-
-describe("getP2InviteLink → decodeP2Payload round-trip", () => {
-  it("decodes a link generated from complete input", () => {
-    const link = getP2InviteLink(fullInput);
-    const url = new URL(link);
-    const data = url.searchParams.get("data")!;
-    const payload = decodeP2Payload(data);
-    expect(payload).not.toBeNull();
-    expect(payload!.commonCharges).toBe(1500);
-    expect(payload!.hasChildren).toBe(true);
-    expect(payload!.hourlyRate).toBe(9.52);
-    expect(payload!.p1Name).toBe("P1");
-  });
-
-  it("decodes a link when p1 name is missing (user never filled the name field)", () => {
-    // Simulates Partial<SimulationInput> cast to SimulationInput — p1.name is undefined
-    const partialInput = {
-      ...fullInput,
-      p1: { ...fullInput.p1, name: undefined as unknown as string },
-    };
-    const link = getP2InviteLink(partialInput);
-    const url = new URL(link);
-    const data = url.searchParams.get("data")!;
-    const payload = decodeP2Payload(data);
-    expect(payload).not.toBeNull();
-    expect(payload!.p1Name).toBe("");
-  });
-
-  it("decodes a link with accented French name", () => {
-    const accentedInput = {
+  it("round-trips accented French names", () => {
+    const accentedInput: SimulationInput = {
       ...fullInput,
       p1: { ...fullInput.p1, name: "Élodie" },
+      p2: { ...fullInput.p2, name: "François" },
     };
     const link = getP2InviteLink(accentedInput);
     const url = new URL(link);
     const data = url.searchParams.get("data")!;
-    const payload = decodeP2Payload(data);
-    expect(payload).not.toBeNull();
-    expect(payload!.p1Name).toBe("Élodie");
+    const decoded = decodeState(data);
+    expect(decoded).not.toBeNull();
+    expect(decoded!.p1.name).toBe("Élodie");
+    expect(decoded!.p2.name).toBe("François");
   });
 });

@@ -42,6 +42,7 @@ const mockDispatch = dispatchSpy as unknown as Dispatch<SimulationAction>;
 function makeState(overrides: Partial<SimulationState> = {}): SimulationState {
   return {
     mode: "shared",
+    role: "p2",
     activeTier: 1,
     completedTiers: new Set<1 | 2 | 3 | 4>(),
     skippedTiers: new Set<2 | 3 | 4>(),

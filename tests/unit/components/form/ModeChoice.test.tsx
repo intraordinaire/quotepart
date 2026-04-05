@@ -11,6 +11,7 @@ import { ModeChoice } from "@/components/form/ModeChoice";
 function makeState(overrides: Partial<SimulationState> = {}): SimulationState {
   return {
     mode: null,
+    role: null,
     activeTier: 0,
     completedTiers: new Set(),
     skippedTiers: new Set(),

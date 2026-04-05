@@ -14,6 +14,7 @@ const mockDispatch = dispatchSpy as unknown as Dispatch<SimulationAction>;
 function makeState(mode: "full" | "shared" | null = "full"): SimulationState {
   return {
     mode,
+    role: null,
     activeTier: 2,
     completedTiers: new Set<1 | 2 | 3 | 4>([1]),
     skippedTiers: new Set<2 | 3 | 4>(),

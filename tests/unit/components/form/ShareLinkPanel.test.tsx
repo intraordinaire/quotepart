@@ -45,45 +45,50 @@ describe("ShareLinkPanel", () => {
     });
   });
 
-  it("shows the full simulation link", () => {
-    render(<ShareLinkPanel input={fullInput} mode="full" />);
-    const value = (screen.getByRole("textbox") as HTMLInputElement).value;
-    expect(value).toContain("/simulate?data=");
-  });
+  describe("solo mode (role=null)", () => {
+    it("shows the full simulation link", () => {
+      render(<ShareLinkPanel input={fullInput} mode="full" role={null} />);
+      const value = (screen.getByRole("textbox") as HTMLInputElement).value;
+      expect(value).toContain("/simulate?data=");
+    });
 
-  it("shows a Copier button", () => {
-    render(<ShareLinkPanel input={fullInput} mode="full" />);
-    expect(screen.getByRole("button", { name: /copier/i })).toBeInTheDocument();
-  });
+    it("shows a Copier button", () => {
+      render(<ShareLinkPanel input={fullInput} mode="full" role={null} />);
+      expect(screen.getByRole("button", { name: /copier/i })).toBeInTheDocument();
+    });
 
-  it("shows confirmation message after clicking Copier", async () => {
-    render(<ShareLinkPanel input={fullInput} mode="full" />);
-    fireEvent.click(screen.getByRole("button", { name: /copier/i }));
-    await waitFor(() => {
-      expect(screen.getByText(/copié/i)).toBeInTheDocument();
+    it("shows confirmation message after clicking Copier", async () => {
+      render(<ShareLinkPanel input={fullInput} mode="full" role={null} />);
+      fireEvent.click(screen.getByRole("button", { name: /copier/i }));
+      await waitFor(() => {
+        expect(screen.getByText(/copié/i)).toBeInTheDocument();
+      });
     });
   });
 
-  it("shows P2 invite section when mode is shared", () => {
-    render(<ShareLinkPanel input={fullInput} mode="shared" />);
-    expect(screen.getByText(/inviter/i)).toBeInTheDocument();
+  describe("P1 shared mode (role=p1)", () => {
+    it("shows P2 invite link", () => {
+      render(<ShareLinkPanel input={fullInput} mode="shared" role="p1" />);
+      expect(screen.getByText(/inviter/i)).toBeInTheDocument();
+    });
+
+    it("P2 invite link contains /simulate/p2 path", () => {
+      render(<ShareLinkPanel input={fullInput} mode="shared" role="p1" />);
+      const value = (screen.getByRole("textbox") as HTMLInputElement).value;
+      expect(value).toContain("/simulate/p2?data=");
+    });
   });
 
-  it("P2 invite link contains /simulate/p2 path", () => {
-    render(<ShareLinkPanel input={fullInput} mode="shared" />);
-    const inputs = screen.getAllByRole("textbox");
-    const values = inputs.map((el) => (el as HTMLInputElement).value);
-    expect(values.some((v) => v.includes("/simulate/p2?data="))).toBe(true);
-  });
+  describe("P2 mode (role=p2)", () => {
+    it("shows results link with /simulate?data= path", () => {
+      render(<ShareLinkPanel input={fullInput} mode="shared" role="p2" />);
+      const value = (screen.getByRole("textbox") as HTMLInputElement).value;
+      expect(value).toContain("/simulate?data=");
+    });
 
-  it("P2 invite link differs from full link", () => {
-    render(<ShareLinkPanel input={fullInput} mode="shared" />);
-    const inputs = screen.getAllByRole("textbox");
-    const values = inputs.map((el) => (el as HTMLInputElement).value);
-    const fullLinkValue = values.find((v) => v.includes("/simulate?data="));
-    const p2LinkValue = values.find((v) => v.includes("/simulate/p2?data="));
-    expect(fullLinkValue).toBeDefined();
-    expect(p2LinkValue).toBeDefined();
-    expect(fullLinkValue).not.toBe(p2LinkValue);
+    it("mentions sharing with partner", () => {
+      render(<ShareLinkPanel input={fullInput} mode="shared" role="p2" />);
+      expect(screen.getByText(/partenaire/i)).toBeInTheDocument();
+    });
   });
 });

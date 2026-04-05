@@ -12,7 +12,9 @@ export function Tier1Incomes(): React.JSX.Element {
   const [placeholders] = useState<[string, string]>(() => randomPlaceholderPair());
   const [attempted, setAttempted] = useState(false);
 
-  const isShared = state.mode === "shared";
+  const role = state.role;
+  const isP2 = role === "p2";
+  const isP1Shared = role === "p1" && state.mode === "shared";
   const input = state.input;
   const p1 = input.p1;
   const p2 = input.p2;
@@ -31,8 +33,8 @@ export function Tier1Incomes(): React.JSX.Element {
     });
   }
 
-  const p1IncomeValid = (p1?.income ?? 0) > 0;
-  const p2IncomeValid = isShared || (p2?.income ?? 0) > 0;
+  const p1IncomeValid = isP2 || (p1?.income ?? 0) > 0;
+  const p2IncomeValid = isP1Shared || (p2?.income ?? 0) > 0;
 
   function handleSuivant(): void {
     setAttempted(true);
@@ -45,6 +47,7 @@ export function Tier1Incomes(): React.JSX.Element {
     dispatch({ type: "SET_TIER", payload: 0 });
   }
 
+  const p1DisplayName = p1?.name?.trim() || "Personne 1";
   const p2DisplayName = p2?.name?.trim() || "Personne 2";
 
   return (
@@ -55,13 +58,20 @@ export function Tier1Incomes(): React.JSX.Element {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-7">
-        <FormField
-          id="p1-name"
-          label="Prénom personne 1"
-          placeholder={placeholders[0]}
-          value={p1?.name ?? ""}
-          onChange={(v) => updateP1({ name: v })}
-        />
+        {/* P1 name */}
+        {isP2 ? (
+          <FormField id="p1-name" label="Prénom personne 1" value={p1?.name ?? ""} readOnly />
+        ) : (
+          <FormField
+            id="p1-name"
+            label="Prénom personne 1"
+            placeholder={placeholders[0]}
+            value={p1?.name ?? ""}
+            onChange={(v) => updateP1({ name: v })}
+          />
+        )}
+
+        {/* P2 name */}
         <FormField
           id="p2-name"
           label="Prénom personne 2"
@@ -69,21 +79,34 @@ export function Tier1Incomes(): React.JSX.Element {
           value={p2?.name ?? ""}
           onChange={(v) => updateP2({ name: v })}
         />
-        <div>
-          <FormField
-            id="p1-income"
-            label="Revenu net mensuel P1"
-            placeholder="3 200"
-            suffix="€"
-            numeric
-            value={p1?.income != null ? String(p1.income) : ""}
-            onChange={(v) => updateP1({ income: Number(v) || 0 })}
-          />
-          {attempted && !p1IncomeValid && (
-            <p className="text-accent text-xs mt-1">Le revenu de la personne 1 est requis.</p>
-          )}
-        </div>
-        {isShared ? (
+
+        {/* P1 income */}
+        {isP2 ? (
+          <div>
+            <label className="block text-xs font-medium text-text-dim mb-1">
+              Revenu net mensuel P1
+            </label>
+            <LockedField name={p1DisplayName} />
+          </div>
+        ) : (
+          <div>
+            <FormField
+              id="p1-income"
+              label="Revenu net mensuel P1"
+              placeholder="3 200"
+              suffix="€"
+              numeric
+              value={p1?.income != null ? String(p1.income) : ""}
+              onChange={(v) => updateP1({ income: Number(v) || 0 })}
+            />
+            {attempted && !p1IncomeValid && (
+              <p className="text-accent text-xs mt-1">Le revenu de la personne 1 est requis.</p>
+            )}
+          </div>
+        )}
+
+        {/* P2 income */}
+        {isP1Shared ? (
           <div>
             <label className="block text-xs font-medium text-text-dim mb-1">
               Revenu net mensuel P2
@@ -134,17 +157,19 @@ export function Tier1Incomes(): React.JSX.Element {
       </label>
 
       <div className="flex justify-between">
-        <button
-          type="button"
-          onClick={handleRetour}
-          className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-dim border border-border rounded-md cursor-pointer"
-        >
-          Retour
-        </button>
+        {!isP2 && (
+          <button
+            type="button"
+            onClick={handleRetour}
+            className="text-sm font-medium px-5 py-2.5 bg-transparent text-text-dim border border-border rounded-md cursor-pointer"
+          >
+            Retour
+          </button>
+        )}
         <button
           type="button"
           onClick={handleSuivant}
-          className="text-sm font-semibold px-6 py-2.5 bg-accent text-white border-none rounded-md cursor-pointer flex items-center gap-1.5"
+          className="text-sm font-semibold px-6 py-2.5 bg-accent text-white border-none rounded-md cursor-pointer flex items-center gap-1.5 ml-auto"
         >
           Suivant →
         </button>
