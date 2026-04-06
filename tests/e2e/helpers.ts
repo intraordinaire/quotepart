@@ -1,5 +1,6 @@
 import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
+import type { SimulationInput } from "@/domain/types";
 
 /** Navigate to /simulate and choose "full" mode */
 export async function startFullMode(page: Page): Promise<void> {
@@ -60,28 +61,7 @@ export async function switchToResultsTab(page: Page): Promise<void> {
 }
 
 /** Encode a full SimulationInput for P2 invite URL */
-export function encodeP2Link(input: {
-  p1: {
-    name: string;
-    income: number;
-    personalCharges: number;
-    workQuota: number;
-    fullTimeIncome: number;
-    partTimeReason: string | null;
-  };
-  p2: {
-    name: string;
-    income: number;
-    personalCharges: number;
-    workQuota: number;
-    fullTimeIncome: number;
-    partTimeReason: string | null;
-  };
-  commonCharges: number;
-  hasChildren: boolean;
-  domesticSliders: { p1: Record<string, number> };
-  hourlyRate: number;
-}): string {
+export function encodeP2Link(input: SimulationInput): string {
   return Buffer.from(JSON.stringify(input))
     .toString("base64")
     .replace(/\+/g, "-")

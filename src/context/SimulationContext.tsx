@@ -27,7 +27,7 @@ export interface SimulationState {
 
 export type SimulationAction =
   | { type: "SET_MODE"; payload: "full" | "shared" }
-  | { type: "SET_ROLE"; payload: "p1" | "p2" }
+  | { type: "SET_ROLE"; payload: "p1" | "p2" | null }
   | { type: "SET_TIER"; payload: 0 | 1 | 2 | 3 | 4 }
   | { type: "SET_TAB"; payload: TabId }
   | { type: "COMPLETE_TIER"; payload: 1 | 2 | 3 | 4 }
