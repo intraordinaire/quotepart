@@ -13,11 +13,12 @@ const mockDispatch = dispatchSpy as unknown as Dispatch<SimulationAction>;
 
 function makeState(
   mode: "full" | "shared" | null = "full",
-  input: Partial<SimulationState["input"]> = {}
+  input: Partial<SimulationState["input"]> = {},
+  role: "p1" | "p2" | null = null
 ): SimulationState {
   return {
     mode,
-    role: null,
+    role,
     activeTier: 3,
     completedTiers: new Set<1 | 2 | 3 | 4>([1, 2]),
     skippedTiers: new Set<2 | 3 | 4>(),
@@ -29,10 +30,11 @@ function makeState(
 
 function mockContext(
   mode: "full" | "shared" | null = "full",
-  input: Partial<SimulationState["input"]> = {}
+  input: Partial<SimulationState["input"]> = {},
+  role: "p1" | "p2" | null = null
 ): void {
   vi.mocked(useSimulationModule.useSimulation).mockReturnValue({
-    state: makeState(mode, input),
+    state: makeState(mode, input, role),
     dispatch: mockDispatch,
   });
 }
@@ -76,8 +78,8 @@ describe("Tier3WorkTime", () => {
     expect(screen.getByText(/motif/i)).toBeInTheDocument();
   });
 
-  it("in shared mode, P2 section shows LockedField", () => {
-    mockContext("shared");
+  it("in P1 shared mode, P2 section shows LockedField", () => {
+    mockContext("shared", {}, "p1");
     render(<Tier3WorkTime />);
     expect(screen.getByText(/complétera/i)).toBeInTheDocument();
   });

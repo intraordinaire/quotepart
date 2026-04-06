@@ -52,6 +52,9 @@ export function ModeChoice(): React.JSX.Element {
 
   function handleSelect(mode: "full" | "shared"): void {
     dispatch({ type: "SET_MODE", payload: mode });
+    if (mode === "shared") {
+      dispatch({ type: "SET_ROLE", payload: "p1" });
+    }
     dispatch({ type: "SET_TIER", payload: 1 });
   }
 

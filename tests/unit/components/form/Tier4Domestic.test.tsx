@@ -13,11 +13,12 @@ const mockDispatch = dispatchSpy as unknown as Dispatch<SimulationAction>;
 
 function makeState(
   mode: "full" | "shared" | null = "full",
-  input: Partial<SimulationState["input"]> = {}
+  input: Partial<SimulationState["input"]> = {},
+  role: "p1" | "p2" | null = null
 ): SimulationState {
   return {
     mode,
-    role: null,
+    role,
     activeTier: 4,
     completedTiers: new Set<1 | 2 | 3 | 4>([1, 2, 3]),
     skippedTiers: new Set<2 | 3 | 4>(),
@@ -29,10 +30,11 @@ function makeState(
 
 function mockContext(
   mode: "full" | "shared" | null = "full",
-  input: Partial<SimulationState["input"]> = {}
+  input: Partial<SimulationState["input"]> = {},
+  role: "p1" | "p2" | null = null
 ): void {
   vi.mocked(useSimulationModule.useSimulation).mockReturnValue({
-    state: makeState(mode, input),
+    state: makeState(mode, input, role),
     dispatch: mockDispatch,
   });
 }
@@ -101,10 +103,29 @@ describe("Tier4Domestic", () => {
     );
   });
 
-  it("disclaimer text mentions 'Votre perception' in shared mode", () => {
-    mockContext("shared");
+  it("disclaimer text mentions 'Votre perception' for P1 in shared mode", () => {
+    mockContext("shared", {}, "p1");
     render(<Tier4Domestic />);
     expect(screen.getByText(/Votre perception/i)).toBeInTheDocument();
+  });
+
+  it("disclaimer text mentions P1 name for P2 in shared mode", () => {
+    mockContext(
+      "shared",
+      {
+        p1: {
+          name: "Alice",
+          income: 3000,
+          personalCharges: 0,
+          workQuota: 1,
+          fullTimeIncome: 3000,
+          partTimeReason: null,
+        },
+      },
+      "p2"
+    );
+    render(<Tier4Domestic />);
+    expect(screen.getByText(/Alice a déjà rempli/i)).toBeInTheDocument();
   });
 
   it("disclaimer text mentions 'Estimez la répartition' in full mode", () => {
@@ -113,21 +134,31 @@ describe("Tier4Domestic", () => {
     expect(screen.getByText(/Estimez la répartition/i)).toBeInTheDocument();
   });
 
-  it("in shared mode: CTA shows 'Copier le lien pour' with P2 name", () => {
-    mockContext("shared", {
-      p2: {
-        name: "Yasmine",
-        income: 2000,
-        personalCharges: 0,
-        workQuota: 1,
-        fullTimeIncome: 2000,
-        partTimeReason: null,
+  it("in P1 shared mode: CTA shows 'Copier le lien pour' with P2 name", () => {
+    mockContext(
+      "shared",
+      {
+        p2: {
+          name: "Yasmine",
+          income: 2000,
+          personalCharges: 0,
+          workQuota: 1,
+          fullTimeIncome: 2000,
+          partTimeReason: null,
+        },
       },
-    });
+      "p1"
+    );
     render(<Tier4Domestic />);
     expect(
       screen.getByRole("button", { name: /Copier le lien pour Yasmine/i })
     ).toBeInTheDocument();
+  });
+
+  it("in P2 mode: CTA shows 'Voir les résultats'", () => {
+    mockContext("shared", {}, "p2");
+    render(<Tier4Domestic />);
+    expect(screen.getByRole("button", { name: /Voir les résultats/i })).toBeInTheDocument();
   });
 
   it("in full mode: CTA shows 'Voir les résultats'", () => {

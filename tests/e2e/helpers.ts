@@ -59,14 +59,30 @@ export async function switchToResultsTab(page: Page): Promise<void> {
   await expect(page.getByRole("heading", { name: "Comparaison des modèles" })).toBeVisible();
 }
 
-/** Encode a P2 shared payload for URL */
-export function encodeP2Payload(payload: {
+/** Encode a full SimulationInput for P2 invite URL */
+export function encodeP2Link(input: {
+  p1: {
+    name: string;
+    income: number;
+    personalCharges: number;
+    workQuota: number;
+    fullTimeIncome: number;
+    partTimeReason: string | null;
+  };
+  p2: {
+    name: string;
+    income: number;
+    personalCharges: number;
+    workQuota: number;
+    fullTimeIncome: number;
+    partTimeReason: string | null;
+  };
   commonCharges: number;
   hasChildren: boolean;
+  domesticSliders: { p1: Record<string, number> };
   hourlyRate: number;
-  p1Name: string;
 }): string {
-  return Buffer.from(JSON.stringify(payload))
+  return Buffer.from(JSON.stringify(input))
     .toString("base64")
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
