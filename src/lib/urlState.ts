@@ -9,7 +9,7 @@ import type { SimulationInput } from "@/domain/types";
 export function encodeState(input: SimulationInput): string {
   const json = JSON.stringify(input);
   const bytes = new TextEncoder().encode(json);
-  return btoa(String.fromCodePoint(...bytes))
+  return btoa(Array.from(bytes, (b) => String.fromCharCode(b)).join(""))
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=/g, "");

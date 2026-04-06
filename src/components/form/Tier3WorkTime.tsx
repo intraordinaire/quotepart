@@ -55,14 +55,16 @@ export function Tier3WorkTime(): React.JSX.Element {
     dispatch({
       type: "UPDATE_INPUT",
       payload: {
-        p1: {
-          ...(input.p1 ?? {}),
-          workQuota: parseQuota(p1Quota),
-          fullTimeIncome: isPartTime(p1Quota)
-            ? Number(p1FullTimeIncome) || 0
-            : (input.p1?.income ?? 0),
-          partTimeReason: isPartTime(p1Quota) ? parseReason(p1Reason) : null,
-        } as Person,
+        ...(!isP2 && {
+          p1: {
+            ...(input.p1 ?? {}),
+            workQuota: parseQuota(p1Quota),
+            fullTimeIncome: isPartTime(p1Quota)
+              ? Number(p1FullTimeIncome) || 0
+              : (input.p1?.income ?? 0),
+            partTimeReason: isPartTime(p1Quota) ? parseReason(p1Reason) : null,
+          } as Person,
+        }),
         ...(!isP1Shared && {
           p2: {
             ...(input.p2 ?? {}),
