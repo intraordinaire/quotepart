@@ -14,11 +14,12 @@ const mockDispatch = dispatchSpy as unknown as Dispatch<SimulationAction>;
 
 function makeState(
   mode: "full" | "shared" | null = "full",
-  input: Partial<SimulationState["input"]> = {}
+  input: Partial<SimulationState["input"]> = {},
+  role: "p1" | "p2" | null = null
 ): SimulationState {
   return {
     mode,
-    role: null,
+    role,
     activeTier: 1,
     completedTiers: new Set<1 | 2 | 3 | 4>(),
     skippedTiers: new Set<2 | 3 | 4>(),
@@ -30,10 +31,11 @@ function makeState(
 
 function mockContext(
   mode: "full" | "shared" | null = "full",
-  input: Partial<SimulationState["input"]> = {}
+  input: Partial<SimulationState["input"]> = {},
+  role: "p1" | "p2" | null = null
 ): void {
   vi.mocked(useSimulationModule.useSimulation).mockReturnValue({
-    state: makeState(mode, input),
+    state: makeState(mode, input, role),
     dispatch: mockDispatch,
   });
 }
@@ -56,10 +58,30 @@ describe("Tier1Incomes", () => {
     expect(screen.getByLabelText(/revenu net mensuel p2/i)).toBeInTheDocument();
   });
 
-  it("in shared mode, P2 income shows LockedField instead of input", () => {
-    mockContext("shared");
+  it("in P1 shared mode, P2 income shows LockedField instead of input", () => {
+    mockContext("shared", {}, "p1");
     render(<Tier1Incomes />);
     expect(screen.queryByLabelText(/revenu net mensuel p2/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/complétera/i)).toBeInTheDocument();
+  });
+
+  it("in P2 mode, P1 income shows LockedField instead of input", () => {
+    mockContext(
+      "shared",
+      {
+        p1: {
+          name: "Alice",
+          income: 3000,
+          personalCharges: 0,
+          workQuota: 1,
+          fullTimeIncome: 3000,
+          partTimeReason: null,
+        },
+      },
+      "p2"
+    );
+    render(<Tier1Incomes />);
+    expect(screen.queryByLabelText(/revenu net mensuel p1/i)).not.toBeInTheDocument();
     expect(screen.getByText(/complétera/i)).toBeInTheDocument();
   });
 
@@ -117,17 +139,21 @@ describe("Tier1Incomes", () => {
     expect(screen.getByText(/revenu.*personne 2.*requis/i)).toBeInTheDocument();
   });
 
-  it("in shared mode, Suivant dispatches with only P1 income filled", () => {
-    mockContext("shared", {
-      p1: {
-        name: "",
-        income: 2500,
-        personalCharges: 0,
-        workQuota: 1,
-        fullTimeIncome: 2500,
-        partTimeReason: null,
+  it("in P1 shared mode, Suivant dispatches with only P1 income filled", () => {
+    mockContext(
+      "shared",
+      {
+        p1: {
+          name: "",
+          income: 2500,
+          personalCharges: 0,
+          workQuota: 1,
+          fullTimeIncome: 2500,
+          partTimeReason: null,
+        },
       },
-    });
+      "p1"
+    );
     render(<Tier1Incomes />);
     fireEvent.click(screen.getByRole("button", { name: /suivant/i }));
     expect(dispatchSpy).toHaveBeenCalledWith({ type: "COMPLETE_TIER", payload: 1 });

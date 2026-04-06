@@ -11,10 +11,13 @@ vi.mock("@/context/useSimulation");
 const dispatchSpy = vi.fn();
 const mockDispatch = dispatchSpy as unknown as Dispatch<SimulationAction>;
 
-function makeState(mode: "full" | "shared" | null = "full"): SimulationState {
+function makeState(
+  mode: "full" | "shared" | null = "full",
+  role: "p1" | "p2" | null = null
+): SimulationState {
   return {
     mode,
-    role: null,
+    role,
     activeTier: 2,
     completedTiers: new Set<1 | 2 | 3 | 4>([1]),
     skippedTiers: new Set<2 | 3 | 4>(),
@@ -24,9 +27,12 @@ function makeState(mode: "full" | "shared" | null = "full"): SimulationState {
   };
 }
 
-function mockContext(mode: "full" | "shared" | null = "full"): void {
+function mockContext(
+  mode: "full" | "shared" | null = "full",
+  role: "p1" | "p2" | null = null
+): void {
   vi.mocked(useSimulationModule.useSimulation).mockReturnValue({
-    state: makeState(mode),
+    state: makeState(mode, role),
     dispatch: mockDispatch,
   });
 }
@@ -43,8 +49,8 @@ describe("Tier2PersonalCharges", () => {
     expect(document.getElementById("p1-transport")).toBeInTheDocument();
   });
 
-  it("in shared mode, P2 column shows LockedField instead of inputs", () => {
-    mockContext("shared");
+  it("in P1 shared mode, P2 column shows LockedField instead of inputs", () => {
+    mockContext("shared", "p1");
     render(<Tier2PersonalCharges />);
     expect(screen.getByText(/complétera/i)).toBeInTheDocument();
     expect(document.getElementById("p2-transport")).toBeNull();
