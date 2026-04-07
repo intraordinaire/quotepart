@@ -94,7 +94,7 @@ function P2PageContent(): React.JSX.Element {
 
         <main className="flex-1 overflow-y-auto p-8">
           <div className="max-w-2xl mx-auto space-y-6">
-            <P2Banner p1Name={p1Name} />
+            {!allTiersDone && <P2Banner p1Name={p1Name} />}
 
             {allTiersDone ? <ResultsShell /> : <TierContent activeTier={state.activeTier} />}
           </div>

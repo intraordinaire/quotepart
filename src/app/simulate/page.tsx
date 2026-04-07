@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { Suspense, useState, useCallback, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useSimulation } from "@/context/useSimulation";
-import type { TabId } from "@/context/SimulationContext";
+import type { TabId, SimulationState } from "@/context/SimulationContext";
+import { decodeState } from "@/lib/urlState";
 import { ModeChoice } from "@/components/form/ModeChoice";
 import { Tier1Incomes } from "@/components/form/Tier1Incomes";
 import { Tier2PersonalCharges } from "@/components/form/Tier2PersonalCharges";
@@ -222,9 +224,36 @@ function EtSiContent(): React.JSX.Element {
   return <WhatIfShell input={input} />;
 }
 
-// ─── Page ──────────────────────────────────────────────────────────────────
+// ─── URL data hydration ───────────────────────────────────────────────
 
-export default function SimulatePage(): React.JSX.Element {
+function useUrlDataHydration(): void {
+  const searchParams = useSearchParams();
+  const { dispatch } = useSimulation();
+
+  const dataParam = searchParams.get("data");
+  const decodedInput = useMemo(() => (dataParam ? decodeState(dataParam) : null), [dataParam]);
+
+  useEffect(() => {
+    if (!decodedInput) return;
+
+    const hydratedState: SimulationState = {
+      mode: "full",
+      role: null,
+      activeTier: 1,
+      completedTiers: new Set<1 | 2 | 3 | 4>([1, 2, 3, 4]),
+      skippedTiers: new Set<2 | 3 | 4>(),
+      input: decodedInput,
+      activeTab: "resultats",
+      domesticEnabled: !!decodedInput.domesticSliders?.p1,
+    };
+    dispatch({ type: "HYDRATE", payload: hydratedState });
+  }, [decodedInput, dispatch]);
+}
+
+// ─── Page content ─────────────────────────────────────────────────────
+
+function SimulatePageContent(): React.JSX.Element {
+  useUrlDataHydration();
   const { state, dispatch } = useSimulation();
   const [showResetDialog, setShowResetDialog] = useState(false);
 
@@ -371,5 +400,15 @@ export default function SimulatePage(): React.JSX.Element {
         </main>
       </div>
     </div>
+  );
+}
+
+// ─── Page (wraps with Suspense as required by Next.js for useSearchParams) ──
+
+export default function SimulatePage(): React.JSX.Element {
+  return (
+    <Suspense fallback={null}>
+      <SimulatePageContent />
+    </Suspense>
   );
 }

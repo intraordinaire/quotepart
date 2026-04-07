@@ -35,6 +35,59 @@ const VALID_INPUT = {
   hourlyRate: 9.52,
 };
 
+const FULL_INPUT = {
+  p1: {
+    name: "Pétère",
+    income: 3200,
+    personalCharges: 55,
+    workQuota: 1.0,
+    fullTimeIncome: 3200,
+    partTimeReason: null,
+  },
+  p2: {
+    name: "Stévène",
+    income: 1000,
+    personalCharges: 0,
+    workQuota: 1.0,
+    fullTimeIncome: 1000,
+    partTimeReason: null,
+  },
+  commonCharges: 1500,
+  hasChildren: false,
+  domesticSliders: { p1: DEFAULT_SLIDERS },
+  hourlyRate: 9.52,
+};
+
+test.describe("Sharing — full link (/simulate?data=)", () => {
+  test("full link hydrates state and shows results directly", async ({ page }) => {
+    const encoded = encodeP2Link(FULL_INPUT);
+    await page.goto(`/simulate?data=${encoded}`);
+
+    // Should land on results tab, not mode choice
+    await expect(page.getByRole("heading", { name: "Comparaison des modèles" })).toBeVisible();
+  });
+
+  test("full link displays correct UTF-8 names in results summary", async ({ page }) => {
+    const encoded = encodeP2Link(FULL_INPUT);
+    await page.goto(`/simulate?data=${encoded}`);
+
+    // Wait for results to be hydrated and visible
+    await expect(page.getByRole("heading", { name: "Comparaison des modèles" })).toBeVisible();
+
+    // Accented names must survive the base64 round-trip — check ResultsSummary
+    const summary = page.locator("#panel-resultats .text-sm.font-medium");
+    await expect(summary.filter({ hasText: "Pétère" })).toBeVisible();
+    await expect(summary.filter({ hasText: "Stévène" })).toBeVisible();
+  });
+
+  test("invalid data param on /simulate falls back to mode choice", async ({ page }) => {
+    await page.goto("/simulate?data=notvalid!!!");
+
+    // decodeState returns null → no hydration → normal mode choice screen
+    await expect(page.getByText("Comment souhaitez-vous remplir")).toBeVisible();
+  });
+});
+
 test.describe("Sharing — P2 error states", () => {
   test("no data param shows 'Lien invalide'", async ({ page }) => {
     await page.goto("/simulate/p2");

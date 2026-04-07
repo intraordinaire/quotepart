@@ -34,53 +34,28 @@ export function decodeState(encoded: string): SimulationInput | null {
   }
 }
 
+/**
+ * Validates a decoded object looks like a SimulationInput.
+ * Lenient on person fields — P2 invite links intentionally carry partial P2 data.
+ * The caller should use toFullInput() to fill defaults before computing.
+ */
 function isSimulationInput(value: unknown): value is SimulationInput {
   if (!value || typeof value !== "object") return false;
   const v = value as Record<string, unknown>;
   return (
-    isPerson(v.p1) &&
-    isPerson(v.p2) &&
+    isPersonLike(v.p1) &&
+    isPersonLike(v.p2) &&
     typeof v.commonCharges === "number" &&
-    typeof v.hasChildren === "boolean" &&
-    isDomesticSliders(v.domesticSliders) &&
-    typeof v.hourlyRate === "number"
+    typeof v.hasChildren === "boolean"
   );
 }
 
-function isPerson(value: unknown): boolean {
+/**
+ * Accepts a person object with at least a name.
+ * Other fields are optional — they get filled by toFullInput().
+ */
+function isPersonLike(value: unknown): boolean {
   if (!value || typeof value !== "object") return false;
   const v = value as Record<string, unknown>;
-  return (
-    typeof v.name === "string" &&
-    typeof v.income === "number" &&
-    typeof v.personalCharges === "number" &&
-    typeof v.workQuota === "number" &&
-    typeof v.fullTimeIncome === "number" &&
-    (v.partTimeReason === null ||
-      v.partTimeReason === "couple-choice" ||
-      v.partTimeReason === "personal-choice" ||
-      v.partTimeReason === "medical")
-  );
-}
-
-function isDomesticSliders(value: unknown): boolean {
-  if (!value || typeof value !== "object") return false;
-  const v = value as Record<string, unknown>;
-  return isSliderRecord(v.p1);
-}
-
-function isSliderRecord(value: unknown): boolean {
-  if (!value || typeof value !== "object") return false;
-  const v = value as Record<string, unknown>;
-  const categories = [
-    "groceries",
-    "cooking",
-    "cleaning",
-    "admin",
-    "childrenAppointments",
-    "schoolSupport",
-    "maintenance",
-    "planning",
-  ];
-  return categories.every((cat) => typeof v[cat] === "number");
+  return typeof v.name === "string";
 }

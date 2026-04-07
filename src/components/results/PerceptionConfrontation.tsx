@@ -50,10 +50,10 @@ export function PerceptionConfrontation({
       <table className="w-full text-sm">
         <thead>
           <tr className="text-left text-text-dim">
-            <th className="pb-2 font-medium">Catégorie</th>
-            <th className="pb-2 font-medium text-right">{p1Name}</th>
-            <th className="pb-2 font-medium text-right">{p2Name}</th>
-            <th className="pb-2 font-medium text-right">Écart</th>
+            <th className="pb-2 px-3 font-medium">Catégorie</th>
+            <th className="pb-2 px-3 font-medium text-right">{p1Name}</th>
+            <th className="pb-2 px-3 font-medium text-right">{p2Name}</th>
+            <th className="pb-2 px-3 font-medium text-right">Écart</th>
           </tr>
         </thead>
         <tbody>
@@ -69,11 +69,11 @@ export function PerceptionConfrontation({
                 data-testid={`row-${key}`}
                 className={`border-t border-border ${isHighlighted ? "bg-accent-dim" : ""}`}
               >
-                <td className="py-2 text-text-dim">{shortLabel}</td>
-                <td className="py-2 text-right font-medium text-text-primary">{p1Value} %</td>
-                <td className="py-2 text-right font-medium text-text-primary">{p2Value} %</td>
+                <td className="py-2 px-3 text-text-dim">{shortLabel}</td>
+                <td className="py-2 px-3 text-right font-medium text-text-primary">{p1Value} %</td>
+                <td className="py-2 px-3 text-right font-medium text-text-primary">{p2Value} %</td>
                 <td
-                  className={`py-2 text-right font-semibold ${isHighlighted ? "text-accent" : "text-text-dim"}`}
+                  className={`py-2 px-3 text-right font-semibold ${isHighlighted ? "text-accent" : "text-text-dim"}`}
                 >
                   {gap}
                 </td>
