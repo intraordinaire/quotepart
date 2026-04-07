@@ -247,6 +247,11 @@ function useUrlDataHydration(): void {
       domesticEnabled: !!decodedInput.domesticSliders?.p1,
     };
     dispatch({ type: "HYDRATE", payload: hydratedState });
+
+    // Strip ?data= so a refresh uses localStorage instead of the stale URL
+    const url = new URL(window.location.href);
+    url.searchParams.delete("data");
+    window.history.replaceState(null, "", url.pathname);
   }, [decodedInput, dispatch]);
 }
 

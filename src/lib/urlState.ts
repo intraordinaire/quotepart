@@ -57,5 +57,10 @@ function isSimulationInput(value: unknown): value is SimulationInput {
 function isPersonLike(value: unknown): boolean {
   if (!value || typeof value !== "object") return false;
   const v = value as Record<string, unknown>;
-  return typeof v.name === "string";
+  if (typeof v.name !== "string") return false;
+  // Reject present-but-wrong-type numeric fields (toFullInput ?? won't fix them)
+  for (const k of ["income", "personalCharges", "workQuota", "fullTimeIncome"]) {
+    if (k in v && typeof v[k] !== "number") return false;
+  }
+  return true;
 }
