@@ -153,8 +153,13 @@ export function SimulationProvider({
 
   useEffect(() => {
     if (!fresh) {
-      const saved = loadState();
-      if (saved) dispatch({ type: "HYDRATE", payload: saved });
+      // Skip localStorage when URL carries encoded state — the page will hydrate from URL instead
+      const hasUrlData =
+        typeof window !== "undefined" && new URLSearchParams(window.location.search).has("data");
+      if (!hasUrlData) {
+        const saved = loadState();
+        if (saved) dispatch({ type: "HYDRATE", payload: saved });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -5,7 +5,8 @@ import { useSimulation } from "@/context/useSimulation";
 import { SliderField } from "@/components/ui/SliderField";
 import { displayName } from "@/lib/names";
 import { getP2InviteLink } from "@/lib/shareLink";
-import type { DomesticCategory, DomesticSliders, SimulationInput } from "@/domain/types";
+import { toFullInput } from "@/lib/inputDefaults";
+import type { DomesticCategory, DomesticSliders } from "@/domain/types";
 import { DEFAULT_SLIDERS } from "@/domain/constants";
 import { DOMESTIC_CATEGORIES } from "@/domain/domestic";
 
@@ -56,7 +57,7 @@ export function Tier4Domestic(): React.JSX.Element {
   function handleCopyLink(): void {
     dispatch({ type: "COMPLETE_TIER", payload: 4 });
     if (!input.p1) return;
-    const link = getP2InviteLink(input as SimulationInput);
+    const link = getP2InviteLink(toFullInput(input));
     void navigator.clipboard.writeText(link).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
