@@ -51,7 +51,7 @@ export function ResultsShell(): React.JSX.Element {
           {[1, 2, 3, 4].map((t) => {
             const tier = t as 1 | 2 | 3 | 4;
             const done = state.completedTiers.has(tier);
-            const skipped = tier !== 1 && state.skippedTiers.has(tier as 2 | 3 | 4);
+            const skipped = tier !== 1 && state.skippedTiers.has(tier);
             return (
               <p key={tier}>
                 Palier {tier} : {done ? "complété" : skipped ? "passé" : "—"}

@@ -251,7 +251,7 @@ function useUrlDataHydration(): void {
     // Strip ?data= so a refresh uses localStorage instead of the stale URL
     const url = new URL(window.location.href);
     url.searchParams.delete("data");
-    window.history.replaceState(null, "", url.pathname);
+    window.history.replaceState(null, "", url.pathname + url.search);
   }, [decodedInput, dispatch]);
 }
 
