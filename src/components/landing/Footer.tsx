@@ -21,15 +21,6 @@ export default function Footer(): React.JSX.Element {
           </button>
           <span aria-hidden="true">·</span>
           <span>Aucune donnée stockée</span>
-          <span aria-hidden="true">·</span>
-          <a
-            href="https://github.com/intraordinaire/quotepart"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="cursor-pointer underline underline-offset-2 transition-colors hover:text-text-dim"
-          >
-            Code source ouvert
-          </a>
         </span>
       </footer>
 
