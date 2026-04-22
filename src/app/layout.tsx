@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Fraunces, DM_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -33,7 +34,14 @@ export default function RootLayout({
 }>): React.JSX.Element {
   return (
     <html lang="fr" className={`${dmSans.variable} ${fraunces.variable} ${dmMono.variable}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        <Script
+          data-goatcounter="https://quotepart.goatcounter.com/count"
+          src="//gc.zgo.at/count.js"
+          strategy="afterInteractive"
+        />
+      </body>
     </html>
   );
 }
