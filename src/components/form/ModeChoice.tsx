@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { trackEvent } from "@/lib/analytics";
 import { useSimulation } from "@/context/useSimulation";
 
 // ─── Icons ─────────────────────────────────────────────────────────────────
@@ -51,6 +52,7 @@ export function ModeChoice(): React.JSX.Element {
   const { dispatch } = useSimulation();
 
   function handleSelect(mode: "full" | "shared"): void {
+    trackEvent(`mode/${mode}`);
     dispatch({ type: "SET_MODE", payload: mode });
     dispatch({ type: "SET_ROLE", payload: mode === "shared" ? "p1" : null });
     dispatch({ type: "SET_TIER", payload: 1 });

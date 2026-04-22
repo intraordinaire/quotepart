@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 interface InseeModalProps {
   open: boolean;
@@ -15,6 +16,7 @@ export default function InseeModal({ open, onClose }: InseeModalProps): React.JS
     if (!dialog) return;
     if (open && !dialog.open) {
       dialog.showModal();
+      trackEvent("modal/insee");
     } else if (!open && dialog.open) {
       dialog.close();
     }

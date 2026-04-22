@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import type { SimulationInput } from "@/domain/types";
+import { trackEvent } from "@/lib/analytics";
 import { getFullLink, getP2InviteLink } from "@/lib/shareLink";
 
 interface ShareLinkPanelProps {
@@ -13,8 +14,9 @@ interface ShareLinkPanelProps {
 export function ShareLinkPanel({ input, mode, role }: ShareLinkPanelProps): React.JSX.Element {
   const [copied, setCopied] = useState(false);
 
-  async function copyToClipboard(text: string): Promise<void> {
+  async function copyToClipboard(text: string, kind: string): Promise<void> {
     await navigator.clipboard.writeText(text);
+    trackEvent(`copy-link/${kind}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -39,7 +41,7 @@ export function ShareLinkPanel({ input, mode, role }: ShareLinkPanelProps): Reac
             className="flex-1 rounded border border-border px-3 py-2 text-sm bg-surface"
           />
           <button
-            onClick={() => copyToClipboard(link)}
+            onClick={() => copyToClipboard(link, "results")}
             className="shrink-0 rounded bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90"
           >
             {copied ? "Copié !" : "Copier"}
@@ -67,7 +69,7 @@ export function ShareLinkPanel({ input, mode, role }: ShareLinkPanelProps): Reac
             className="flex-1 rounded border border-border px-3 py-2 text-sm bg-surface"
           />
           <button
-            onClick={() => copyToClipboard(link)}
+            onClick={() => copyToClipboard(link, "invite")}
             className="shrink-0 rounded bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90"
           >
             {copied ? "Copié !" : "Copier"}
@@ -91,7 +93,7 @@ export function ShareLinkPanel({ input, mode, role }: ShareLinkPanelProps): Reac
           className="flex-1 rounded border border-border px-3 py-2 text-sm bg-surface"
         />
         <button
-          onClick={() => copyToClipboard(fullLink)}
+          onClick={() => copyToClipboard(fullLink, "solo")}
           className="shrink-0 rounded bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90"
         >
           {copied ? "Copié !" : "Copier"}
